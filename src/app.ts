@@ -8,10 +8,3 @@ const app = express();
 app.use(cors());
 app.use(router);
 app.listen(PORT, () => console.log(`Listo por el puerto ${PORT}`));
-
-
-
-
-/**
- * http://localhost:3002 [route: Backend]
- */
