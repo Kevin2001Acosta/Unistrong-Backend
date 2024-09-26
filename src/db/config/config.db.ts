@@ -1,8 +1,8 @@
-//Aqui se configura la bd
-const { Sequelize } = require("sequelize");
+import { Sequelize } from "sequelize";
+import config from "../config/config.env";
 
 const sequelize = new Sequelize(
-  "postgres://postgres:12345678@localhost:5432/unistrong"
+  `postgres://${config.dbUser}:${config.dbPassword}@${config.dbHost}:${config.dbPort}/${config.dbName}`
 );
 
 async function testConnection() {

@@ -1,13 +1,20 @@
-// servicio
 import { UserAttributes } from "../schemas/user/user.schema";
 import { UserInput } from "../schemas/user/user.input.schema";
 import Users from "../db/models/user.model";
+import AuthService from "./auth.services";
 
 class UserService {
   async createUser(userData: UserInput): Promise<UserAttributes> {
     try {
-      console.log("Datos recibidos para crear usuario:", userData);
-      const user = await Users.create(userData);
+      console.log("usuario:", userData);
+      // Hashear la contraseña
+      const hashedPassword = await AuthService.hashPassword(userData.password);
+      // Crear el usuario con la contraseña hasheada
+      const user = await Users.create({
+        ...userData,
+        password: hashedPassword,
+      });
+
       return user;
     } catch (error) {
       console.error("Error en la creación del usuario:", error);
