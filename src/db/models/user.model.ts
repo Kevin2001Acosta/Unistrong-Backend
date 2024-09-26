@@ -1,18 +1,21 @@
 //modelos que representan la entidad
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
 import { UserAttributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
+import { UserType } from "./utils/user.types";
+import { UserState } from "./utils/user.state";
 
 class Users extends Model<UserAttributes, UserInput> implements UserAttributes {
   public id!: number;
   public email!: string;
-  public nombre!: string;
-  public tipo!: string;
-  public cedula!: string;
+  public name!: string;
+  public type!: UserType;
+  public dni!: string;
   public username!: string;
   public password!: string;
-  public estado!: string;
+  public state!: UserState;
+  public phoneNumber!: String;
 }
 
 Users.init(
@@ -28,15 +31,15 @@ Users.init(
       allowNull: false,
       unique: true,
     },
-    nombre: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    tipo: {
-      type: DataTypes.STRING,
+    type: {
+      type: DataTypes.ENUM(...Object.values(UserType)),
       allowNull: false,
     },
-    cedula: {
+    dni: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -50,7 +53,11 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    estado: {
+    state: {
+      type: DataTypes.ENUM(...Object.values(UserState)),
+      allowNull: false,
+    },
+    phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -58,7 +65,6 @@ Users.init(
   {
     sequelize,
     tableName: "users",
-    timestamps: true,
   }
 );
 
