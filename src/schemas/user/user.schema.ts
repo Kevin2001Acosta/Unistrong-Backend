@@ -1,6 +1,6 @@
 import { UserType } from "../../db/models/utils/user.types";
 import { UserState } from "../../db/models/utils/user.state";
-export interface UserAttributes {
+export interface UserAtributes {
   id: number;
   email: string;
   name: string;

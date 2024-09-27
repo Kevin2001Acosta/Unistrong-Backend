@@ -1,10 +1,10 @@
-import { UserAttributes } from "../../schemas/user/user.schema";
+import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
 import Users from "../../db/models/user.model";
 import AuthService from "././auth.services";
 
 class UserService {
-  async createUser(userData: UserInput): Promise<UserAttributes> {
+  async createUser(userData: UserInput): Promise<UserAtributes> {
     try {
       console.log("usuario:", userData);
       // Hashear la contraseña
@@ -22,7 +22,7 @@ class UserService {
     }
   }
 
-  async getAllUsers(): Promise<UserAttributes[]> {
+  async getAllUsers(): Promise<UserAtributes[]> {
     try {
       const users = await Users.findAll();
       return users.length > 0 ? users : [];
@@ -31,7 +31,7 @@ class UserService {
     }
   }
 
-  async getUserById(id: number): Promise<UserAttributes | null> {
+  async getUserById(id: number): Promise<UserAtributes | null> {
     try {
       const user = await Users.findByPk(id);
       if (!user) {

@@ -1,12 +1,12 @@
 //modelos que representan la entidad
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import { UserAttributes } from "../../schemas/user/user.schema";
+import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
 import { UserType } from "./utils/user.types";
 import { UserState } from "./utils/user.state";
 
-class Users extends Model<UserAttributes, UserInput> implements UserAttributes {
+class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public id!: number;
   public email!: string;
   public name!: string;

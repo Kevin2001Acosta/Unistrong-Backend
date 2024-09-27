@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import { testConnection } from "./db/config/config.db";
 import { loadModels } from "./db/modelLoader/modelLoader";
-import userRouter from "./routes/user.router";
-import clientRouter from "./routes/client.router";
+import userRouter from "./routes/user/user.router";
+import clientRouter from "./routes/client/client.router";
+import coachRouter from "./routes/coach/coach.router";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api/client", clientRouter);
+app.use("/api/coach", coachRouter);
 
 testConnection()
   .then(() => {

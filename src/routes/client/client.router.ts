@@ -1,12 +1,12 @@
 //endpoints
 import { Router, Request, Response } from "express";
-import UserService from "../services/user/user.services";
+import ClientService from "../../services/client/client.services";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const user = await UserService.createUser(req.body);
+    const user = await ClientService.createClient(req.body);
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: (error as Error).message });
@@ -15,7 +15,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const users = await UserService.getAllUsers();
+    const users = await ClientService.getAllClient();
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: (error as Error).message });
@@ -25,7 +25,7 @@ router.get("/", async (req: Request, res: Response) => {
 router.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const user = await UserService.getUserById(Number(id));
+    const user = await ClientService.getClientById(Number(id));
     res.status(200).json(user);
   } catch (error) {
     res.status(400).json({ message: (error as Error).message });

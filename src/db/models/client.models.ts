@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import Users from "./user.model";
 import { ClientAttributes } from "../../schemas/client/client.schema";
 import { ClientInput } from "../../schemas/client/client.input.schema";
 import { UserState } from "./utils/user.state";
+import Coach from "./coach.models";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -36,7 +36,12 @@ Client.init(
     //campo de llave foranea
     coachId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+      references: {
+        model: Coach,
+        key: "id",
+      },
+      onDelete: "SET NULL",
     },
     //campo de llave foranea
     nutritionistId: {
@@ -65,4 +70,5 @@ Client.init(
     tableName: "clients",
   }
 );
+
 export default Client;
