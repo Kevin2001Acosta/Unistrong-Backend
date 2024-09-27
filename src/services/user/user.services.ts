@@ -1,7 +1,7 @@
-import { UserAttributes } from "../schemas/user/user.schema";
-import { UserInput } from "../schemas/user/user.input.schema";
-import Users from "../db/models/user.model";
-import AuthService from "./auth.services";
+import { UserAttributes } from "../../schemas/user/user.schema";
+import { UserInput } from "../../schemas/user/user.input.schema";
+import Users from "../../db/models/user.model";
+import AuthService from "././auth.services";
 
 class UserService {
   async createUser(userData: UserInput): Promise<UserAttributes> {
