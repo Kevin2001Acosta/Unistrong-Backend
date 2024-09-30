@@ -1,10 +1,18 @@
 import { RoutinesInput } from "../../schemas/routines/routines.input.schema";
 import { RoutinesAttributes } from "../../schemas/routines/routines.schema";
 import Routines from "../../db/models/routines.models";
+import Client from "../../db/models/client.models";
 
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
     try {
+      // Verificar si el Client existe
+      const clientExists = await Client.findByPk(routineData.clientId);
+      if (!clientExists) {
+        throw new Error("El cliente especificado no existe.");
+      }
+
+      // Crear la rutina
       const routine = await Routines.create(routineData);
       return routine;
     } catch (error) {

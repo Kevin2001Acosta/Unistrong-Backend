@@ -21,6 +21,10 @@ async function loadModels() {
     //Declarar y cargar las asociaciones
     Coach.hasMany(Client, { foreignKey: "coachId", as: "clients" });
     Client.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
+    Client.belongsTo(Users, { foreignKey: "userId", as: "user" });
+    Users.hasOne(Client, { foreignKey: "userId", as: "client" });
+    Coach.hasMany(Routines, { foreignKey: "coachId", as: "routines" });
+    Client.hasMany(Routines, { foreignKey: "clientId", as: "routines" });
     Routines.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
     Routines.belongsTo(Client, { foreignKey: "clientId", as: "client" });
   } catch (error) {

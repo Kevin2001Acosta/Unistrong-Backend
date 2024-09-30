@@ -1,10 +1,12 @@
+import Users from "../../db/models/user.model";
 export interface ClientAttributes {
   id: number;
   userId: number;
   coachId: number;
   nutritionistId: number;
-  birthYear: number;
+  birthDate: Date;
   height: number;
   diseases?: string[];
   dietaryRestrictions?: string[];
+  user?: Users;
 }

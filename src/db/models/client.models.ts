@@ -4,6 +4,7 @@ import { ClientAttributes } from "../../schemas/client/client.schema";
 import { ClientInput } from "../../schemas/client/client.input.schema";
 import { UserState } from "./utils/user.state";
 import Coach from "./coach.models";
+import Users from "./user.model";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -12,12 +13,13 @@ class Client
   public id!: number;
   public userId!: number;
   public coachId!: number;
-  public birthYear!: number;
+  public birthDate!: Date;
   public nutritionistId!: number;
   public height!: number;
   public state!: UserState;
   public diseases!: string[];
   public dietaryRestrictions!: string[];
+  public user?: Users;
 }
 
 Client.init(
@@ -48,8 +50,8 @@ Client.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    birthYear: {
-      type: DataTypes.INTEGER,
+    birthDate: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
     height: {
