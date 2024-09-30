@@ -5,6 +5,7 @@ import { loadModels } from "./db/modelLoader/modelLoader";
 import userRouter from "./routes/user/user.router";
 import clientRouter from "./routes/client/client.router";
 import coachRouter from "./routes/coach/coach.router";
+import routinesRouter from "./routes/routines/routines.router";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api/client", clientRouter);
 app.use("/api/coach", coachRouter);
+app.use("/api/routines", routinesRouter);
 
 testConnection()
   .then(() => {

@@ -2,6 +2,7 @@
 import Users from "../models/user.model";
 import Client from "../models/client.models";
 import Coach from "../models/coach.models";
+import Routines from "../models/routines.models";
 
 async function loadModels() {
   try {
@@ -14,9 +15,14 @@ async function loadModels() {
     await Client.sync();
     console.log("La tabla Client creada correctamente.");
 
-    //Cargar las asociaciones
+    await Routines.sync();
+    console.log("La tabla Routines creada correctamente.");
+
+    //Declarar y cargar las asociaciones
     Coach.hasMany(Client, { foreignKey: "coachId", as: "clients" });
     Client.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
+    Routines.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
+    Routines.belongsTo(Client, { foreignKey: "clientId", as: "client" });
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
   }
