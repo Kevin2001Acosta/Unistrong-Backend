@@ -4,7 +4,7 @@ import UserService from "../../services/user/user.services";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     const user = await UserService.createUser(req.body);
     res.status(201).json(user);

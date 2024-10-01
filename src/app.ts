@@ -13,7 +13,15 @@ dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173", // El origen de tu frontend (debe ser explícito)
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // Habilitar credenciales (cookies, autenticación)
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("/api/client", clientRouter);

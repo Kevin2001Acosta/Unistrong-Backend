@@ -3,19 +3,14 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
 import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
-import { UserType } from "./utils/user.types";
-import { UserState } from "./utils/user.state";
-
 class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public id!: number;
   public email!: string;
   public name!: string;
-  public type!: UserType;
   public dni!: string;
   public username!: string;
   public password!: string;
-  public state!: UserState;
-  public phoneNumber!: String;
+  public phoneNumber!: string; // Corregido: 'String' a 'string'
 }
 
 Users.init(
@@ -30,13 +25,12 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM(...Object.values(UserType)),
       allowNull: false,
     },
     dni: {
@@ -53,18 +47,18 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    state: {
-      type: DataTypes.ENUM(...Object.values(UserState)),
-      allowNull: false,
-    },
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isNumeric: true,
+      },
     },
   },
   {
     sequelize,
     tableName: "users",
+    timestamps: false,
   }
 );
 
