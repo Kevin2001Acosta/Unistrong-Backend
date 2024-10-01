@@ -4,7 +4,7 @@ import ClientService from "../../services/client/client.services";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     const user = await ClientService.createClient(req.body);
     res.status(201).json(user);
