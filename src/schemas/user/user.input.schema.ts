@@ -1,3 +1,4 @@
+import { UserState } from "../../db/models/utils/user.state";
 export interface UserInput {
   email: string;
   name: string;
@@ -5,4 +6,5 @@ export interface UserInput {
   username: string;
   password: string;
   phoneNumber: string;
+  state?: UserState;
 }

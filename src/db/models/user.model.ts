@@ -1,4 +1,5 @@
 import { DataTypes, Model } from "sequelize";
+import { UserState } from "../models/utils/user.state";
 import { sequelize } from "../config/config.db";
 import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
@@ -12,6 +13,7 @@ class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public username!: string;
   public password!: string;
   public phoneNumber!: string;
+  public state!: UserState;
 }
 
 Users.init(
@@ -84,11 +86,16 @@ Users.init(
         },
       },
     },
+    state: {
+      type: DataTypes.ENUM(UserState.ACTIVO, UserState.INACTIVO),
+      allowNull: false,
+      defaultValue: UserState.INACTIVO,
+    },
   },
   {
     sequelize,
     tableName: "users",
-    timestamps: false,
+    timestamps: true,
   }
 );
 
