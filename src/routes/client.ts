@@ -1,6 +1,6 @@
 //endpoints
 import { Router, Request, Response } from "express";
-import ClientService from "../../services/client/client.services";
+import ClientService from "../services/client/client.services";
 
 const router = Router();
 
@@ -48,4 +48,4 @@ router.get("/:id/user", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export { router };

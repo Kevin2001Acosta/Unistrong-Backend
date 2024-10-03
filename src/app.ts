@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import { testConnection } from "./db/config/config.db";
 import { loadModels } from "./db/modelLoader/modelLoader";
-import userRouter from "./routes/user/user.router";
-import clientRouter from "./routes/client/client.router";
-import coachRouter from "./routes/coach/coach.router";
-import routinesRouter from "./routes/routines/routines.router";
+import errorHandler from "./middleware/errorHandler";
+
+import { router } from "./routes/index";
+
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,19 +14,16 @@ const PORT = process.env.PORT;
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173", // El origen de tu frontend (debe ser explícito)
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // Habilitar credenciales (cookies, autenticación)
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
-app.use("/api/users", userRouter);
-app.use("/api/client", clientRouter);
-app.use("/api/coach", coachRouter);
-app.use("/api/routines", routinesRouter);
+app.use(router);
+app.use(errorHandler);
 
 testConnection()
   .then(() => {

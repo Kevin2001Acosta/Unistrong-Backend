@@ -1,15 +1,18 @@
 //endpoints
 import { Router, Request, Response } from "express";
-import UserService from "../../services/user/user.services";
+import UserService from "../services/user/user.services";
+import AuthController from "../services/utils/auth.controller";
 
 const router = Router();
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/login", AuthController.login);
+
+router.post("/register", async (req, res, next) => {
   try {
     const user = await UserService.createUser(req.body);
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    next(error);
   }
 });
 
@@ -31,5 +34,4 @@ router.get("/:id", async (req: Request, res: Response) => {
     res.status(400).json({ message: (error as Error).message });
   }
 });
-
-export default router;
+export { router };

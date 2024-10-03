@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import CoachService from "../../services/coach/coach.services";
+import CoachService from "../services/coach/coach.services";
 
 const router = Router();
 
@@ -36,4 +36,4 @@ router.get("/:id/clients", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export { router };

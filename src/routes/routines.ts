@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import RoutineService from "../../services/routines/routines.services";
+import RoutineService from "../services/routines/routines.services";
 
 const router = Router();
 
@@ -45,4 +45,4 @@ router.get("/client/:clientId", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export { router };
