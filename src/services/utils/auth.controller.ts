@@ -29,6 +29,12 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      // Configurar la cookie con el token
+      res.cookie("token", token, {
+        httpOnly: false,
+        secure: false,
+      });
+
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",

@@ -44,7 +44,7 @@ class UserService {
         }
         throw createError(409, "Ya existe un registro con este dato.");
       }
-      // Lanzar un error general si no es un error conocido
+
       throw createError(
         400,
         `Error al crear el usuario: ${(error as Error).message}`
