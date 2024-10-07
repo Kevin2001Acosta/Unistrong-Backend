@@ -2,7 +2,7 @@
 import { Router, Request, Response } from "express";
 import UserService from "../services/user/user.services";
 import AuthController from "../services/utils/auth.controller";
-
+import AuthService from "../services/user/auth.services";
 const router = Router();
 
 router.post("/login", AuthController.login);
@@ -15,6 +15,18 @@ router.post("/register", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get(
+  "/verify",
+  AuthService.verifyToken,
+  (req: Request, res: Response, next: Function) => {
+    try {
+      res.status(200).json({ message: "Token válido" });
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+);
 
 router.get("/", async (req: Request, res: Response) => {
   try {
