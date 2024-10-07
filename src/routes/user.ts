@@ -2,7 +2,7 @@
 import { Router, Request, Response } from "express";
 import UserService from "../services/user/user.services";
 import AuthController from "../services/utils/auth.controller";
-import AuthService from "../services/user/auth.services";
+import { verifyToken } from "../middleware/auth.middleware";
 const router = Router();
 
 router.post("/login", AuthController.login);
@@ -16,17 +16,18 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.get(
-  "/verify",
-  AuthService.verifyToken,
-  (req: Request, res: Response, next: Function) => {
-    try {
-      res.status(200).json({ message: "Token válido" });
-    } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
-    }
+router.get("/verify", verifyToken, (req: Request, res: Response) => {
+  try {
+    // Si el middleware verifyToken pasa, el token es válido
+    res.status(200).json({ message: "Token válido", userId: req.body.userId });
+  } catch (error) {
+    // Si ocurre algún error en la lógica, manejamos la excepción
+    return res.status(400).json({
+      status: 400,
+      message: "Hubo un problema al verificar el token",
+    });
   }
-);
+});
 
 router.get("/", async (req: Request, res: Response) => {
   try {
