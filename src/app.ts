@@ -23,9 +23,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 app.use(router);
 app.use(errorHandler);
-app.use(cookieParser());
 
 testConnection()
   .then(() => {
