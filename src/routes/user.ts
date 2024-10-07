@@ -29,6 +29,16 @@ router.get("/verify", verifyToken, (req: Request, res: Response) => {
   }
 });
 
+router.post("/logout", verifyToken, async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Usuario deslogeado exitosamente" });
+  } catch (error) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+ }
+);
+
 router.get("/", async (req: Request, res: Response) => {
   try {
     const users = await UserService.getAllUsers();
