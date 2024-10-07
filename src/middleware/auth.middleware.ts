@@ -6,7 +6,6 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  // Extraer el token desde la cookie
   const token = req.cookies.token;
 
   if (!token) {

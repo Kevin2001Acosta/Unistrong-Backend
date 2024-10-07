@@ -7,6 +7,22 @@ const router = Router();
 
 router.post("/login", AuthController.login);
 
+// router.post("/logout", (req: Request, res: Response) => {
+//   try {
+//     res.clearCookie("token", {
+//       httpOnly: false,
+//       secure: false,
+//     });
+//     // Enviar respuesta exitosa
+//     res.status(200).json({ message: "Logout exitoso" });
+//   } catch (error) {
+//     res.status(500).json({
+//       status: 500,
+//       message: "Error al cerrar sesión",
+//     });
+//   }
+// });
+
 router.post("/register", async (req, res, next) => {
   try {
     const user = await UserService.createUser(req.body);
@@ -16,12 +32,27 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.get("/verify", verifyToken, (req: Request, res: Response) => {
+router.get("/verify", verifyToken, async (req: Request, res: Response) => {
   try {
-    // Si el middleware verifyToken pasa, el token es válido
-    res.status(200).json({ message: "Token válido", userId: req.body.userId });
+    // Buscar el usuario usando el userId extraído del token
+    const user = await UserService.getUserById(req.body.userId);
+
+    // Si el usuario no existe, retornamos un error
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Si el middleware verifyToken pasa, el token es válido y se devuelve la información del usuario
+    res.status(200).json({
+      message: "Token válido",
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        state: user.state,
+      },
+    });
   } catch (error) {
-    // Si ocurre algún error en la lógica, manejamos la excepción
     return res.status(400).json({
       status: 400,
       message: "Hubo un problema al verificar el token",
