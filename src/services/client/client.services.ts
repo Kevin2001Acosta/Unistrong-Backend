@@ -18,11 +18,10 @@ class ClientService {
         throw new Error("Usuario no tipo cliente");
       }
 
-      // Crear el cliente en la base de datos
       const client = await Client.create({
         user_id: clientData.user_id,
-        coach_id: clientData.coach_id, // Relacionar con un coach
-        nutritionist_id: clientData.nutritionist_id, // Relacionar con un nutricionista
+        coach_id: clientData.coach_id,
+        nutritionist_id: clientData.nutritionist_id,
         birthDate: clientData.birthDate,
         height: clientData.height,
         diseases: clientData.diseases || [],
@@ -61,7 +60,7 @@ class ClientService {
   async getUserByClientId(clientId: number): Promise<Users | null> {
     try {
       const client = await Client.findByPk(clientId, {
-        include: [{ model: Users, as: "user" }], // Incluir el modelo Users con el alias 'user'
+        include: [{ model: Users, as: "user" }],
       });
 
       if (!client) {

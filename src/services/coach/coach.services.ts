@@ -8,19 +8,16 @@ import { UserType } from "../../db/models/utils/user.types";
 class CoachService {
   async createCoach(coachData: CoachInput): Promise<CoachAtributes> {
     try {
-      // Verificar si el usuario existe
       const user = await Users.findByPk(coachData.user_id);
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
 
-      // Cambiar el user_type del usuario a COACH
       if (user.user_type !== UserType.COACH) {
         user.user_type = UserType.COACH;
         await user.save();
       }
 
-      // Crear el registro en la tabla de coaches
       const coach = await Coach.create({ user_id: coachData.user_id });
       return coach;
     } catch (error) {
@@ -56,7 +53,6 @@ class CoachService {
     }
   }
 
-  // obtener los clientes de un coach
   async getClientsByCoachId(coachId: number): Promise<any> {
     try {
       const coachWithClients = await Coach.findByPk(coachId, {
@@ -71,6 +67,37 @@ class CoachService {
     } catch (error) {
       throw new Error(
         `Error al obtener clientes del coach: ${(error as Error).message}`
+      );
+    }
+  }
+  async getCoachById(coachId: number): Promise<CoachAtributes | null> {
+    try {
+      const coach = await Coach.findByPk(coachId, {
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: [
+              "id",
+              "email",
+              "name",
+              "dni",
+              "username",
+              "phoneNumber",
+              "user_type",
+            ],
+          },
+        ],
+      });
+
+      if (!coach) {
+        throw new Error("Coach no encontrado");
+      }
+
+      return coach;
+    } catch (error) {
+      throw new Error(
+        `Error al obtener coach por ID: ${(error as Error).message}`
       );
     }
   }

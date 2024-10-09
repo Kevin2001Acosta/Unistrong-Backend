@@ -6,13 +6,11 @@ import Client from "../../db/models/client.models";
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
     try {
-      // Verificar si el Client existe
       const clientExists = await Client.findByPk(routineData.clientId);
       if (!clientExists) {
         throw new Error("El cliente especificado no existe.");
       }
 
-      // Crear la rutina
       const routine = await Routines.create(routineData);
       return routine;
     } catch (error) {
@@ -31,7 +29,6 @@ class RoutineService {
     }
   }
 
-  // Obtener rutinas por ID de coach
   async getRoutinesByCoach(coachId: number): Promise<RoutinesAttributes[]> {
     try {
       const routines = await Routines.findAll({ where: { coachId } });
@@ -43,7 +40,6 @@ class RoutineService {
     }
   }
 
-  // Obtener rutinas por ID de cliente
   async getRoutinesByClient(clientId: number): Promise<RoutinesAttributes[]> {
     try {
       const routines = await Routines.findAll({ where: { clientId } });
