@@ -6,27 +6,27 @@ import Routines from "../models/routines.models";
 
 async function loadModels() {
   try {
-    await Users.sync();
+    await Users.sync({ alter: true });
     console.log("La tabla User creada correctamente.");
 
-    await Coach.sync();
+    await Coach.sync({ alter: true });
     console.log("La tabla Coach creada correctamente.");
 
-    await Client.sync();
+    await Client.sync({ alter: true });
     console.log("La tabla Client creada correctamente.");
 
-    await Routines.sync();
-    console.log("La tabla Routines creada correctamente.");
+    //Declarar y cargar las asociaciones aqui
+    // Relación Usuario-Cliente (uno a uno)
+    Users.hasOne(Client, { foreignKey: "user_id", as: "client" });
+    Client.belongsTo(Users, { foreignKey: "user_id", as: "user" });
 
-    //Declarar y cargar las asociaciones
-    Coach.hasMany(Client, { foreignKey: "coachId", as: "clients" });
-    Client.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
-    Client.belongsTo(Users, { foreignKey: "userId", as: "user" });
-    Users.hasOne(Client, { foreignKey: "userId", as: "client" });
-    Coach.hasMany(Routines, { foreignKey: "coachId", as: "routines" });
-    Client.hasMany(Routines, { foreignKey: "clientId", as: "routines" });
-    Routines.belongsTo(Coach, { foreignKey: "coachId", as: "coach" });
-    Routines.belongsTo(Client, { foreignKey: "clientId", as: "client" });
+    // Relación Coach-Cliente (uno a muchos)
+    Coach.hasMany(Client, { foreignKey: "coach_id", as: "clients" });
+    Client.belongsTo(Coach, { foreignKey: "coach_id", as: "coach" });
+
+    // Relación Usuario-Coach (uno a uno)
+    Users.hasOne(Coach, { foreignKey: "user_id", as: "coach" });
+    Coach.belongsTo(Users, { foreignKey: "user_id", as: "user" });
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
   }

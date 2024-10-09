@@ -1,5 +1,4 @@
 export interface CoachAtributes {
   id: number;
-  name: string;
-  dni: string;
+  user_id: number;
 }

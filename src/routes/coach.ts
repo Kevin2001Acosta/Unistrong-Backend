@@ -3,7 +3,7 @@ import CoachService from "../services/coach/coach.services";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     const coach = await CoachService.createCoach(req.body);
     res.status(201).json(coach);

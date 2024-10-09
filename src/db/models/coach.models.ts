@@ -8,7 +8,7 @@ class Coach
   implements CoachAtributes
 {
   public id!: number;
-  public name!: string;
+  public user_id!: number;
   public dni!: string;
 }
 
@@ -20,12 +20,8 @@ Coach.init(
       autoIncrement: true,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    dni: {
-      type: DataTypes.STRING,
+    user_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
     },

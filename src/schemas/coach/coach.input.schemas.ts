@@ -1,4 +1,3 @@
 export interface CoachInput {
-  name: string;
-  dni: string;
+  user_id: number;
 }

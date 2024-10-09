@@ -11,10 +11,10 @@ class Client
   implements ClientAttributes
 {
   public id!: number;
-  public userId!: number;
-  public coachId!: number;
+  public user_id!: number;
+  public coach_id!: number;
   public birthDate!: Date;
-  public nutritionistId!: number;
+  public nutritionist_id!: number;
   public height!: number;
   public state!: UserState;
   public diseases!: string[];
@@ -31,12 +31,17 @@ Client.init(
       allowNull: false,
     },
     //campo de llave foranea
-    userId: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: Users, // Relacionar con la tabla de Users
+        key: "id",
+      },
+      onDelete: "CASCADE",
     },
     //campo de llave foranea
-    coachId: {
+    coach_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -46,7 +51,7 @@ Client.init(
       onDelete: "SET NULL",
     },
     //campo de llave foranea
-    nutritionistId: {
+    nutritionist_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
