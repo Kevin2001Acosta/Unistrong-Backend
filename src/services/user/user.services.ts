@@ -31,7 +31,7 @@ class UserService {
 
       return user;
     } catch (error) {
-      // Manejo específico de errores de unicidad
+      // Errores de unicidad
       if (error instanceof UniqueConstraintError) {
         if ((error.parent as any)?.constraint === "users_email_key") {
           throw createError(409, "El correo electrónico ya está registrado.");
@@ -44,7 +44,7 @@ class UserService {
         }
         throw createError(409, "Ya existe un registro con este dato.");
       }
-      // Lanzar un error general si no es un error conocido
+      // Error general
       throw createError(
         400,
         `Error al crear el usuario: ${(error as Error).message}`

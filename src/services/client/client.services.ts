@@ -15,7 +15,7 @@ class ClientService {
       if (user.user_type === UserType.CLIENT) {
         await user.save();
       } else {
-        throw new Error("Usuario no tipo cliente");
+        throw new Error("Usuario no es cliente");
       }
 
       const client = await Client.create({

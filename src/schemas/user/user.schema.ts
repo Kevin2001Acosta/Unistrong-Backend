@@ -8,6 +8,6 @@ export interface UserAtributes {
   username: string;
   password: string;
   phoneNumber: String;
-  state: UserState;
-  user_type: UserType;
+  state?: UserState;
+  user_type?: UserType;
 }

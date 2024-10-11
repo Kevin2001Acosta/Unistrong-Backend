@@ -13,8 +13,7 @@ class CoachService {
         throw new Error("Usuario no encontrado");
       }
 
-      if (user.user_type !== UserType.COACH) {
-        user.user_type = UserType.COACH;
+      if (user.user_type === UserType.COACH) {
         await user.save();
       }
 

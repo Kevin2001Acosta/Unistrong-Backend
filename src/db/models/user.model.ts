@@ -101,6 +101,7 @@ Users.init(
         UserType.NUTRIOLOGO
       ),
       allowNull: false,
+      defaultValue: UserType.CLIENT,
     },
   },
   {

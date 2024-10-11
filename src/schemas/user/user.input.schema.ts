@@ -8,5 +8,5 @@ export interface UserInput {
   password: string;
   phoneNumber: string;
   state?: UserState;
-  user_type: UserType;
+  user_type?: UserType;
 }
