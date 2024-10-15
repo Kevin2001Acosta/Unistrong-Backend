@@ -6,7 +6,6 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  // Extraer el token desde la cookie
   const token = req.cookies.token;
 
   if (!token) {
@@ -14,10 +13,10 @@ export const verifyToken = (
   }
 
   try {
-    const decoded = AuthService.verifyToken(token);
-    req.body.userId = decoded.id;
-    next();
+    const decoded = AuthService.verifyToken(token); // Verifica el token
+    req.body.userId = decoded.id; // Asigna el ID del usuario al request
+    next(); // Si el token es válido, continúa
   } catch (error) {
-    return res.status(401).json({ message: "Token inválido" });
+    return res.status(401).json({ message: "Token inválido o expirado" });
   }
 };
