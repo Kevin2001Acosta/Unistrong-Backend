@@ -1,4 +1,4 @@
-import Users from "../../db/models/user.model";
+import Users from "../../models/user.model";
 export interface ClientAttributes {
   id: number;
   userId: number;

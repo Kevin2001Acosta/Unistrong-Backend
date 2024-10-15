@@ -1,7 +1,7 @@
 import { RoutinesInput } from "../../schemas/routines/routines.input.schema";
 import { RoutinesAttributes } from "../../schemas/routines/routines.schema";
-import Routines from "../../db/models/routines.models";
-import Client from "../../db/models/client.models";
+import Routines from "../../models/routines.models";
+import Client from "../../models/client.models";
 
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {

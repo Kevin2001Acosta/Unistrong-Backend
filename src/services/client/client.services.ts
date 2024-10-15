@@ -1,7 +1,7 @@
 import { ClientInput } from "../../schemas/client/client.input.schema";
 import { ClientAttributes } from "../../schemas/client/client.schema";
-import Client from "../../db/models/client.models";
-import Users from "../../db/models/user.model";
+import Client from "../../models/client.models";
+import Users from "../../models/user.model";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {

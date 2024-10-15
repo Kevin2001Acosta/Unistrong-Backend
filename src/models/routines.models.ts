@@ -1,10 +1,10 @@
 //modelos que representan la entidad
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/config.db";
+import { sequelize } from "../db/config/config.db";
 import Coach from "./coach.models";
 import Client from "./client.models";
-import { RoutinesAttributes } from "../../schemas/routines/routines.schema";
-import { RoutinesInput } from "../../schemas/routines/routines.input.schema";
+import { RoutinesAttributes } from "../schemas/routines/routines.schema";
+import { RoutinesInput } from "../schemas/routines/routines.input.schema";
 
 class Routines
   extends Model<RoutinesAttributes, RoutinesInput>

@@ -1,8 +1,22 @@
 import { Sequelize } from "sequelize";
 import config from "../config/config.env";
+import fs from "fs";
+import path from "path";
+const dbName = config.dbName || "";
+const dbUser = config.dbUser || "";
+const dbHost = config.dbHost || "";
+console.log("dbHost", dbHost);
 
 const sequelize = new Sequelize(
-  `postgres://${config.dbUser}:${config.dbPassword}@${config.dbHost}:${config.dbPort}/${config.dbName}`
+  dbName,
+  dbUser,
+  config.dbPassword,
+  {
+    ssl: false,
+    host: dbHost,
+    port: Number(config.dbPort),
+    dialect: "postgres"
+  }
 );
 
 async function testConnection() {

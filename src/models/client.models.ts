@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/config.db";
-import { ClientAttributes } from "../../schemas/client/client.schema";
-import { ClientInput } from "../../schemas/client/client.input.schema";
+import { sequelize } from "../db/config/config.db";
+import { ClientAttributes } from "../schemas/client/client.schema";
+import { ClientInput } from "../schemas/client/client.input.schema";
 import { UserState } from "./utils/user.state";
 import Coach from "./coach.models";
 import Users from "./user.model";

@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
-import { UserState } from "../models/utils/user.state";
-import { sequelize } from "../config/config.db";
-import { UserAtributes } from "../../schemas/user/user.schema";
-import { UserInput } from "../../schemas/user/user.input.schema";
-import { isValidUsername, isStrongPassword } from "../models/utils/constraints";
+import { UserState } from "./utils/user.state";
+import { sequelize } from "../db/config/config.db";
+import { UserAtributes } from "../schemas/user/user.schema";
+import { UserInput } from "../schemas/user/user.input.schema";
+import { isValidUsername, isStrongPassword } from "./utils/constraints";
 
 class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public id!: number;
