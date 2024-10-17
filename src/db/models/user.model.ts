@@ -98,7 +98,8 @@ Users.init(
         UserType.ADMIN,
         UserType.CLIENT,
         UserType.COACH,
-        UserType.NUTRIOLOGO
+        UserType.NUTRITIONIST,
+        UserType.ACCOUNTANT
       ),
       allowNull: false,
       defaultValue: UserType.CLIENT,

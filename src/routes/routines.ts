@@ -3,9 +3,8 @@ import RoutineController from "../controllers/routines.controller";
 
 const router = Router();
 
-router.post("/register", RoutineController.createRoutine);
+router.post("/create", RoutineController.createRoutine);
+router.post("/assing", RoutineController.assignRoutineToClient);
 router.get("/", RoutineController.getAllRoutines);
-router.get("/coach/:coachId", RoutineController.getRoutinesByCoach);
-router.get("/client/:clientId", RoutineController.getRoutinesByClient);
 
 export { router };

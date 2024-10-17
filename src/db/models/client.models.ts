@@ -5,6 +5,7 @@ import { ClientInput } from "../../schemas/client/client.input.schema";
 import { UserState } from "./utils/user.state";
 import Coach from "./coach.models";
 import Users from "./user.model";
+import Nutritionist from "./nutritionist.model";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -53,7 +54,12 @@ Client.init(
     //campo de llave foranea
     nutritionist_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+      references: {
+        model: Nutritionist,
+        key: "id",
+      },
+      onDelete: "SET NULL",
     },
     birthDate: {
       type: DataTypes.DATE,

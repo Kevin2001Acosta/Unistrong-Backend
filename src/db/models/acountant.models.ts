@@ -1,17 +1,17 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import { CoachAtributes } from "../../schemas/coach/coach.schemas";
-import { CoachInput } from "../../schemas/coach/coach.input.schemas";
+import { AccountantAttributes } from "../../schemas/accountant/accountant.schema";
+import { AccountantInput } from "../../schemas/accountant/accountant.input";
 
-class Coach
-  extends Model<CoachAtributes, CoachInput>
-  implements CoachAtributes
+class Accountant
+  extends Model<AccountantAttributes, AccountantInput>
+  implements AccountantAttributes
 {
   public id!: number;
   public user_id!: number;
 }
 
-Coach.init(
+Accountant.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -28,8 +28,8 @@ Coach.init(
 
   {
     sequelize,
-    tableName: "coaches",
+    tableName: "accountants",
   }
 );
 
-export default Coach;
+export default Accountant;

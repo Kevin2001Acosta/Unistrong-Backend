@@ -1,23 +1,22 @@
 //modelos que representan la entidad
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import Coach from "./coach.models";
-import { RoutinesAttributes } from "../../schemas/routines/routines.schema";
-import { RoutinesInput } from "../../schemas/routines/routines.input.schema";
+import Nutritionist from "./nutritionist.model";
+import { DietsAtributes } from "../../schemas/diets/diets.schema";
+import { DietsInput } from "../../schemas/diets/diets.input.schema";
 
-class Routines
-  extends Model<RoutinesAttributes, RoutinesInput>
-  implements RoutinesAttributes
+class Diets
+  extends Model<DietsAtributes, DietsInput>
+  implements DietsAtributes
 {
   public id!: number;
   public name!: string;
   public description!: string;
-  public category!: string;
-  public musclesWorked!: string[];
-  public coachId!: number;
+  public type!: string;
+  public nutritionistId!: number;
 }
 
-Routines.init(
+Diets.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -33,19 +32,15 @@ Routines.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    category: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    musclesWorked: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
-    },
-    coachId: {
+    nutritionistId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Coach,
+        model: Nutritionist,
         key: "id",
       },
       onDelete: "CASCADE",
@@ -53,8 +48,8 @@ Routines.init(
   },
   {
     sequelize,
-    tableName: "routines",
+    tableName: "diets",
   }
 );
 
-export default Routines;
+export default Diets;
