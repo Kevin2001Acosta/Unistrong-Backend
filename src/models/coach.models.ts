@@ -7,9 +7,8 @@ class Coach
   extends Model<CoachAtributes, CoachInput>
   implements CoachAtributes
 {
-  public id!: number;
-  public name!: string;
-  public dni!: string;
+  declare id: number;
+  declare dni: string;
 }
 
 Coach.init(
@@ -20,10 +19,7 @@ Coach.init(
       autoIncrement: true,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
     dni: {
       type: DataTypes.STRING,
       allowNull: false,
