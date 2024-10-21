@@ -8,6 +8,9 @@ import Nutritionist from "../models/nutritionist.model";
 import Classes from "../models/classes.models";
 import ClientCharacteristics from "../models/client.characteristics.models";
 import Accountant from "../models/acountant.models";
+import Diets from "../models/diets.models";
+import ClientDiets from "../models/client_diets.models";
+import Reservations from "../models/reservations.models";
 
 async function loadModels() {
   try {
@@ -26,11 +29,20 @@ async function loadModels() {
     await Classes.sync({ alter: true });
     console.log("La tabla Classes creada correctamente.");
 
+    await Reservations.sync({ alter: true });
+    console.log("La tabla Reservations creada correctamente.");
+
     await Client.sync({ alter: true });
     console.log("La tabla Client creada correctamente.");
 
     await ClientCharacteristics.sync({ alter: true });
     console.log("La tabla ClientCharacteristics creada correctamente.");
+
+    await Diets.sync({ alter: true });
+    console.log("La tabla Diets creada correctamente.");
+
+    await ClientDiets.sync({ alter: true });
+    console.log("La tabla ClientDiets creada correctamente.");
 
     await Routines.sync({ alter: true });
     console.log("La tabla Routines creada correctamente.");
@@ -63,6 +75,34 @@ async function loadModels() {
     Users.hasOne(Nutritionist, { foreignKey: "user_id", as: "nutritionist" });
     Nutritionist.belongsTo(Users, { foreignKey: "user_id", as: "user" });
 
+    // Relación Cliente-Reservas (muchos a muchos)
+
+    Client.belongsToMany(Classes, {
+      foreignKey: "clientId",
+      through: Reservations,
+      as: "reservedClasses",
+    });
+    Classes.belongsToMany(Client, {
+      foreignKey: "classId",
+      through: Reservations,
+      as: "assistants",
+    });
+
+    Client.hasMany(Reservations, {
+      foreignKey: "clientId",
+      as: "reservations",
+    });
+    Reservations.belongsTo(Client, {
+      foreignKey: "clientId",
+      as: "assistants",
+    });
+
+    Classes.hasMany(Reservations, {
+      foreignKey: "classId",
+      as: "reservations",
+    });
+    Reservations.belongsTo(Classes, { foreignKey: "classId", as: "class" });
+
     // Relación Cliente-Características (uno a uno)
     Client.hasOne(ClientCharacteristics, {
       foreignKey: "clientId",
@@ -82,6 +122,17 @@ async function loadModels() {
     Routines.belongsToMany(Client, {
       foreignKey: "routineId",
       through: ClientRoutines,
+      as: "clients",
+    });
+
+    Client.belongsToMany(Diets, {
+      foreignKey: "clientId",
+      through: ClientDiets,
+      as: "diets",
+    });
+    Diets.belongsToMany(Client, {
+      foreignKey: "dietId",
+      through: ClientDiets,
       as: "clients",
     });
   } catch (error) {

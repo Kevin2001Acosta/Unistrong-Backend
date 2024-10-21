@@ -5,6 +5,8 @@ import Users from "../../db/models/user.model";
 import { UserType } from "../../db/models/utils/user.types";
 import Coach from "../../db/models/coach.models";
 import Nutritionist from "../../db/models/nutritionist.model";
+import Routines from "../../db/models/routines.models";
+import Diets from "../../db/models/diets.models";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
@@ -56,19 +58,21 @@ class ClientService {
 
   async getAllClient(): Promise<ClientAttributes[]> {
     try {
-      const client = await Client.findAll({
-        include: [{ model: Users, as: "user" }],
-      });
+      const client = await Client.findAll();
       return client.length > 0 ? client : [];
     } catch (error) {
       throw new Error(`Error al obtener clientes: ${(error as Error).message}`);
     }
   }
-
+  //Obtener cliente por id junto con su usuario, rutinas y dietas
   async getClientById(id: number): Promise<ClientAttributes | null> {
     try {
       const client = await Client.findByPk(id, {
-        include: [{ model: Users, as: "user" }],
+        include: [
+          { model: Users, as: "user" },
+          { model: Routines, as: "routines" },
+          { model: Diets, as: "diets" },
+        ],
       });
       if (!client) {
         throw new Error("Cliente no encontrado");

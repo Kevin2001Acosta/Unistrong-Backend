@@ -5,7 +5,7 @@ import Diets from "../models/diets.models";
 
 class ClientDiets extends Model {
   public clientId!: number;
-  public routineId!: number;
+  public dietId!: number;
 }
 
 ClientDiets.init(
@@ -19,7 +19,7 @@ ClientDiets.init(
       },
       onDelete: "CASCADE",
     },
-    routineId: {
+    dietId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

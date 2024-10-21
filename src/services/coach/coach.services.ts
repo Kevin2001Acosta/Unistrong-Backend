@@ -23,7 +23,7 @@ class CoachService {
       throw new Error(`Error al crear coach: ${(error as Error).message}`);
     }
   }
-
+  //Obtener todos los coaches con su informacion de usuario
   async getAllCoach(): Promise<any[]> {
     try {
       const coaches = await Coach.findAll({
@@ -31,15 +31,6 @@ class CoachService {
           {
             model: Users,
             as: "user",
-            attributes: [
-              "id",
-              "email",
-              "name",
-              "dni",
-              "username",
-              "phoneNumber",
-              "user_type",
-            ],
           },
         ],
       });
@@ -76,15 +67,6 @@ class CoachService {
           {
             model: Users,
             as: "user",
-            attributes: [
-              "id",
-              "email",
-              "name",
-              "dni",
-              "username",
-              "phoneNumber",
-              "user_type",
-            ],
           },
         ],
       });

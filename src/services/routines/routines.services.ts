@@ -20,7 +20,7 @@ class RoutineService {
     }
   }
 
-  // Obtener todas las rutinas
+  // Obtener todas las rutinas con sus clientes asignados
   async getAllRoutines(): Promise<RoutinesAttributes[]> {
     try {
       const routines = await Routines.findAll({
@@ -39,31 +39,22 @@ class RoutineService {
       );
     }
   }
+  // Asignar rutina a cliente
   async assignRoutineToClient(data: assignRoutineInput): Promise<void> {
     const { clientId, routineId } = data;
     try {
       // Verificar si el cliente y la rutina existen
-      console.log(`Buscando cliente con ID: ${clientId}`);
       const clientExists = await Client.findByPk(clientId);
       if (!clientExists) {
-        console.log(`Cliente con ID ${clientId} no encontrado.`);
         throw new Error("El cliente especificado no existe.");
       }
-
-      console.log(`Buscando rutina con ID: ${routineId}`);
       const routineExists = await Routines.findByPk(routineId);
       if (!routineExists) {
-        console.log(`Rutina con ID ${routineId} no encontrada.`);
         throw new Error("La rutina especificada no existe.");
       }
-
       // Asignar la rutina al cliente en la tabla intermedia
       await ClientRoutines.create({ clientId, routineId });
-      console.log(
-        `Rutina con ID ${routineId} asignada al cliente con ID ${clientId}.`
-      );
     } catch (error) {
-      console.error(`Error al asignar la rutina: ${(error as Error).message}`);
       throw new Error(
         `Error al asignar la rutina: ${(error as Error).message}`
       );
