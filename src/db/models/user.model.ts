@@ -14,7 +14,7 @@ class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public username!: string;
   public password!: string;
   public phoneNumber!: string;
-  public state!: UserState;
+  public state!: boolean;
   public user_type!: UserType;
 }
 
@@ -89,9 +89,9 @@ Users.init(
       },
     },
     state: {
-      type: DataTypes.ENUM(UserState.ACTIVO, UserState.INACTIVO),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: UserState.INACTIVO,
+      defaultValue: false,
     },
     user_type: {
       type: DataTypes.ENUM(

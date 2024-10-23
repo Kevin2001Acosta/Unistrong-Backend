@@ -29,11 +29,11 @@ async function loadModels() {
     await Classes.sync({ alter: true });
     console.log("La tabla Classes creada correctamente.");
 
-    await Reservations.sync({ alter: true });
-    console.log("La tabla Reservations creada correctamente.");
-
     await Client.sync({ alter: true });
     console.log("La tabla Client creada correctamente.");
+
+    await Reservations.sync({ alter: true });
+    console.log("La tabla Reservations creada correctamente.");
 
     await ClientCharacteristics.sync({ alter: true });
     console.log("La tabla ClientCharacteristics creada correctamente.");
@@ -75,8 +75,7 @@ async function loadModels() {
     Users.hasOne(Nutritionist, { foreignKey: "user_id", as: "nutritionist" });
     Nutritionist.belongsTo(Users, { foreignKey: "user_id", as: "user" });
 
-    // Relación Cliente-Reservas (muchos a muchos)
-
+    // Relación Cliente-Clases (muchos a muchos) através de la tabla Reservations
     Client.belongsToMany(Classes, {
       foreignKey: "clientId",
       through: Reservations,
@@ -101,6 +100,7 @@ async function loadModels() {
       foreignKey: "classId",
       as: "reservations",
     });
+
     Reservations.belongsTo(Classes, { foreignKey: "classId", as: "class" });
 
     // Relación Cliente-Características (uno a uno)

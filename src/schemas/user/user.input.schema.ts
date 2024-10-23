@@ -7,6 +7,6 @@ export interface UserInput {
   username: string;
   password: string;
   phoneNumber: string;
-  state?: UserState;
+  state?: boolean;
   user_type?: UserType;
 }

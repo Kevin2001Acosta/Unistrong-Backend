@@ -26,7 +26,6 @@ class UserService {
       const user = await Users.create({
         ...userData,
         password: hashedPassword,
-        state: UserState.INACTIVO, //Asignar estado inactivo por defecto
       });
 
       return user;
