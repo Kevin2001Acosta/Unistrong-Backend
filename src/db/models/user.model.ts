@@ -1,5 +1,4 @@
 import { DataTypes, Model } from "sequelize";
-import { UserState } from "../models/utils/user.state";
 import { sequelize } from "../config/config.db";
 import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
