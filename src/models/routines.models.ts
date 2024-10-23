@@ -2,7 +2,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db/config/config.db";
 import Coach from "./coach.models";
-import Client from "./client.models";
 import { RoutinesAttributes } from "../schemas/routines/routines.schema";
 import { RoutinesInput } from "../schemas/routines/routines.input.schema";
 
@@ -16,7 +15,6 @@ class Routines
   public category!: string;
   public musclesWorked!: string[];
   public coachId!: number;
-  public clientId!: number;
 }
 
 Routines.init(
@@ -51,15 +49,6 @@ Routines.init(
         key: "id",
       },
       onDelete: "CASCADE",
-    },
-    clientId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: Client,
-        key: "id",
-      },
-      onDelete: "SET NULL",
     },
   },
   {

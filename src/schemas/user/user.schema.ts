@@ -1,4 +1,4 @@
-import { UserState } from "../../models/utils/user.state";
+import { UserType } from "../../models/utils/user.types";
 export interface UserAtributes {
   id: number;
   email: string;
@@ -7,5 +7,6 @@ export interface UserAtributes {
   username: string;
   password: string;
   phoneNumber: String;
-  state: UserState;
+  state?: Boolean;
+  user_type?: UserType;
 }

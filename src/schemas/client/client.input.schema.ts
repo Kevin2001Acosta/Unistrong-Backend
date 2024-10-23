@@ -1,7 +1,7 @@
 export interface ClientInput {
-  userId: number;
-  coachId: number;
-  nutritionistId: number;
+  user_id: number;
+  coach_id?: number;
+  nutritionist_id?: number;
   birthDate: Date;
   height: number;
   diseases?: string[];

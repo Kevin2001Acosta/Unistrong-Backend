@@ -2,5 +2,6 @@ export enum UserType {
   CLIENT = "cliente",
   ADMIN = "admin",
   COACH = "coach",
-  NUTRIOLOGO = "nutriologo",
+  NUTRITIONIST = "nutriologo",
+  ACCOUNTANT = "contador",
 }

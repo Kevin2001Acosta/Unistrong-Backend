@@ -5,5 +5,4 @@ export interface RoutinesAttributes {
   category: string;
   musclesWorked: string[];
   coachId: number;
-  clientId: number;
 }
