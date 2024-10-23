@@ -17,7 +17,6 @@ class ClientCharacteristics
   public arms!: number;
   public chest!: number;
   public glutes!: number;
-  public value!: string;
 }
 
 ClientCharacteristics.init(
@@ -62,10 +61,6 @@ ClientCharacteristics.init(
     },
     glutes: {
       type: DataTypes.FLOAT,
-      allowNull: false,
-    },
-    value: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
   },

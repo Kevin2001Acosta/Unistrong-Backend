@@ -8,5 +8,4 @@ export interface ClientCharacteristicsAttributes {
   arms: number;
   chest: number;
   glutes: number;
-  value: string;
 }

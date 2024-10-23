@@ -21,6 +21,18 @@ class UserController {
     }
   }
 
+  async verifyToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Si el middleware verifyToken pasa, el token es válido
+      res
+        .status(200)
+        .json({ message: "Token válido", userId: req.body.userId });
+    } catch (error) {
+      // Si ocurre algún error en la lógica, manejamos la excepción
+      next(createError(400, "Hubo un problema al verificar el token"));
+    }
+  }
+
   async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
