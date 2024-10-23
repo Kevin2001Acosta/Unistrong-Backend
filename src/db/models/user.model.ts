@@ -4,6 +4,7 @@ import { sequelize } from "../config/config.db";
 import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
 import { isValidUsername, isStrongPassword } from "../models/utils/constraints";
+import { UserType } from "./utils/user.types";
 
 class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public id!: number;
@@ -13,7 +14,8 @@ class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   public username!: string;
   public password!: string;
   public phoneNumber!: string;
-  public state!: UserState;
+  public state!: boolean;
+  public user_type!: UserType;
 }
 
 Users.init(
@@ -87,15 +89,27 @@ Users.init(
       },
     },
     state: {
-      type: DataTypes.ENUM(UserState.ACTIVO, UserState.INACTIVO),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: UserState.INACTIVO,
+      defaultValue: false,
+    },
+    user_type: {
+      type: DataTypes.ENUM(
+        UserType.ADMIN,
+        UserType.CLIENT,
+        UserType.COACH,
+        UserType.NUTRITIONIST,
+        UserType.ACCOUNTANT
+      ),
+      allowNull: false,
+      defaultValue: UserType.CLIENT,
     },
   },
   {
     sequelize,
     tableName: "users",
     timestamps: true,
+    underscored: true,
   }
 );
 

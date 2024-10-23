@@ -4,5 +4,4 @@ export interface RoutinesInput {
   category: string;
   musclesWorked: string[];
   coachId: number;
-  clientId: number;
 }

@@ -26,12 +26,11 @@ class UserService {
       const user = await Users.create({
         ...userData,
         password: hashedPassword,
-        state: UserState.INACTIVO, //Asignar estado inactivo por defecto
       });
 
       return user;
     } catch (error) {
-      // Manejo específico de errores de unicidad
+      // Errores de unicidad
       if (error instanceof UniqueConstraintError) {
         if ((error.parent as any)?.constraint === "users_email_key") {
           throw createError(409, "El correo electrónico ya está registrado.");
@@ -44,7 +43,7 @@ class UserService {
         }
         throw createError(409, "Ya existe un registro con este dato.");
       }
-
+      // Error general
       throw createError(
         400,
         `Error al crear el usuario: ${(error as Error).message}`

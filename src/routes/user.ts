@@ -1,12 +1,22 @@
 //endpoints
 import { Router, Request, Response } from "express";
+<<<<<<< HEAD
 import UserService from "../services/user/user.services";
 import AuthController from "../services/utils/auth.controller";
 import { verifyToken } from "../middleware/auth.middleware";
+=======
+import UserController from "../controllers/user.controller";
+import AuthController from "../controllers/auth.controller";
+
+>>>>>>> develop
 const router = Router();
 
 router.post("/login", AuthController.login);
+router.post("/register", UserController.createUser);
+router.get("/", UserController.getAllUsers);
+router.get("/:id", UserController.getUserById);
 
+<<<<<<< HEAD
 // router.post("/logout", (req: Request, res: Response) => {
 //   try {
 //     res.clearCookie("token", {
@@ -88,4 +98,6 @@ router.get("/:id", async (req: Request, res: Response) => {
     res.status(400).json({ message: (error as Error).message });
   }
 });
+=======
+>>>>>>> develop
 export { router };
