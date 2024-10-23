@@ -6,14 +6,14 @@ import { UserInput } from "../schemas/user/user.input.schema";
 import { isValidUsername, isStrongPassword } from "./utils/constraints";
 
 class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
-  public id!: number;
-  public email!: string;
-  public name!: string;
-  public dni!: string;
-  public username!: string;
-  public password!: string;
-  public phoneNumber!: string;
-  public state!: UserState;
+  declare id: number;
+  declare email: string;
+  declare name: string;
+  declare dni: string;
+  declare username: string;
+  declare password: string;
+  declare phoneNumber: string;
+  declare state: UserState;
 }
 
 Users.init(

@@ -74,6 +74,17 @@ class UserService {
       );
     }
   }
+
+  async getUserByEmail(email: string): Promise<UserAtributes | null> {
+    try {
+      const user = await Users.findOne({ where: { email } });
+      return user;
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el usuario: ${(error as Error).message}`
+      );
+    }
+  }
 }
 
 export default new UserService();

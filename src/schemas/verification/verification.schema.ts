@@ -10,4 +10,4 @@ export interface VerificationAttributes {
     active: boolean;
 }
 
-export interface VerificationInput extends Omit<VerificationAttributes, 'id'> {}
+export interface VerificationInput extends Omit<VerificationAttributes, 'id' | 'verified'| 'active'> {}
