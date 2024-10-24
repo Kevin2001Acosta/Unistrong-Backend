@@ -1,9 +1,8 @@
 import { NutritionistAtributes } from "../../schemas/nutritionist/nutritionist.schema";
 import { NutritionistInput } from "../../schemas/nutritionist/nutritionist.input.schema";
-import Nutritionist from "../../db/models/nutritionist.model";
-import Client from "../../db/models/client.models";
-import Users from "../../db/models/user.model";
-import { UserType } from "../../db/models/utils/user.types";
+import Nutritionist from "../../models/nutritionist.model";
+import Users from "../../models/user.model";
+import { UserType } from "../../models/utils/user.types";
 
 class NutritionistService {
   async createNutritionist(

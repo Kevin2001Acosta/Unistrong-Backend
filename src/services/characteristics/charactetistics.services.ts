@@ -1,7 +1,7 @@
-import ClientCharacteristics from "../../db/models/client.characteristics.models";
+import ClientCharacteristics from "../../models/client.characteristics.models";
 import { ClientCharacteristicsInput } from "../../schemas/ClientCharacteristics/client.characteristics.input.schema";
 import { ClientCharacteristicsAttributes } from "../../schemas/ClientCharacteristics/client.characteristics.schema";
-import Client from "../../db/models/client.models";
+import Client from "../../models/client.models";
 
 class CharacteristicsServices {
   // Crear características

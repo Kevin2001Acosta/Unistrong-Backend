@@ -1,5 +1,5 @@
-import Classes from "../../db/models/classes.models";
-import Coach from "../../db/models/coach.models";
+import Classes from "../../models/classes.models";
+import Coach from "../../models/coach.models";
 import { ClassesInput } from "../../schemas/classes/classes.input.schema";
 import { ClassesAtributes } from "../../schemas/classes/classes.schema";
 

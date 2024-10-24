@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { EmailService } from "../services/utils/email.service";
-import Verification from "../models/verification.models";
+import { EmailService } from "../services/email.service";
 import { VerificationType } from "../models/utils/verification.type";
 
 import verificationService, { userResponse } from "../services/verification/verification.services";

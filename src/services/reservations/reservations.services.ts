@@ -1,9 +1,9 @@
 import { ReservationsInput } from "../../schemas/classes/reservations.input.schema";
 import { ReservationsAtributes } from "../../schemas/classes/reservations.schema";
-import Classes from "../../db/models/classes.models";
-import Client from "../../db/models/client.models";
+import Classes from "../../models/classes.models";
+import Client from "../../models/client.models";
 
-import Reservations from "../../db/models/reservations.models";
+import Reservations from "../../models/reservations.models";
 
 class ReservationsServices {
   async createReservation(
