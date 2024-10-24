@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
+import UserService from "../services/user/user.services";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -29,6 +30,12 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      // Configurar la cookie con el token
+      res.cookie("token", token, {
+        httpOnly: false,
+        secure: false,
+      });
+
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
@@ -53,6 +60,44 @@ class AuthController {
       return res.status(500).json({
         status: 500,
         message: "Error interno del servidor",
+      });
+    }
+  }
+  async logout(req: Request, res: Response): Promise<Response> {
+    try {
+      res.clearCookie("token");
+      return res
+        .status(200)
+        .json({ message: "Usuario deslogeado exitosamente" });
+    } catch (error) {
+      return res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  async verifyToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Buscar el usuario usando el userId extraído del token
+      const user = await UserService.getUserById(req.body.userId);
+
+      // Si el usuario no existe, retornamos un error
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      // Si el token es válido, devolver la información del usuario
+      return res.status(200).json({
+        message: "Token válido",
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          state: user.state,
+        },
+      });
+    } catch (error) {
+      return res.status(400).json({
+        status: 400,
+        message: "Hubo un problema al verificar el token",
       });
     }
   }
