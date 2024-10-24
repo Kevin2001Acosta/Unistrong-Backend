@@ -7,21 +7,6 @@ const router = Router();
 
 router.post("/login", AuthController.login);
 
-// router.post("/logout", (req: Request, res: Response) => {
-//   try {
-//     res.clearCookie("token", {
-//       httpOnly: false,
-//       secure: false,
-//     });
-//     // Enviar respuesta exitosa
-//     res.status(200).json({ message: "Logout exitoso" });
-//   } catch (error) {
-//     res.status(500).json({
-//       status: 500,
-//       message: "Error al cerrar sesión",
-//     });
-//   }
-// });
 
 router.post("/register", async (req, res, next) => {
   try {
