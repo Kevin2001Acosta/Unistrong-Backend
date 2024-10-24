@@ -14,8 +14,8 @@ export const verifyToken = (
 
   try {
     const decoded = AuthService.verifyToken(token); // Verifica el token
-    req.body.userId = decoded.id; // Asigna el ID del usuario al request
-    next();
+    req.body.userId = decoded.id; // Asigna el ID del usuario al request  
+    next(); // Si el token es válido, continúa
   } catch (error) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
