@@ -20,7 +20,6 @@ class DietsService {
     }
   }
 
-  // Obtener todas las dietas con sus clientes asignados
   async getAllDiets(): Promise<DietsAtributes[]> {
     try {
       const diets = await Diets.findAll({

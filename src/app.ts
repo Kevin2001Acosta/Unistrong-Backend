@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { testConnection } from "./db/config/config.db";
 import { loadModels } from "./db/modelLoader/modelLoader";
 import errorHandler from "./middleware/errorHandler";
@@ -22,6 +23,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 app.use(router);
 app.use(errorHandler);
 

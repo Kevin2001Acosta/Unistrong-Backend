@@ -29,7 +29,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_email_key", // Nombrar la restricción de unicidad
+        name: "users_email_key",
         msg: "El correo electrónico ya está registrado",
       },
       validate: {

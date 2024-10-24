@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import AuthService from "../services/user/auth.services";
-import Users from "../db/models/user.model";
 import createError from "http-errors";
+import Users from "../db/models/user.model";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -29,6 +29,12 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      // Configurar la cookie con el token
+      res.cookie("token", token, {
+        httpOnly: false,
+        secure: false,
+      });
+
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
@@ -54,6 +60,27 @@ class AuthController {
         status: 500,
         message: "Error interno del servidor",
       });
+    }
+  }
+
+  async logout(req: Request, res: Response): Promise<Response> {
+    try {
+      res.clearCookie("token");
+      return res
+        .status(200)
+        .json({ message: "Usuario deslogeado exitosamente" });
+    } catch (error) {
+      return res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  async validateToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      // El middleware ya habrá verificado el token y agregado el userId al req.body
+      const userId = req.body.userId;
+      res.status(200).json({ message: "Token válido", userId });
+    } catch (error) {
+      next(error); // Manejo de errores si ocurre algún problema
     }
   }
 }

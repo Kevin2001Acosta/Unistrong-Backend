@@ -6,10 +6,11 @@ import { verifyToken } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/login", AuthController.login);
 router.post("/register", UserController.createUser);
+router.post("/login", AuthController.login);
+router.get("/verify", verifyToken, AuthController.validateToken);
+router.post("/logout", verifyToken, AuthController.logout);
 router.get("/", UserController.getAllUsers);
 router.get("/:id", UserController.getUserById);
-router.get("/verify", verifyToken, UserController.verifyToken);
 
 export { router };

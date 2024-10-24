@@ -17,7 +17,6 @@ class ClassesService {
     }
   }
 
-  // Obtener todas las rutinas con sus clientes asignados
   async getAllClasses(): Promise<ClassesAtributes[]> {
     try {
       const classes = await Classes.findAll({
