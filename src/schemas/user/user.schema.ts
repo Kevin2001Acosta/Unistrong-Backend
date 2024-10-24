@@ -8,5 +8,5 @@ export interface UserAtributes {
   password: string;
   phoneNumber: String;
   state?: Boolean;
-  user_type?: UserType;
+  userType?: UserType;
 }

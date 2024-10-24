@@ -15,7 +15,7 @@ class NutritionistService {
         throw new Error("Usuario no encontrado");
       }
 
-      if (user.user_type !== UserType.NUTRITIONIST) {
+      if (user.userType !== UserType.NUTRITIONIST) {
         throw new Error("El tipo de usuario no es 'nutriologo'");
       }
 
