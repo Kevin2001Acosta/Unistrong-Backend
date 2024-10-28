@@ -74,7 +74,7 @@ class UserService {
     }
   }
 
-  async getUserByEmail(email: string): Promise<UserAtributes | null> {
+  async getUserByEmail(email: string): Promise<Users | null> {
     try {
       const user = await Users.findOne({ where: { email } });
       return user;
