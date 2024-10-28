@@ -45,6 +45,7 @@ class AuthController {
           username: user.username,
           email: user.email,
           state: user.state,
+          userType: user.userType,
         },
       });
     } catch (error) {
@@ -92,6 +93,7 @@ class AuthController {
           username: user.username,
           email: user.email,
           state: user.state,
+          userType: user.userType,
         },
       });
     } catch (error) {
