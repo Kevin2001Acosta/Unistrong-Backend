@@ -1,6 +1,6 @@
-import { NutritionistInput } from "../schemas/nutritionist/nutritionist.input.schema";
-import { NutritionistAtributes } from "../schemas/nutritionist/nutritionist.schema";
-import { sequelize } from "../db/config/config.db";
+import { NutritionistInput } from "../../schemas/nutritionist/nutritionist.input.schema";
+import { NutritionistAtributes } from "../../schemas/nutritionist/nutritionist.schema";
+import { sequelize } from "../config/config.db";
 import { Model, DataTypes } from "sequelize";
 
 class Nutritionist

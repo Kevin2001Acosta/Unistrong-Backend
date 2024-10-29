@@ -1,17 +1,17 @@
 //Aqui se carga el modelo en la bd
-import Users from "../../models/user.model";
-import Client from "../../models/client.models";
-import Coach from "../../models/coach.models";
-import Routines from "../../models/routines.models";
-import Verification from "../../models/verification.models";
-import ClientRoutines from "../../models/client_routines";
-import Nutritionist from "../../models/nutritionist.model";
-import Classes from "../../models/classes.models";
-import ClientCharacteristics from "../../models/client.characteristics.models";
-import Accountant from "../../models/acountant.models";
-import Diets from "../../models/diets.models";
-import ClientDiets from "../../models/client_diets.models";
-import Reservations from "../../models/reservations.models";
+import Users from "../models/user.model";
+import Client from "../models/client.models";
+import Coach from "../models/coach.models";
+import Routines from "../models/routines.models";
+import Verification from "../models/verification.models";
+import ClientRoutines from "../models/client_routines";
+import Nutritionist from "../models/nutritionist.model";
+import Classes from "../models/classes.models";
+import ClientCharacteristics from "../models/client.characteristics.models";
+import Accountant from "../models/acountant.models";
+import Diets from "../models/diets.models";
+import ClientDiets from "../models/client_diets.models";
+import Reservations from "../models/reservations.models";
 
 async function loadModels() {
   try {

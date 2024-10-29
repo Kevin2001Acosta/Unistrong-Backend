@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db/config/config.db";
+import { sequelize } from "../config/config.db";
 
-import Client from "../models/client.models";
-import Routines from "../models/routines.models";
-import { assignRoutineInput } from "../schemas/routines/assign.routines.input";
+import Client from "./client.models";
+import Routines from "./routines.models";
+import { assignRoutineInput } from "../../schemas/routines/assign.routines.input";
 
 class ClientRoutines
   extends Model<assignRoutineInput>

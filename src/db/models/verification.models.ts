@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db/config/config.db";
-import { VerificationAttributes, VerificationInput } from "../schemas/verification/verification.schema";
+import { sequelize } from "../config/config.db";
+import { VerificationAttributes, VerificationInput } from "../../schemas/verification/verification.schema";
 import { VerificationType } from "./utils/verification.type";
 
 

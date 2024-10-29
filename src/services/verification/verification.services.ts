@@ -1,6 +1,6 @@
 // src/services/verification.service.ts
-import Verification from "../../models/verification.models";
-import { VerificationType } from "../../models/utils/verification.type";
+import Verification from "../../db/models/verification.models";
+import { VerificationType } from "../../db/models/utils/verification.type";
 import userServices from "../user/user.services";
 
 

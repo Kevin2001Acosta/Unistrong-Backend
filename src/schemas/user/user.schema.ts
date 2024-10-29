@@ -1,4 +1,4 @@
-import { UserType } from "../../models/utils/user.types";
+import { UserType } from "../../db/models/utils/user.types";
 export interface UserAtributes {
   id: number;
   email: string;

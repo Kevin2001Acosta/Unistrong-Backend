@@ -1,9 +1,9 @@
 import { RoutinesInput } from "../../schemas/routines/routines.input.schema";
 import { RoutinesAttributes } from "../../schemas/routines/routines.schema";
-import Routines from "../../models/routines.models";
-import Client from "../../models/client.models";
-import Coach from "../../models/coach.models";
-import ClientRoutines from "../../models/client_routines";
+import Routines from "../../db/models/routines.models";
+import Client from "../../db/models/client.models";
+import Coach from "../../db/models/coach.models";
+import ClientRoutines from "../../db/models/client_routines";
 import { assignRoutineInput } from "../../schemas/routines/assign.routines.input";
 
 class RoutineService {

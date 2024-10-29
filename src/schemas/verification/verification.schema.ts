@@ -1,4 +1,4 @@
-import { VerificationType } from '../../models/utils/verification.type';
+import { VerificationType } from '../../db/models/utils/verification.type';
 
 export interface VerificationAttributes {
     id: bigint;

@@ -1,8 +1,8 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db/config/config.db";
+import { sequelize } from "../config/config.db";
 import Coach from "./coach.models";
-import { ClassesAtributes } from "../schemas/classes/classes.schema";
-import { ClassesInput } from "../schemas/classes/classes.input.schema";
+import { ClassesAtributes } from "../../schemas/classes/classes.schema";
+import { ClassesInput } from "../../schemas/classes/classes.input.schema";
 
 class Classes
   extends Model<ClassesAtributes, ClassesInput>

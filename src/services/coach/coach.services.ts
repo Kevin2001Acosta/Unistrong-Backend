@@ -1,9 +1,9 @@
 import { CoachInput } from "../../schemas/coach/coach.input.schemas";
 import { CoachAtributes } from "../../schemas/coach/coach.schemas";
-import Coach from "../../models/coach.models";
-import Client from "../../models/client.models";
-import Users from "../../models/user.model";
-import { UserType } from "../../models/utils/user.types";
+import Coach from "../../db/models/coach.models";
+import Client from "../../db/models/client.models";
+import Users from "../../db/models/user.model";
+import { UserType } from "../../db/models/utils/user.types";
 
 class CoachService {
   async createCoach(coachData: CoachInput): Promise<CoachAtributes> {

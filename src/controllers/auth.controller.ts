@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AuthService from "../services/user/auth.services";
-import Users from "../models/user.model";
+import Users from "../db/models/user.model";
 import createError from "http-errors";
 
 class AuthController {

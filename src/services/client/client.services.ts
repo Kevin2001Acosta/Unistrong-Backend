@@ -1,12 +1,12 @@
 import { ClientInput } from "../../schemas/client/client.input.schema";
 import { ClientAttributes } from "../../schemas/client/client.schema";
-import Client from "../../models/client.models";
-import Users from "../../models/user.model";
-import { UserType } from "../../models/utils/user.types";
-import Coach from "../../models/coach.models";
-import Nutritionist from "../../models/nutritionist.model";
-import Routines from "../../models/routines.models";
-import Diets from "../../models/diets.models";
+import Client from "../../db/models/client.models";
+import Users from "../../db/models/user.model";
+import { UserType } from "../../db/models/utils/user.types";
+import Coach from "../../db/models/coach.models";
+import Nutritionist from "../../db/models/nutritionist.model";
+import Routines from "../../db/models/routines.models";
+import Diets from "../../db/models/diets.models";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {

@@ -1,7 +1,7 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../db/config/config.db";
-import { ClientCharacteristicsAttributes } from "../schemas/ClientCharacteristics/client.characteristics.schema";
-import { ClientCharacteristicsInput } from "../schemas/ClientCharacteristics/client.characteristics.input.schema";
+import { sequelize } from "../config/config.db";
+import { ClientCharacteristicsAttributes } from "../../schemas/ClientCharacteristics/client.characteristics.schema";
+import { ClientCharacteristicsInput } from "../../schemas/ClientCharacteristics/client.characteristics.input.schema";
 import Client from "./client.models";
 
 class ClientCharacteristics

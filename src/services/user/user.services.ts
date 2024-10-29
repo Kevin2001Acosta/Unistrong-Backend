@@ -1,14 +1,14 @@
 import { UserAtributes } from "../../schemas/user/user.schema";
-import { UserState } from "../../models/utils/user.state";
+import { UserState } from "../../db/models/utils/user.state";
 import { UserInput } from "../../schemas/user/user.input.schema";
-import Users from "../../models/user.model";
+import Users from "../../db/models/user.model";
 import AuthService from "././auth.services";
 import createError from "http-errors";
 import { UniqueConstraintError } from "sequelize";
 import {
   isStrongPassword,
   isValidUsername,
-} from "../../models/utils/constraints";
+} from "../../db/models/utils/constraints";
 
 class UserService {
   async createUser(userData: UserInput): Promise<UserAtributes> {

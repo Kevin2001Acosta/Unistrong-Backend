@@ -1,10 +1,10 @@
-import Client from "../../models/client.models";
+import Client from "../../db/models/client.models";
 import { DietsInput } from "../../schemas/diets/diets.input.schema";
 import { DietsAtributes } from "../../schemas/diets/diets.schema";
-import Nutritionist from "../../models/nutritionist.model";
-import Diets from "../../models/diets.models";
+import Nutritionist from "../../db/models/nutritionist.model";
+import Diets from "../../db/models/diets.models";
 import { assignDietsInput } from "../../schemas/diets/assign.diets.input";
-import ClientDiets from "../../models/client_diets.models";
+import ClientDiets from "../../db/models/client_diets.models";
 
 class DietsService {
   async createDiet(dietData: DietsInput): Promise<DietsAtributes> {

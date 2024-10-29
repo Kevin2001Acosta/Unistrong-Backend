@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db/config/config.db";
-import Client from "../models/client.models";
-import Classes from "../models/classes.models";
-import { ReservationsAtributes } from "../schemas/classes/reservations.schema";
-import { ReservationsInput } from "../schemas/classes/reservations.input.schema";
+import { sequelize } from "../config/config.db";
+import Client from "./client.models";
+import Classes from "./classes.models";
+import { ReservationsAtributes } from "../../schemas/classes/reservations.schema";
+import { ReservationsInput } from "../../schemas/classes/reservations.input.schema";
 
 class Reservations
   extends Model<ReservationsAtributes, ReservationsInput>

@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db/config/config.db";
-import { AccountantAttributes } from "../schemas/accountant/accountant.schema";
-import { AccountantInput } from "../schemas/accountant/accountant.input";
+import { sequelize } from "../config/config.db";
+import { AccountantAttributes } from "../../schemas/accountant/accountant.schema";
+import { AccountantInput } from "../../schemas/accountant/accountant.input";
 
 class Accountant
   extends Model<AccountantAttributes, AccountantInput>

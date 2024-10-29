@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { EmailService } from "../services/email.service";
-import { VerificationType } from "../models/utils/verification.type";
+import { VerificationType } from "../db/models/utils/verification.type";
 
 import verificationService, { userResponse } from "../services/verification/verification.services";
 import userServices from "../services/user/user.services";
-import Users from "../models/user.model";
+import Users from "../db/models/user.model";
 
 interface VerificationRequest extends Request { // recibe el email del usuario
     body: {
