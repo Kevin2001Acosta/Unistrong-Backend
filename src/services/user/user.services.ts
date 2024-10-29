@@ -84,6 +84,24 @@ class UserService {
       );
     }
   }
+
+
+
+
+  async changePassword(email: string, password: string): Promise<void> {
+    const user = await this.getUserByEmail(email);
+      if (!user) {
+        throw new Error("El email no está registrado");
+    }
+    isStrongPassword(password);
+
+    const hashedPassword = await AuthService.hashPassword(password);
+
+    await Users.update({ password: hashedPassword }, { where: { id: user.id } });
+
+  }
+
+
 }
 
 export default new UserService();

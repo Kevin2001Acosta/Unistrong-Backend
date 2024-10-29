@@ -2,8 +2,7 @@
 import Verification from "../../models/verification.models";
 import { VerificationType } from "../../models/utils/verification.type";
 import userServices from "../user/user.services";
-import { Op } from "sequelize";
-import Users from "../../models/user.model";
+
 
 export interface userResponse {
   id?: bigint;

@@ -19,6 +19,13 @@ interface VerificationCodeRequest extends Request { // recibe el email y el cód
     };
 }
 
+interface ChangePasswordRequest extends Request { // recibe el email, el código y la nueva contraseña del usuario
+    body: {
+        email: string;
+        password: string;
+    };
+}
+
 export const sendVerificationCode = async (req: VerificationRequest, res: Response): Promise<void> => {
     const { email } = req.body; // extrae el email del cuerpo de la petición
     let user: Users | null;
@@ -75,5 +82,19 @@ export const verifyCode = async (req: VerificationCodeRequest, res: Response): P
             message: (error as Error).message,
             pass: false
         });
+    }
+}
+
+export const changePassword = async (req: ChangePasswordRequest, res: Response) => {
+    const { email, password } = req.body;
+    try {
+        if(!email){
+            res.status(400).json({ message: "El email es obligatorio" });
+            return;
+        }
+        await userServices.changePassword(email, password);
+        res.status(200).json({ message: "Contraseña actualizada correctamente" });
+    } catch (error) {
+        res.status(400).json({ message: (error as Error).message });
     }
 }
