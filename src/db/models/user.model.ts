@@ -92,7 +92,7 @@ Users.init(
       allowNull: false,
       defaultValue: false,
     },
-    user_type: {
+    userType: {
       type: DataTypes.ENUM(
         UserType.ADMIN,
         UserType.CLIENT,
