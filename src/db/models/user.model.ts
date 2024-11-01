@@ -14,7 +14,7 @@ class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
   declare password: string;
   declare phoneNumber: string;
   declare state: boolean;
-  declare user_type: UserType;
+  declare userType: UserType;
 }
 
 Users.init(
