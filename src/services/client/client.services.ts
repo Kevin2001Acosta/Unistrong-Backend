@@ -17,7 +17,7 @@ class ClientService {
         throw new Error("Usuario no encontrado");
       }
 
-      if (user.userType !== UserType.CLIENT) {
+      if (user.user_type !== UserType.CLIENT) {
         throw new Error("El usuario no es del tipo cliente");
       }
 

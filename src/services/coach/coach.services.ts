@@ -13,7 +13,7 @@ class CoachService {
         throw new Error("Usuario no encontrado");
       }
 
-      if (user.userType !== UserType.COACH) {
+      if (user.user_type !== UserType.COACH) {
         throw new Error("El tipo de usuario no es 'coach'");
       }
 

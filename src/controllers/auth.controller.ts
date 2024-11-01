@@ -45,7 +45,7 @@ class AuthController {
           username: user.username,
           email: user.email,
           state: user.state,
-          userType: user.userType,
+          userType: user.user_type,
         },
       });
     } catch (error) {
