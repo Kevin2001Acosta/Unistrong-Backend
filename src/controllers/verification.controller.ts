@@ -105,7 +105,6 @@ export const changePassword = async (req: ChangePasswordRequest, res: Response) 
     }
 }
 
-
 export const sendVerificationEmail = async (req: VerificationRequest, res: Response): Promise<void> => {
     const { email } = req.body; // extrae el email del cuerpo de la petición
     let user: Users | null;
@@ -158,11 +157,9 @@ export const sendVerificationEmail = async (req: VerificationRequest, res: Respo
     }
 }
 
-
 export const verifyEmail = async (req: VerificationEmailRequest, res: Response) => {
     const {token} = req.query;
     const user = AuthService.verifyToken(token);
-    console.log(user.id, user.code)
     try{
 
         await verificationService.verifyCodeoOfEmail(user.id, user.code);
