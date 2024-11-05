@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
 import config from "../config/config.env";
-import fs from "fs";
-import path from "path";
 const dbName = config.dbName || "";
 const dbUser = config.dbUser || "";
 const dbHost = config.dbHost || "";
@@ -15,7 +13,10 @@ const sequelize = new Sequelize(
     ssl: false,
     host: dbHost,
     port: Number(config.dbPort),
-    dialect: "postgres"
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: false,
+    }
   }
 );
 
