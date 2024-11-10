@@ -20,7 +20,6 @@ async function loadModels() {
     console.log("La tabla User creada correctamente.");
 
     await Coach.sync({ alter: true });
-    await Coach.sync({ alter: true });
     console.log("La tabla Coach creada correctamente.");
 
     await Accountant.sync({ alter: true });
