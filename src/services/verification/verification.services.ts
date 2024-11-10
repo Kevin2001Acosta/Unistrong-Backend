@@ -57,6 +57,37 @@ class VerificationService {
 
     return true;
   }
+
+  async verifyCodeoOfEmail(id: number, code: string): Promise<boolean> {
+    const user = await userServices.getUserById(id);
+    if (!user) {
+      throw new Error("El usuario no está registrado");
+    }
+
+    const verification = await Verification.findOne({
+      where: {
+        userId: id,
+        code,
+        active: true,
+        verified: false,
+        type: VerificationType.Email,
+      },
+    });
+
+    if (!verification) {
+      throw new Error("Código de verificación inválido");
+    }
+
+    if (verification.expiration_date < new Date()) {
+      throw new Error("Código de verificación expirado");
+    }
+
+    // Marcar el código como verificado
+    verification.verified = true;
+    await verification.save();
+
+    return true;
+  }
 }
 
 export default new VerificationService();

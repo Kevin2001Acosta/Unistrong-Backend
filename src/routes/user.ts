@@ -12,6 +12,7 @@ router.get("/verify", verifyToken, AuthController.verifyToken);
 router.post("/register", userController.createUser);
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
+router.post("/disable-account/:token", userController.disableAccount);
 
 // router.get("/verify", verifyToken, async (req: Request, res: Response) => {
 //   try {

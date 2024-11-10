@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { EmailService } from "../services/email.service";
 import { VerificationType } from "../db/models/utils/verification.type";
+import AuthService from "../services/user/auth.services";
 
 import verificationService, { userResponse } from "../services/verification/verification.services";
 import userServices from "../services/user/user.services";
@@ -16,6 +17,11 @@ interface VerificationCodeRequest extends Request { // recibe el email y el cód
     body: {
         email: string;
         code: string;
+    };
+}
+interface VerificationEmailRequest extends Request { // recibe el email del usuario
+    query: {
+        token: string;
     };
 }
 
@@ -96,5 +102,77 @@ export const changePassword = async (req: ChangePasswordRequest, res: Response) 
         res.status(200).json({ message: "Contraseña actualizada correctamente" });
     } catch (error) {
         res.status(400).json({ message: (error as Error).message });
+    }
+}
+
+export const sendVerificationEmail = async (req: VerificationRequest, res: Response): Promise<void> => {
+    const { email } = req.body; // extrae el email del cuerpo de la petición
+    let user: Users | null;
+    try{
+        user = await userServices.getUserByEmail(email); // verifica si el email existe
+        if(!user){
+            res.status(404).json({ message: "El email no está registrado" });
+            return;
+        }
+
+    }catch(error){
+        res.status(500).json({ message: "Error al verificar el email", error: (error as Error).message });
+        console.log(error);
+        return;
+    }
+
+
+     // generamos un código aleatorio de 6 dígitos
+     const verificationCode = Math.floor(100000 + Math.random() * 900000);
+     console.log(user.id);
+     const token = AuthService.generateTokenEmail(user.id, verificationCode.toString());
+
+    const emailService: EmailService = new EmailService(); // instancia el servicio de email
+    try{
+
+        await verificationService.createVerificationCode(BigInt(user.id), verificationCode.toString(), VerificationType.Email);
+        
+        await emailService.sendEmail({ // envía el email
+            to: email,
+            subject: "¡Verifica tu correo electrónico de UNISTRONG! 💪",
+            text: `
+            ¡Hola!
+            
+            Gracias por registrarte en UNISTRONG. 
+            Para completar tu registro, por favor verifica tu correo electrónico haciendo clic en el siguiente enlace:
+
+            Verificar mi correo electrónico: ´http://localhost:5173/validacion?token=${token}´
+
+            Si no te registraste en UNISTRONG, simplemente puedes ignorar este correo.
+
+
+            © 2024 UNISTRONG. Todos los derechos reservados.
+            `,
+        });        
+        res.status(200).json({ message: "Email de verificacion enviado" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al enviar el email de verificacion", error: (error as Error).message });
+        console.log(error);
+    }
+}
+
+export const verifyEmail = async (req: VerificationEmailRequest, res: Response) => {
+    const {token} = req.query;
+    const user = AuthService.verifyToken(token);
+    try{
+
+        await verificationService.verifyCodeoOfEmail(user.id, user.code);
+
+        res.status(200).json({ 
+            message: "Código de verificación válido",
+            pass: true
+         });
+
+    }catch(error){
+        res.status(400).json({
+            message: (error as Error).message,
+            pass: false
+        });
     }
 }

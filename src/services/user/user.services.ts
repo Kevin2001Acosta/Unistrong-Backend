@@ -85,9 +85,6 @@ class UserService {
     }
   }
 
-
-
-
   async changePassword(email: string, password: string): Promise<void> {
     const user = await this.getUserByEmail(email);
       if (!user) {
@@ -101,7 +98,26 @@ class UserService {
 
   }
 
+  async disableAccount(id: number): Promise<void> {
 
+    const user = await this.getUserById(id);
+      if (!user) {
+        throw new Error("El email no está registrado");
+    }
+  
+    await Users.update({ state: false }, { where: { id: user.id } });
+  }
+
+  async getpasswordById(id: number): Promise<string> {
+    try {
+      const user = await Users.findOne({ where: { id }, attributes: ['password']});
+      return user ? user.password : "";
+    } catch (error) {
+      throw new Error(
+        `Error al obtener la contraseña: ${(error as Error).message}`
+      );
+    }
+  }
 }
 
 export default new UserService();
