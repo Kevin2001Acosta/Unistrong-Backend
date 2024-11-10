@@ -49,7 +49,7 @@ class AuthController {
         },
       });
     } catch (error) {
-      console.error("Error en el login:", error);
+      console.log("Error en el login:", error);
       //manejo de errores
       if (error instanceof createError.HttpError) {
         return res.status(error.status).json({

@@ -31,7 +31,7 @@ class AuthService {
     return token;
   }
 
-  // verificar token
+  //verificar token
   verifyToken(token: string): any {
     return jwt.verify(token, config.jwtSecret);
   }
