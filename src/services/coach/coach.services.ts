@@ -12,9 +12,9 @@ class CoachService {
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-      // if (user.userType !== UserType.COACH) {
-      //   throw new Error("El tipo de usuario no es 'coach'");
-      // }
+
+      user.userType = UserType.COACH;
+      await user.save();
 
       const coach = await Coach.create({ user_id: coachData.user_id });
       return coach;
