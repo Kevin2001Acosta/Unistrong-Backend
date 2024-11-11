@@ -82,6 +82,22 @@ class CoachService {
       );
     }
   }
+
+  async getCoachByUser(userId: number): Promise<CoachAtributes | null> {
+    try {
+      const coach = await Coach.findOne({
+        where: {
+          user_id: userId,  // Aquí filtras por el user_id que envíes
+        },
+      });
+
+      return coach
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el coach: ${(error as Error).message}`
+      );
+    }
+  }
 }
 
 export default new CoachService();
