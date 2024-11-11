@@ -12,10 +12,9 @@ class CoachService {
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-
-      if (user.userType !== UserType.COACH) {
-        throw new Error("El tipo de usuario no es 'coach'");
-      }
+      // if (user.userType !== UserType.COACH) {
+      //   throw new Error("El tipo de usuario no es 'coach'");
+      // }
 
       const coach = await Coach.create({ user_id: coachData.user_id });
       return coach;
@@ -87,15 +86,13 @@ class CoachService {
     try {
       const coach = await Coach.findOne({
         where: {
-          user_id: userId,  // Aquí filtras por el user_id que envíes
+          user_id: userId, // Aquí filtras por el user_id que envíes
         },
       });
 
-      return coach
+      return coach;
     } catch (error) {
-      throw new Error(
-        `Error al obtener el coach: ${(error as Error).message}`
-      );
+      throw new Error(`Error al obtener el coach: ${(error as Error).message}`);
     }
   }
 }
