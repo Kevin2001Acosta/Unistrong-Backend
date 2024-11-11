@@ -5,14 +5,17 @@ import Client from "../../db/models/client.models";
 import Coach from "../../db/models/coach.models";
 import ClientRoutines from "../../db/models/client_routines";
 import { assignRoutineInput } from "../../schemas/routines/assign.routines.input";
+import  CoachService from "../coach/coach.services";
 
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
     try {
-      const coach = await Coach.findByPk(routineData.coachId);
-      if (!coach) {
+      const coach = await CoachService.getCoachByUser(routineData.coachId); 
+      const id = coach?.id;
+      if (!id) {
         throw new Error("Coach no encontrado");
       }
+      routineData.coachId = id; 
       const routine = await Routines.create(routineData);
       return routine;
     } catch (error) {
