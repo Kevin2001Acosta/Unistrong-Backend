@@ -30,6 +30,8 @@ DB_PASSWORD=contraseña
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=unistrong
+EMAIL_USER=correo dedicado 
+EMAIL_PASS=contraseña dedicada
 
 ### 2.3. **Inicializar el servidor y la base de datos**
 npm run dev
