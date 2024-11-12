@@ -1,4 +1,4 @@
 node_modules
 .env
-# ingnorar archivos de claves privadas
+coverage
 *.pem

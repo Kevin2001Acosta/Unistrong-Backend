@@ -13,11 +13,8 @@ class NutritionistService {
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-
-      if (user.userType !== UserType.NUTRITIONIST) {
-        throw new Error("El tipo de usuario no es 'nutriologo'");
-      }
-
+      user.userType = UserType.NUTRITIONIST;
+      await user.save();
       const nutri = await Nutritionist.create({
         user_id: nutritionistData.user_id,
       });

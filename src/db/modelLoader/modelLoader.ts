@@ -15,8 +15,7 @@ import Reservations from "../models/reservations.models";
 
 async function loadModels() {
   try {
-
-     await Users.sync({ alter: true });
+    await Users.sync({ alter: true });
     console.log("La tabla User creada correctamente.");
 
     await Coach.sync({ alter: true });
@@ -51,7 +50,6 @@ async function loadModels() {
 
     await Verification.sync({ alter: true });
     console.log("La tabla Verification creada correctamente.");
-
 
     await ClientRoutines.sync({ alter: true });
     console.log("La tabla ClientRoutines creada correctamente.");
