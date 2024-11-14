@@ -101,6 +101,19 @@ class ClientService {
       );
     }
   }
+  // Nuevo método para actualizar parcialmente los datos del cliente
+  async updateClient(id: number, updateData: Partial<ClientInput>): Promise<Client | null> {
+    try {
+      const client = await Client.findByPk(id);
+      if (!client) {
+        throw new Error("Cliente no encontrado");
+      }
+      await client.update(updateData); // Actualización parcial
+      return client;
+    } catch (error) {
+      throw new Error(`Error al actualizar el cliente: ${(error as Error).message}`);
+    }
+  }
 }
 
 export default new ClientService();

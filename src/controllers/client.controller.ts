@@ -46,6 +46,19 @@ class ClientController {
       next(createError(400, (error as Error).message));
     }
   }
+  // Nuevo método para actualizar campos parciales del cliente
+  async updateClient(req: Request, res: Response, next: NextFunction) {
+    try {
+      const clientId = parseInt(req.params.id);
+      if (isNaN(clientId)) {
+        throw new Error("ID de cliente inválido");
+      }
+      const updatedClient = await ClientService.updateClient(clientId, req.body);
+      res.status(200).json(updatedClient);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
 }
 
 export default new ClientController();
