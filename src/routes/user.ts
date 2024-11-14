@@ -13,5 +13,7 @@ router.post("/register", userController.createUser);
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
 router.post("/disable-account/:token", userController.disableAccount);
+router.patch("/editar_perfil/:id", userController.updateUserProfile);
+
 
 export { router };
