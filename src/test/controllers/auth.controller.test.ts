@@ -49,7 +49,7 @@ describe("AuthController", () => {
 
       expect(mockRes.cookie).toHaveBeenCalledWith("token", token, {
         httpOnly: false,
-        secure: false,
+        secure:false,     
       });
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -232,7 +232,6 @@ describe("verifyToken Middleware", () => {
     const token = "validtoken";
     const decoded = { id: 1 };
 
-    // Inicializamos mockReq.body para evitar errores de undefined
     mockReq = {
       cookies: { token },
       body: {}, // Definimos body aquí

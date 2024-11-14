@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/app.ts",
-    "test": "jest"
+    "test": "jest && artillery run src/test/loginLoadTest.yml"
   },
   "keywords": [],
   "author": "",
