@@ -16,43 +16,29 @@ import Reservations from "../models/reservations.models";
 async function loadModels() {
   try {
     await Users.sync({ alter: true });
-    console.log("La tabla User creada correctamente.");
 
     await Coach.sync({ alter: true });
-    console.log("La tabla Coach creada correctamente.");
 
     await Accountant.sync({ alter: true });
-    console.log("La tabla Accountant creada correctamente.");
 
     await Nutritionist.sync({ alter: true });
-    console.log("La tabla Nutritionist creada correctamente.");
 
     await Classes.sync({ alter: true });
-    console.log("La tabla Classes creada correctamente.");
 
     await Client.sync({ alter: true });
-    console.log("La tabla Client creada correctamente.");
 
     await Reservations.sync({ alter: true });
-    console.log("La tabla Reservations creada correctamente.");
 
     await ClientCharacteristics.sync({ alter: true });
-    console.log("La tabla ClientCharacteristics creada correctamente.");
-
     await Diets.sync({ alter: true });
-    console.log("La tabla Diets creada correctamente.");
 
     await ClientDiets.sync({ alter: true });
-    console.log("La tabla ClientDiets creada correctamente.");
 
     await Routines.sync({ alter: true });
-    console.log("La tabla Routines creada correctamente.");
 
     await Verification.sync({ alter: true });
-    console.log("La tabla Verification creada correctamente.");
 
     await ClientRoutines.sync({ alter: true });
-    console.log("La tabla ClientRoutines creada correctamente.");
 
     //Declarar y cargar las asociaciones aqui
     // Relación Usuario-Cliente (uno a uno)

@@ -109,6 +109,12 @@ Users.init(
     tableName: "users",
     timestamps: true,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["email"], //index para el campo email
+      },
+    ],
   }
 );
 

@@ -69,9 +69,9 @@ class ClientService {
     try {
       const client = await Client.findByPk(id, {
         include: [
-          { model: Users, as: "user" },
-          { model: Routines, as: "routines" },
-          { model: Diets, as: "diets" },
+          { model: Users, as: "user", attributes: ["id", "name", "email"] },
+          { model: Routines, as: "routines", attributes: ["id", "name"] },
+          { model: Diets, as: "diets", attributes: ["id", "name"] },
         ],
       });
       if (!client) {

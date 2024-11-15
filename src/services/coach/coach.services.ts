@@ -30,6 +30,7 @@ class CoachService {
           {
             model: Users,
             as: "user",
+            attributes: ["id", "email", "name"],
           },
         ],
       });

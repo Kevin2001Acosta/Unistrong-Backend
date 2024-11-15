@@ -30,8 +30,8 @@ describe("AuthController", () => {
       const mockUser = {
         id: 1,
         username: "testuser",
-        email: "testuser@example.com",
-        password: "hashedpassword",
+        email: "gengis123@mail.com",
+        password: "contraseña12A*",
         state: true,
         userType: "CLIENT",
       };
@@ -49,7 +49,7 @@ describe("AuthController", () => {
 
       expect(mockRes.cookie).toHaveBeenCalledWith("token", token, {
         httpOnly: false,
-        secure:false,     
+        secure: false,
       });
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({
