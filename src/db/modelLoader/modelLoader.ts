@@ -106,6 +106,16 @@ async function loadModels() {
       as: "client",
     });
 
+    Coach.hasMany(Routines, {
+      foreignKey: "coachId",
+      as: "routines",
+    });
+
+    Routines.belongsTo(Coach, {
+      foreignKey: "coachId",
+      as: "coach",
+    });
+
     // Relación muchos a muchos entre Client y Routine a través de la tabla ClientRoutines
     Client.belongsToMany(Routines, {
       foreignKey: "clientId",

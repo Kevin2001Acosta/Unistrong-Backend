@@ -12,7 +12,7 @@ import { UserType } from "../../db/models/utils/user.types";
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
     try {
-      const coach = await CoachService.getCoachByUser(routineData.coachId);
+      const coach = await Coach.findByPk(routineData.coachId);
       const id = coach?.id;
       if (!id) {
         throw new Error("Coach no encontrado");
@@ -130,6 +130,34 @@ class RoutineService {
       return client.routines;
     } catch (error) {
       throw new Error((error as Error).message);
+    }
+  }
+
+  async getRoutinesByCoachId(coachId: number) {
+    try {
+      const coach = await Coach.findByPk(coachId, {
+        include: [
+          {
+            model: Routines,
+            as: "routines",
+            attributes: [
+              "id",
+              "name",
+              "description",
+              "category",
+              "musclesWorked",
+            ],
+          },
+        ],
+      });
+
+      if (!coach) {
+        throw new Error("Coach no encontrado.");
+      }
+
+      return coach;
+    } catch (error) {
+      throw new Error(`Error al obtener rutinas: ${(error as Error).message}`);
     }
   }
 }

@@ -8,5 +8,6 @@ router.post("/assing", RoutineController.assignRoutineToClient);
 router.get("/", RoutineController.getAllRoutines);
 router.post("/assignByEmail", RoutineController.assignRoutineByEmail);
 router.get("/client/:clientId", RoutineController.getClientRoutines);
+router.get("/coach/:coachId", RoutineController.getCoachRoutines);
 
 export { router };
