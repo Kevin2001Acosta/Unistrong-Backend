@@ -30,8 +30,8 @@ describe("AuthController", () => {
       const mockUser = {
         id: 1,
         username: "testuser",
-        email: "testuser@example.com",
-        password: "hashedpassword",
+        email: "gengis123@mail.com",
+        password: "contraseña12A*",
         state: true,
         userType: "CLIENT",
       };
@@ -232,7 +232,6 @@ describe("verifyToken Middleware", () => {
     const token = "validtoken";
     const decoded = { id: 1 };
 
-    // Inicializamos mockReq.body para evitar errores de undefined
     mockReq = {
       cookies: { token },
       body: {}, // Definimos body aquí
