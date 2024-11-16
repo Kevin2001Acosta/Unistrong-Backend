@@ -9,6 +9,9 @@ import {
   isStrongPassword,
   isValidUsername,
 } from "../../db/models/utils/constraints";
+import Client from "../../db/models/client.models";
+import { UserType } from "../../db/models/utils/user.types";
+import Coach from "../../db/models/coach.models";
 
 class UserService {
   async createUser(userData: UserInput): Promise<UserAtributes> {
@@ -28,6 +31,20 @@ class UserService {
         password: hashedPassword,
       });
 
+      //Crear tambien en la tabla cliente si es un cliente
+      if (user.userType === UserType.CLIENT) {
+        await Client.create({
+          user_id: user.id,
+        });
+        console.log("cliente creado");
+      }
+
+      if (user.userType === UserType.COACH) {
+        await Coach.create({
+          user_id: user.id,
+        });
+        console.log("coach creado");
+      }
       return user;
     } catch (error) {
       // Errores de unicidad
@@ -87,30 +104,34 @@ class UserService {
 
   async changePassword(email: string, password: string): Promise<void> {
     const user = await this.getUserByEmail(email);
-      if (!user) {
-        throw new Error("El email no está registrado");
+    if (!user) {
+      throw new Error("El email no está registrado");
     }
     isStrongPassword(password);
 
     const hashedPassword = await AuthService.hashPassword(password);
 
-    await Users.update({ password: hashedPassword }, { where: { id: user.id } });
-
+    await Users.update(
+      { password: hashedPassword },
+      { where: { id: user.id } }
+    );
   }
 
   async disableAccount(id: number): Promise<void> {
-
     const user = await this.getUserById(id);
-      if (!user) {
-        throw new Error("El email no está registrado");
+    if (!user) {
+      throw new Error("El email no está registrado");
     }
-  
+
     await Users.update({ state: false }, { where: { id: user.id } });
   }
 
   async getpasswordById(id: number): Promise<string> {
     try {
-      const user = await Users.findOne({ where: { id }, attributes: ['password']});
+      const user = await Users.findOne({
+        where: { id },
+        attributes: ["password"],
+      });
       return user ? user.password : "";
     } catch (error) {
       throw new Error(

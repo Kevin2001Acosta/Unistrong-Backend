@@ -65,7 +65,7 @@ class RoutineService {
 
   async assignRoutineByEmail(
     email: string,
-    routineName: string,
+    routineId: number,
     scheduledDate: Date
   ): Promise<void> {
     try {
@@ -84,9 +84,20 @@ class RoutineService {
         throw new Error("Cliente no encontrado.");
       }
       //Busca la rutina por nombre
-      const routine = await Routines.findOne({ where: { name: routineName } });
+      // const routine = await Routines.findOne({ where: { name: routineName } });
+      // if (!routine) {
+      //   throw new Error("La rutina especificada no existe.");
+      // }
+
+      const routine = await Routines.findByPk(routineId);
       if (!routine) {
         throw new Error("La rutina especificada no existe.");
+      }
+
+      // Asignar el coach_id al cliente si no aun no tiene
+      if (!client.coach_id) {
+        await client.update({ coach_id: routine.coachId });
+        console.log("Coach asignado al cliente");
       }
 
       // Asignar la rutina al cliente en la tabla intermedia

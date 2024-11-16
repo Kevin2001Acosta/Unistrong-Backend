@@ -23,6 +23,7 @@ class Client
   public dietaryRestrictions!: string[];
   public routines?: Routines[];
   public user?: Users;
+  public clientStats?: boolean;
 }
 
 Client.init(
@@ -65,11 +66,11 @@ Client.init(
     },
     birthDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     height: {
       type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
+      allowNull: true,
     },
     diseases: {
       type: DataTypes.ARRAY(DataTypes.STRING),
@@ -78,6 +79,11 @@ Client.init(
     dietaryRestrictions: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
+    },
+    clientStats: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

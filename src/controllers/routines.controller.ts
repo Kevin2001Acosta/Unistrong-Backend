@@ -52,9 +52,9 @@ class RoutineController {
   }
 
   async assignRoutineByEmail(req: Request, res: Response, next: NextFunction) {
-    const { email, routineName, scheduledDate } = req.body;
+    const { email, routineId, scheduledDate } = req.body;
     try {
-      if (!email || !routineName || !scheduledDate) {
+      if (!email || !routineId || !scheduledDate) {
         return next(
           createError(
             400,
@@ -64,7 +64,7 @@ class RoutineController {
       }
       await RoutineService.assignRoutineByEmail(
         email,
-        routineName,
+        routineId,
         scheduledDate
       );
       res.status(200).json({ message: "Rutina asignada correctamente" });
