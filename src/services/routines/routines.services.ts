@@ -12,7 +12,7 @@ import { UserType } from "../../db/models/utils/user.types";
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
     try {
-      const coach = await Coach.findByPk(routineData.coachId);
+      const coach = await CoachService.getCoachByUser(routineData.coachId);
       const id = coach?.id;
       if (!id) {
         throw new Error("Coach no encontrado");
