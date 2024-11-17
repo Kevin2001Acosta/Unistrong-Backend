@@ -6,6 +6,7 @@ import { UserState } from "./utils/user.state";
 import Coach from "./coach.models";
 import Users from "./user.model";
 import Nutritionist from "./nutritionist.model";
+import Routines from "./routines.models";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -20,6 +21,7 @@ class Client
   public state!: UserState;
   public diseases!: string[];
   public dietaryRestrictions!: string[];
+  public routines?: Routines[];
   public user?: Users;
 }
 

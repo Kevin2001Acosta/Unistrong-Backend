@@ -5,20 +5,16 @@ const dbUser = config.dbUser || "";
 const dbHost = config.dbHost || "";
 console.log("dbHost", dbHost);
 
-const sequelize = new Sequelize(
-  dbName,
-  dbUser,
-  config.dbPassword,
-  {
+const sequelize = new Sequelize(dbName, dbUser, config.dbPassword, {
+  ssl: false,
+  host: dbHost,
+  port: Number(config.dbPort),
+  dialect: "postgres",
+  dialectOptions: {
     ssl: false,
-    host: dbHost,
-    port: Number(config.dbPort),
-    dialect: "postgres",
-    dialectOptions: {
-      ssl: false,
-    }
-  }
-);
+  },
+  logging: false,
+});
 
 async function testConnection() {
   try {

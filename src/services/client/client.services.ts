@@ -69,9 +69,9 @@ class ClientService {
     try {
       const client = await Client.findByPk(id, {
         include: [
-          { model: Users, as: "user" },
-          { model: Routines, as: "routines" },
-          { model: Diets, as: "diets" },
+          { model: Users, as: "user", attributes: ["id", "name", "email"] },
+          { model: Routines, as: "routines", attributes: ["id", "name"] },
+          { model: Diets, as: "diets", attributes: ["id", "name"] },
         ],
       });
       if (!client) {
@@ -99,6 +99,19 @@ class ClientService {
       throw new Error(
         `Error al obtener el usuario del cliente: ${(error as Error).message}`
       );
+    }
+  }
+  // Nuevo método para actualizar parcialmente los datos del cliente
+  async updateClient(id: number, updateData: Partial<ClientInput>): Promise<Client | null> {
+    try {
+      const client = await Client.findByPk(id);
+      if (!client) {
+        throw new Error("Cliente no encontrado");
+      }
+      await client.update(updateData); // Actualización parcial
+      return client;
+    } catch (error) {
+      throw new Error(`Error al actualizar el cliente: ${(error as Error).message}`);
     }
   }
 }

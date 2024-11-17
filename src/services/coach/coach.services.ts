@@ -13,9 +13,8 @@ class CoachService {
         throw new Error("Usuario no encontrado");
       }
 
-      if (user.userType !== UserType.COACH) {
-        throw new Error("El tipo de usuario no es 'coach'");
-      }
+      user.userType = UserType.COACH;
+      await user.save();
 
       const coach = await Coach.create({ user_id: coachData.user_id });
       return coach;
@@ -31,6 +30,7 @@ class CoachService {
           {
             model: Users,
             as: "user",
+            attributes: ["id", "email", "name"],
           },
         ],
       });
@@ -80,6 +80,20 @@ class CoachService {
       throw new Error(
         `Error al obtener coach por ID: ${(error as Error).message}`
       );
+    }
+  }
+
+  async getCoachByUser(userId: number): Promise<CoachAtributes | null> {
+    try {
+      const coach = await Coach.findOne({
+        where: {
+          user_id: userId,
+        },
+      });
+
+      return coach;
+    } catch (error) {
+      throw new Error(`Error al obtener el coach: ${(error as Error).message}`);
     }
   }
 }

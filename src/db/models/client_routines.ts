@@ -11,6 +11,7 @@ class ClientRoutines
 {
   public clientId!: number;
   public routineId!: number;
+  public scheduledDate!: Date;
 }
 
 ClientRoutines.init(
@@ -33,8 +34,12 @@ ClientRoutines.init(
       },
       onDelete: "CASCADE",
     },
+    scheduledDate: {
+      type: DataTypes.DATE,
+      allowNull: false, // Hacemos que este campo sea obligatorio
+    },
   },
-  { sequelize, modelName: "client_routines" }
+  { sequelize, modelName: "client_routines", timestamps: false }
 );
 
 export default ClientRoutines;

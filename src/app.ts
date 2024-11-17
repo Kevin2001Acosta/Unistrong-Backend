@@ -27,16 +27,20 @@ app.use(cookieParser());
 app.use(router);
 app.use(errorHandler);
 
-testConnection()
-  .then(() => {
-    return loadModels();
-  })
-  .then(() => {
-    app.listen(PORT, () => console.log(`Listo por el puerto ${PORT}`));
-  })
-  .catch((error) => {
+export { app };
+
+async function startServer() {
+  try {
+    await testConnection();
+    await loadModels();
+    app.listen(PORT, () => {
+      console.log(`Servidor escuchando en el puerto ${PORT}`);
+    });
+  } catch (error) {
     console.error(
       "No se pudo iniciar el servidor debido a un error de conexión:",
       error
     );
-  });
+  }
+}
+startServer();
