@@ -12,6 +12,8 @@ import Accountant from "../models/acountant.models";
 import Diets from "../models/diets.models";
 import ClientDiets from "../models/client_diets.models";
 import Reservations from "../models/reservations.models";
+import Membership from "../models/membership.models";
+import TypeMembership from "../models/type_membership.models";
 
 async function loadModels() {
   try {
@@ -24,6 +26,8 @@ async function loadModels() {
     await Nutritionist.sync({ alter: true });
 
     await Classes.sync({ alter: true });
+
+    await TypeMembership.sync({ alter: true });
 
     await Client.sync({ alter: true });
 
@@ -39,6 +43,8 @@ async function loadModels() {
     await Verification.sync({ alter: true });
 
     await ClientRoutines.sync({ alter: true });
+
+    await Membership.sync({ alter: true });
 
     //Declarar y cargar las asociaciones aqui
     // Relación Usuario-Cliente (uno a uno)
@@ -138,6 +144,14 @@ async function loadModels() {
       through: ClientDiets,
       as: "clients",
     });
+    // relación membresía-cliente
+    Client.hasMany(Membership, { foreignKey: "clientId", as: "memberships" });
+    Membership.belongsTo(Client, { foreignKey: "clientId", as: "client" });
+
+    // relación cliente-tipo de membresía
+    Client.belongsTo(TypeMembership, { foreignKey: "typeMembershipId", as: "typeMembership" });
+    TypeMembership.hasMany(Client, { foreignKey: "typeMembershipId", as: "clients" });
+
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
   }

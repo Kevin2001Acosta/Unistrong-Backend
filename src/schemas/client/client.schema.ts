@@ -9,4 +9,5 @@ export interface ClientAttributes {
   diseases?: string[];
   dietaryRestrictions?: string[];
   user?: Users;
+  typeMembershipId?: number;
 }
