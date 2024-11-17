@@ -30,6 +30,7 @@ class CoachService {
           {
             model: Users,
             as: "user",
+            attributes: ["id", "email", "name"],
           },
         ],
       });
@@ -86,7 +87,7 @@ class CoachService {
     try {
       const coach = await Coach.findOne({
         where: {
-          user_id: userId, // Aquí filtras por el user_id que envíes
+          user_id: userId,
         },
       });
 

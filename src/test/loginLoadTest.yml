@@ -1,12 +1,12 @@
 config:
   target: "http://localhost:3001"
   phases:
-    - duration: 60 # Duración de la prueba en segundos
-      arrivalRate: 10 # Solicitudes por segundo
+    - duration: 120
+      arrivalRate: 500
 scenarios:
   - flow:
       - post:
           url: "/user/login"
           json:
-            email: "testuser@example.com"
-            password: "password123"
+            email: "nikoartuvalelop@gmail.com"
+            password: "Niko23432@"
