@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/config.db'; // Adjust the path as necessary
-
-class TypeMembership extends Model {
+import { TypeMembershipAttributes } from '../../schemas/membership/typeMembership.schema';
+class TypeMembership extends Model<TypeMembershipAttributes> {
     declare id: number;
     declare price: number;
 }

@@ -1,8 +1,9 @@
 export interface MembershipAttributes {
     id: number;
-    clientId: bigint;
+    clientId: number;
     startDate: Date;
     endDate: Date;
+    price: number;
     active: boolean;
 }
 

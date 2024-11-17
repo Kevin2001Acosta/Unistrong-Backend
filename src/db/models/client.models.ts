@@ -25,6 +25,7 @@ class Client
   public routines?: Routines[];
   public user?: Users;
   public typeMembershipId?: number;
+  public typeMembership?: TypeMembership;
 }
 
 Client.init(

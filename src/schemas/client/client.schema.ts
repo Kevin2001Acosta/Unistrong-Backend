@@ -10,4 +10,5 @@ export interface ClientAttributes {
   dietaryRestrictions?: string[];
   user?: Users;
   typeMembershipId?: number;
+  typeMembership?: TypeMembershipAttributes;
 }

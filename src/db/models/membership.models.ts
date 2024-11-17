@@ -9,9 +9,10 @@ extends Model<MembershipAttributes, MembershipInput>
 implements MembershipAttributes
 {
     declare id: number;
-    declare clientId: bigint;
+    declare clientId: number;
     declare startDate: Date;
     declare endDate: Date;
+    declare price: number;
     declare active: boolean;
 }
 
@@ -36,6 +37,10 @@ Membership.init(
         },
         endDate: {
             type: DataTypes.DATE,
+            allowNull: false,
+        },
+        price: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         active: {

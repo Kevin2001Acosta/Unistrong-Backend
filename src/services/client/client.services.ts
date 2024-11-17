@@ -7,6 +7,7 @@ import Coach from "../../db/models/coach.models";
 import Nutritionist from "../../db/models/nutritionist.model";
 import Routines from "../../db/models/routines.models";
 import Diets from "../../db/models/diets.models";
+import TypeMembership from "../../db/models/type_membership.models";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
@@ -72,6 +73,7 @@ class ClientService {
           { model: Users, as: "user", attributes: ["id", "name", "email"] },
           { model: Routines, as: "routines", attributes: ["id", "name"] },
           { model: Diets, as: "diets", attributes: ["id", "name"] },
+          { model: TypeMembership, as: "typeMembership", attributes: ["id", "price"] },
         ],
       });
       if (!client) {
