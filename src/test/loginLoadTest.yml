@@ -1,0 +1,12 @@
+config:
+  target: "http://localhost:3001"
+  phases:
+    - duration: 120
+      arrivalRate: 500
+scenarios:
+  - flow:
+      - post:
+          url: "/user/login"
+          json:
+            email: "nikoartuvalelop@gmail.com"
+            password: "Niko23432@"
