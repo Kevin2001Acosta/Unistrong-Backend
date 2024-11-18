@@ -23,6 +23,19 @@ class MembershipController {
             next(createError(400, (error as Error).message));
         }
     }
+
+    async getMembershipRemainingDays(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId = req.body.userId;
+        try {
+            // Aquí iría la lógica para obtener los días restantes de la membresía
+            const remainingDays = await membershipServices.getMembershipRemainingDays(userId);
+            res.status(200).json({
+                remainingDays,
+                message: "Días restantes de la membresía" });
+        } catch (error) {
+            next(createError(400, (error as Error).message));
+        }
+    }
 }
 
 

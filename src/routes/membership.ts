@@ -1,9 +1,10 @@
 // src/routes/membership.routes.ts
 import { Router } from "express";
-import membershipController from "../controllers/membership.controller";
+import MembershipController from "../controllers/membership.controller";
 
 const router = Router();
 
-router.post("/register", membershipController.registerMembership);
+router.post("/register", MembershipController.registerMembership);
+router.get("/info", MembershipController.getMembershipRemainingDays);
 
 export { router };
