@@ -7,3 +7,5 @@ coverage
 *.pdf
 *.svg
 *.png
+
+Dockerfile
