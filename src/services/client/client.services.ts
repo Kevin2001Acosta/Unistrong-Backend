@@ -50,6 +50,12 @@ class ClientService {
         throw new Error("El usuario ya tiene un cliente asociado");
       }
 
+      // verifico que exista la membresía
+      const membership = await Membership.findByPk(clientData.typeMembershipId);
+      if (!membership) {
+        throw new Error("La membresía especificada no existe");
+      }
+
       // Crear el cliente
       const client = await Client.create({
         user_id: clientData.user_id,
@@ -77,7 +83,7 @@ class ClientService {
       throw new Error(`Error al obtener clientes: ${(error as Error).message}`);
     }
   }
-  
+
   //Obtener cliente por id junto con su usuario, rutinas y dietas
   async getClientById(id: number): Promise<ClientAttributes | null> {
     try {
