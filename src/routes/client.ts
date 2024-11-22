@@ -5,7 +5,7 @@ import { verifyToken } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/register", ClientController.createClient);
+router.post("/register",verifyToken, ClientController.createClient);
 router.get("/", ClientController.getAllClients);
 router.get("/:id", ClientController.getClientById);
 router.get("/:id/user", ClientController.getUserByClientId);

@@ -5,7 +5,7 @@ import createError from "http-errors";
 class ClientController {
   async createClient(req: Request, res: Response, next: NextFunction) {
     try {
-      req.body.user_id = 1; // Hardcodeado para pruebas
+      req.body.user_id = req.body.userId;
       const client = await ClientService.createClient(req.body);
       res.status(201).json(client);
     } catch (error) {
