@@ -7,11 +7,12 @@ import Coach from "../../db/models/coach.models";
 import Nutritionist from "../../db/models/nutritionist.model";
 import Routines from "../../db/models/routines.models";
 import Diets from "../../db/models/diets.models";
-import TypeMembership from "../../db/models/type_membership.models";
+import Membership from "../../db/models/membership.models";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
     try {
+
       // Verificar si el usuario existe
       const user = await Users.findByPk(clientData.user_id);
       if (!user) {
@@ -40,6 +41,15 @@ class ClientService {
         }
       }
 
+      // verificar si el usuario ya tiene un cliente asociado
+      const verifyClient = await Client.findOne({
+        where: { user_id: clientData.user_id },
+      });
+
+      if (verifyClient) {
+        throw new Error("El usuario ya tiene un cliente asociado");
+      }
+
       // Crear el cliente
       const client = await Client.create({
         user_id: clientData.user_id,
@@ -49,6 +59,8 @@ class ClientService {
         height: clientData.height,
         diseases: clientData.diseases || [],
         dietaryRestrictions: clientData.dietaryRestrictions || [],
+        typeMembershipId: clientData.typeMembershipId,
+
       });
 
       return client;
@@ -65,6 +77,7 @@ class ClientService {
       throw new Error(`Error al obtener clientes: ${(error as Error).message}`);
     }
   }
+  
   //Obtener cliente por id junto con su usuario, rutinas y dietas
   async getClientById(id: number): Promise<ClientAttributes | null> {
     try {
@@ -73,7 +86,7 @@ class ClientService {
           { model: Users, as: "user", attributes: ["id", "name", "email"] },
           { model: Routines, as: "routines", attributes: ["id", "name"] },
           { model: Diets, as: "diets", attributes: ["id", "name"] },
-          { model: TypeMembership, as: "typeMembership", attributes: ["id", "price"] },
+          { model: Membership, as: "Membership", attributes: ["id", "price"] },
         ],
       });
       if (!client) {

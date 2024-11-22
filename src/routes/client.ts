@@ -1,6 +1,7 @@
 //endpoints
 import { Router, Request, Response } from "express";
 import ClientController from "../controllers/client.controller";
+import { verifyToken } from "../middleware/auth.middleware";
 
 const router = Router();
 

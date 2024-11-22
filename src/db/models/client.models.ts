@@ -7,7 +7,7 @@ import Coach from "./coach.models";
 import Users from "./user.model";
 import Nutritionist from "./nutritionist.model";
 import Routines from "./routines.models";
-import TypeMembership from "./type_membership.models";
+import Membership from "./membership.models";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -25,7 +25,7 @@ class Client
   public routines?: Routines[];
   public user?: Users;
   public typeMembershipId?: number;
-  public typeMembership?: TypeMembership;
+  public typeMembership?: Membership;
 }
 
 Client.init(
@@ -86,7 +86,7 @@ Client.init(
       type: DataTypes.INTEGER,
       allowNull: true, // Permitir que sea NULL
       references: {
-        model: TypeMembership,
+        model: Membership,
         key: "id",
       },
       onDelete: "SET NULL", // Establecer en NULL en lugar de eliminar

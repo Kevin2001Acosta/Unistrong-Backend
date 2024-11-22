@@ -1,12 +1,12 @@
-import Membership from "../../db/models/membership.models";
-import { MembershipAttributes } from "../../schemas/membership/membership.schema";
+import MembershipPayment from "../../db/models/membership.payment.models";
+import { MembershipPaymentAttributes } from "../../schemas/membership/membershipPayment.schema";
 import clientServices from "../client/client.services";
 
 
 
 class MembershipServices {
 
-    async registerMembership(clientId: number, startDate: Date, endDate: Date): Promise<MembershipAttributes> {
+    async registerMembership(clientId: number, startDate: Date, endDate: Date): Promise<MembershipPaymentAttributes> {
         try{
         // verificar que el cliente exista y devolver su tipo de membresía y el valor a pagar
         const client = await clientServices.getClientById(clientId);
@@ -18,11 +18,11 @@ class MembershipServices {
         }
 
         // registrar la membresía
-        const membership = await Membership.create({
+        const membership = await MembershipPayment.create({
             clientId,
             startDate,
             endDate,
-            price: client.typeMembership.price,
+            amount: client.typeMembership.price,
         });
 
         return membership;

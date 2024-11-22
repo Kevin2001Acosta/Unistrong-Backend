@@ -6,4 +6,5 @@ export interface ClientInput {
   height: number;
   diseases?: string[];
   dietaryRestrictions?: string[];
+  typeMembershipId?: number;
 }
