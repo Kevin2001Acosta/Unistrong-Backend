@@ -47,14 +47,9 @@ class ClientService {
       });
 
       if (verifyClient) {
-        throw new Error("El usuario ya tiene un cliente asociado");
+        throw new Error("El usuario ya tiene un cliente asociado,\nEntre al perfil y actualice su información");
       }
 
-      // verifico que exista la membresía
-      const membership = await Membership.findByPk(clientData.typeMembershipId);
-      if (!membership) {
-        throw new Error("La membresía especificada no existe");
-      }
 
       // Crear el cliente
       const client = await Client.create({
@@ -65,7 +60,6 @@ class ClientService {
         height: clientData.height,
         diseases: clientData.diseases || [],
         dietaryRestrictions: clientData.dietaryRestrictions || [],
-        typeMembershipId: clientData.typeMembershipId,
 
       });
 
@@ -135,6 +129,42 @@ class ClientService {
       throw new Error(`Error al actualizar el cliente: ${(error as Error).message}`);
     }
   }
+
+  async updateClientMembership(userId: number, idMembership: number) : Promise<ClientAttributes | null>{
+    try {
+      // verificar si el usuario es tipo cliente
+      const user = await Users.findByPk(userId);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+      if(user.userType !== UserType.CLIENT){
+        throw new Error("El usuario no es del tipo cliente");
+      }
+
+      // busco el cliente
+      const client = await Client.findOne({where: {user_id: userId}});
+      if(!client){
+        throw new Error("Cliente no encontrado");
+      }
+
+      if(client.membershipId === idMembership){
+        return client;
+      }
+
+      // actualizo la membresía o la creo si no está
+      client.membershipId = idMembership;
+      await client.save();
+
+      return client;
+
+
+
+    }catch(error){
+      throw new Error(`Error al actualizar membresía: ${(error as Error).message}`);
+    }
+
+  }
+
 }
 
 export default new ClientService();

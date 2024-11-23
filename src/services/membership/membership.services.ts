@@ -13,7 +13,7 @@ class MembershipServices {
         if (!client) {
             throw new Error("Cliente no encontrado");
         }
-        if(!client.typeMembership){
+        if(!client.membership){
             throw new Error("El cliente no tiene un tipo de membresía asignado");
         }
 
@@ -22,7 +22,7 @@ class MembershipServices {
             clientId,
             startDate,
             endDate,
-            amount: client.typeMembership.price,
+            amount: client.membership.price,
         });
 
         return membership;

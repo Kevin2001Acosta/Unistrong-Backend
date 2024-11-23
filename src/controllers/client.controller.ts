@@ -60,6 +60,21 @@ class ClientController {
       next(createError(400, (error as Error).message));
     }
   }
+
+  async updateClientMembership(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = parseInt(req.body.userId);
+      const idMembership = parseInt(req.body.idMembership);
+      if (isNaN(userId) || isNaN(idMembership)) {
+        throw new Error("ID de usuario o de membresía inválido");
+      }
+      const updatedClient = await ClientService.updateClientMembership(userId, idMembership);
+      res.status(200).json(updatedClient);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+  
 }
 
 export default new ClientController();

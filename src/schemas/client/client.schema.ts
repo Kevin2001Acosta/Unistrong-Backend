@@ -10,6 +10,6 @@ export interface ClientAttributes {
   diseases?: string[];
   dietaryRestrictions?: string[];
   user?: Users;
-  typeMembershipId?: number;
-  typeMembership?: MembershipAttributes;
+  membershipId?: number;
+  membership?: MembershipAttributes;
 }

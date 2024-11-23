@@ -24,8 +24,8 @@ class Client
   public dietaryRestrictions!: string[];
   public routines?: Routines[];
   public user?: Users;
-  public typeMembershipId?: number;
-  public typeMembership?: Membership;
+  public membershipId?: number;
+  public membership?: Membership;
 }
 
 Client.init(
@@ -82,7 +82,7 @@ Client.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
-    typeMembershipId: {
+    membershipId: {
       type: DataTypes.INTEGER,
       allowNull: true, // Permitir que sea NULL
       references: {
