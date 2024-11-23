@@ -147,8 +147,15 @@ class ClientService {
         throw new Error("Cliente no encontrado");
       }
 
+      //verifico que no sea la misma membresía
       if(client.membershipId === idMembership){
         return client;
+      }
+
+      // verifico la membresía
+      const membership = await Membership.findByPk(idMembership);
+      if(!membership){
+        throw new Error("Membresía no encontrada");
       }
 
       // actualizo la membresía o la creo si no está
