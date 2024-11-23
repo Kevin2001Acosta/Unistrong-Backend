@@ -60,7 +60,7 @@ class ClientService {
         height: clientData.height,
         diseases: clientData.diseases || [],
         dietaryRestrictions: clientData.dietaryRestrictions || [],
-
+        membershipId: clientData.membershipId,
       });
 
       return client;
