@@ -61,10 +61,11 @@ class ClientController {
     }
   }
 
-  async updateClientMembership(req: Request, res: Response, next: NextFunction) {
+
+  async updateClientMembership(req: MembershipRequest, res: Response, next: NextFunction) {
     try {
-      const userId = parseInt(req.body.userId);
-      const idMembership = parseInt(req.body.idMembership);
+
+      const { userId, idMembership } = req.body;
       if (isNaN(userId) || isNaN(idMembership)) {
         throw new Error("ID de usuario o de membresía inválido");
       }
@@ -75,6 +76,12 @@ class ClientController {
     }
   }
   
+}
+interface MembershipRequest extends Request {
+  body: {
+    userId: number;
+    idMembership: number;
+  };
 }
 
 export default new ClientController();
