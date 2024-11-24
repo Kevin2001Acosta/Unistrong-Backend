@@ -67,7 +67,7 @@ class ClientController {
 
       const { userId, idMembership } = req.body;
       if (isNaN(userId) || isNaN(idMembership)) {
-        throw new Error("ID de usuario o de membresía inválido");
+        throw new Error(`ID de usuario: ${userId} o membresía inválido: ${idMembership}`);
       }
       const updatedClient = await ClientService.updateClientMembership(userId, idMembership);
       res.status(200).json(updatedClient);
