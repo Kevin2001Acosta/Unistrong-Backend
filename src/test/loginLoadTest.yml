@@ -1,12 +1,12 @@
 config:
   target: "http://localhost:3001"
   phases:
-    - duration: 120
-      arrivalRate: 500
+    - duration: 60
+      arrivalRate: 10
 scenarios:
   - flow:
       - post:
           url: "/user/login"
           json:
-            email: "nikoartuvalelop@gmail.com"
-            password: "Niko23432@"
+            email: "correo prueba"
+            password: "password prueba"

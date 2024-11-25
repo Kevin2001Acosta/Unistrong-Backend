@@ -149,8 +149,8 @@ async function loadModels() {
     MembershipPayment.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
     // relación cliente-tipo de membresía
-    Client.belongsTo(Membership, { foreignKey: "typeMembershipId", as: "typeMembership" });
-    Membership.hasMany(Client, { foreignKey: "typeMembershipId", as: "clients" });
+    Client.belongsTo(Membership, { foreignKey: "membershipId", as: "typeMembership" });
+    Membership.hasMany(Client, { foreignKey: "membershipId", as: "clients" });
 
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
