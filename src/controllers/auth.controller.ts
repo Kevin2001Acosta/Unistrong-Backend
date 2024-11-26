@@ -3,6 +3,7 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import clientServices from "../services/client/client.services";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -36,6 +37,9 @@ class AuthController {
         secure: false,
       });
 
+      // buscar si ya existe la tabla client, si no existe enviar false
+      const clientexist: boolean = await clientServices.getClientByUserId(user.id);
+
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
@@ -47,6 +51,7 @@ class AuthController {
           state: user.state,
           userType: user.userType,
         },
+        infoClientRegistered: clientexist,
       });
     } catch (error) {
       console.log("Error en el login:", error);

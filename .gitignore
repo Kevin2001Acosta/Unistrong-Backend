@@ -8,4 +8,6 @@ coverage
 *.svg
 *.png
 
+.env.local
+docker-compose.yml
 Dockerfile
