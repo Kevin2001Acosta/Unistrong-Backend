@@ -1,3 +1,4 @@
+import TypeMembership from "../../db/models/type_membership.models";
 import Users from "../../db/models/user.model";
 import { MembershipAttributes } from "../membership/membership.schema";
 export interface ClientAttributes {
@@ -11,5 +12,5 @@ export interface ClientAttributes {
   dietaryRestrictions?: string[];
   user?: Users;
   typeMembershipId?: number;
-  typeMembership?: MembershipAttributes;
+  typeMembership?: TypeMembership;
 }
