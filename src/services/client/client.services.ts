@@ -172,6 +172,17 @@ class ClientService {
 
   }
 
+  async getClientByUserId(userId: number): Promise<boolean> {
+    try {
+      const client = await Client.findOne({ where: { user_id: userId } });
+      return !!client;  // la doble negación retorna un booleano directamente, true si existe cliente
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el cliente por id de usuario: ${(error as Error).message}`
+      );
+    }
+  }
+
 }
 
 export default new ClientService();

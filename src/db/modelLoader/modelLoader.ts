@@ -149,7 +149,7 @@ async function loadModels() {
     MembershipPayment.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
     // relación cliente-tipo de membresía
-    Client.belongsTo(Membership, { foreignKey: "membershipId", as: "typeMembership" });
+    Client.belongsTo(Membership, { foreignKey: "membershipId", as: "membership" });
     Membership.hasMany(Client, { foreignKey: "membershipId", as: "clients" });
 
   } catch (error) {

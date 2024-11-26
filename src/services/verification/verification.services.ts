@@ -12,12 +12,12 @@ export interface userResponse {
 class VerificationService {
   
   async createVerificationCode(userId: bigint, code: string, type: VerificationType): Promise<void> {
-    if(type === VerificationType.Password){
-      await Verification.update( // Actualiza las verificaciones anteriores a verificadas para evitar errores
-        {verified: true},
-        {where: {userId, active: true, verified: false}}
-      );
-    }
+
+    await Verification.update( // Actualiza las verificaciones anteriores a verificadas para evitar errores
+      {active: false},
+      {where: {userId, active: true, verified: false, type}}
+    );
+    
     const HORA: number = 1; // 1 hora
     await Verification.create({ // Crea una nueva verificación
       userId,
@@ -53,6 +53,7 @@ class VerificationService {
 
     // Marcar el código como verificado
     verification.verified = true;
+    verification.active = false;
     await verification.save();
 
     return true;
@@ -84,6 +85,9 @@ class VerificationService {
 
     // Marcar el código como verificado
     verification.verified = true;
+    // desactivar la verificación
+    verification.active = false;
+    
     await verification.save();
 
     return true;

@@ -7,8 +7,8 @@ import loginBestWayController from "../controllers/loginBestWay.controller";
 
 const router = Router();
 
-router.post("/login", AuthController.login);//primero
-//router.post("/login", loginBestWayController.login);//segundo mejor forma
+//router.post("/login", AuthController.login);//primero
+router.post("/login", loginBestWayController.login);//segundo mejor forma
 router.post("/logout", verifyToken, AuthController.logout);
 router.get("/verify", verifyToken, AuthController.verifyToken);
 router.post("/register", userController.createUser);

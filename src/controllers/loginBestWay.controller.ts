@@ -3,6 +3,7 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import clientServices from "../services/client/client.services";
 
 class LoginBestWayController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -50,6 +51,9 @@ class LoginBestWayController {
         });
       }
 
+      // buscar si ya existe la tabla client, si no existe enviar false
+      const clientexist: boolean = await clientServices.getClientByUserId(user.id);
+
       // Generar el token
       const token = AuthService.generateToken(user.id);
 
@@ -71,6 +75,7 @@ class LoginBestWayController {
           state: user.state,
           userType: user.userType,
         },
+        infoClientRegistered: clientexist,
       });
     } catch (error) {
       // Log de error para ver qué está pasando
