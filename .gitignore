@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules
 .env
 coverage
@@ -7,3 +8,9 @@ coverage
 *.pdf
 *.svg
 *.png
+=======
+node_modules
+.env
+coverage
+*.pem
+>>>>>>> 1c03801 (nuevo)
