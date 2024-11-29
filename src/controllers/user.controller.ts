@@ -74,6 +74,30 @@ class UserController {
     }
 
   }
+
+  // Método para actualizar el nombre de usuario
+  async updateUserProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;  // Obtenemos el ID desde los parámetros
+      const { name, phoneNumber, password } = req.body;  // Obtenemos los nuevos campos desde el cuerpo de la solicitud
+  
+      // Creamos un objeto con los campos que están presentes en la solicitud
+      const updateData: { name?: string; phoneNumber?: string; password?: string } = {};
+  
+      if (name) updateData.name = name;  // Si se proporciona un nombre, lo agregamos al objeto
+      if (phoneNumber) updateData.phoneNumber = phoneNumber;  // Si se proporciona un teléfono, lo agregamos
+      if (password) updateData.password = password;  // Si se proporciona una contraseña, la agregamos
+  
+      // Llamamos al servicio para actualizar los campos proporcionados
+      const updatedUser = await UserService.updateUserProfile(Number(id), updateData);
+  
+      // Retornamos la respuesta con el usuario actualizado
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+  
 }
 
 export default new UserController();

@@ -1,0 +1,234 @@
+@startuml ClassDiagram
+class Users {
+    +id: number
+    +email: string
+    +name: string
+    +dni: string
+    +username: string
+    +password: string
+    +phoneNumber: string
+    +state: boolean
+    +userType: UserType
+}
+
+class Client {
+    +id: number
+    +user_id: number
+    +coach_id: number
+    +birthDate: Date
+    +nutritionist_id: number
+    +height: number
+    +state: UserState
+    +diseases: string[]
+    +dietaryRestrictions: string[]
+    +user: Users
+}
+
+class Coach {
+    +id: number
+    +user_id: number
+}
+
+class Routines {
+    +id: number
+    +name: string
+    +description: string
+    +category: string
+    +musclesWorked: string[]
+    +coachId: number
+}
+
+class Verification {
+    +id: bigint
+    +userId: bigint
+    +code: string
+    +expiration_date: Date
+    +type: VerificationType
+    +verified: boolean
+    +active: boolean
+}
+
+class ClientRoutines {
+    +clientId: number
+    +routineId: number
+}
+
+class Nutritionist {
+    +id: number
+    +user_id: number
+}
+
+class Classes {
+    +id: number
+    +name: string
+    +coachId: number
+    +startTime: Date
+    +finishTime: Date
+    +duration: number
+    +type: string
+    +active: boolean
+}
+
+class ClientCharacteristics {
+    +id: number
+    +clientId: number
+    +weight: number
+    +height: number
+    +waist: number
+    +legs: number
+    +arms: number
+    +chest: number
+    +glutes: number
+}
+
+class Accountant {
+    +id: number
+    +user_id: number
+}
+
+class Diets {
+    +id: number
+    +name: string
+    +description: string
+    +type: string
+    +nutritionistId: number
+}
+
+class ClientDiets {
+  +clientId: number
+  +dietId: number
+}
+
+class Reservations {
+    +id: number
+    +clientId: number
+    +classId: number
+}
+
+class UserService {
+  +createUser(userData: UserInput): Promise<UserAtributes>
+  +getAllUsers(): Promise<UserAtributes[]>
+  +getUserById(id: number): Promise<UserAtributes | null>
+  +getUserByEmail(email: string): Promise<Users | null>
+  +changePassword(email: string, password: string): Promise<void>
+}
+
+class AuthService {
+  +hashPassword(password: string): Promise<string>
+  +comparePasswords(password: string, hash: string): Promise<boolean>
+  +generateToken(userId: number): string
+  +verifyToken(token: string): any
+}
+
+class CharacteristicsServices {
+  +createCharacteristics(characteristicsData: ClientCharacteristicsInput): Promise<ClientCharacteristicsAttributes | null>
+  +getCharacteristics(): Promise<ClientCharacteristicsAttributes[]>
+}
+
+class EmailService {
+    -transporter: Transporter
+    -userEmail?: string
+    -passEmail?: string
+    +constructor()
+    +sendEmail(options: EmailOptions): Promise<void>
+}
+
+class VerificationService {
+  +createVerificationCode(userId: bigint, code: string, type: VerificationType): Promise<void>
+  +verifyCodeoOfPassword(email: string, code: string): Promise<boolean>
+}
+
+class RoutineService {
+  +createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes>
+  +getAllRoutines(): Promise<RoutinesAttributes[]>
+  +assignRoutineToClient(data: assignRoutineInput): Promise<void>
+}
+
+class ReservationsServices {
+  +createReservation(reservationData: ReservationsInput): Promise<ReservationsAtributes>
+  +getAllReservations(): Promise<ReservationsAtributes[]>
+}
+
+class NutritionistService {
+  +createNutritionist(nutritionistData: NutritionistInput): Promise<NutritionistAtributes>
+  +getAllNutritionist(): Promise<any[]>
+}
+
+class DietsService {
+  +createDiet(dietData: DietsInput): Promise<DietsAtributes>
+  +getAllDiets(): Promise<DietsAtributes[]>
+  +assignDietToClient(data: assignDietsInput): Promise<void>
+}
+
+class CoachService {
+  +createCoach(coachData: CoachInput): Promise<CoachAtributes>
+  +getAllCoach(): Promise<any[]>
+  +getClientsByCoachId(coachId: number): Promise<any>
+  +getCoachById(coachId: number): Promise<CoachAtributes | null>
+}
+
+class ClientService {
+  +createClient(clientData: ClientInput): Promise<ClientAttributes>
+  +getAllClient(): Promise<ClientAttributes[]>
+  +getClientById(id: number): Promise<ClientAttributes | null>
+}
+
+class ClassesService {
+  +createClass(classData: ClassesInput): Promise<ClassesAtributes>
+  +getAllClasses(): Promise<ClassesAtributes[]>
+}
+
+Users --|> Client : hasMany
+
+Coach --|> Client : hasMany
+
+Coach --|> Classes : hasMany
+
+Users --|> Coach : hasOne
+
+Users --|> Accountant : hasOne
+
+Users --|> Nutritionist : hasOne
+
+Users --|> Verification : hasMany
+
+Client --|> Reservations : hasMany
+Classes --|> Reservations : hasMany
+Client --|> Classes : belongsToMany
+
+Client --|> ClientCharacteristics : hasOne
+
+Client --|> ClientRoutines : hasMany
+Routines --|> ClientRoutines : hasMany
+Client --|> Routines : belongsToMany
+
+Client --|> ClientDiets : hasMany
+Diets --|> ClientDiets : hasMany
+Client --|> Diets : belongsToMany
+
+
+UserService --> Users
+
+AuthService --> Users
+
+CharacteristicsServices --> ClientCharacteristics
+
+EmailService --> Users
+
+VerificationService --> Verification
+
+RoutineService --> Routines
+
+ReservationsServices --> Reservations
+
+NutritionistService --> Nutritionist
+
+DietsService --> Diets
+
+CoachService --> Coach
+
+ClientService --> Client
+
+ClassesService --> Classes
+
+@enduml

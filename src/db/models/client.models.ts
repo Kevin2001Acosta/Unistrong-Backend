@@ -7,6 +7,7 @@ import Coach from "./coach.models";
 import Users from "./user.model";
 import Nutritionist from "./nutritionist.model";
 import Routines from "./routines.models";
+import TypeMembership from "./type_membership.models";
 
 class Client
   extends Model<ClientAttributes, ClientInput>
@@ -23,7 +24,12 @@ class Client
   public dietaryRestrictions!: string[];
   public routines?: Routines[];
   public user?: Users;
+<<<<<<< HEAD
   public clientStats?: boolean;
+=======
+  public typeMembershipId?: number;
+  public typeMembership?: TypeMembership;
+>>>>>>> origin/master
 }
 
 Client.init(
@@ -80,10 +86,21 @@ Client.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
+<<<<<<< HEAD
     clientStats: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+=======
+    typeMembershipId: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // Permitir que sea NULL
+      references: {
+        model: TypeMembership,
+        key: "id",
+      },
+      onDelete: "SET NULL", // Establecer en NULL en lugar de eliminar
+>>>>>>> origin/master
     },
   },
   {

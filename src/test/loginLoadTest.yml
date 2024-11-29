@@ -1,12 +1,21 @@
 config:
   target: "http://localhost:3001"
   phases:
+<<<<<<< HEAD
     - duration: 60
+=======
+    - duration: 120
+>>>>>>> origin/master
       arrivalRate: 500
 scenarios:
   - flow:
       - post:
           url: "/user/login"
           json:
+<<<<<<< HEAD
             email: "cliente@gmail.com"
             password: "contraseña12A*"
+=======
+            email: "nikoartuvalelop@gmail.com"
+            password: "Niko23432@"
+>>>>>>> origin/master

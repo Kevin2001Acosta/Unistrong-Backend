@@ -9,5 +9,10 @@ export interface ClientAttributes {
   diseases?: string[];
   dietaryRestrictions?: string[];
   user?: Users;
+<<<<<<< HEAD
   clientStats?: boolean;
+=======
+  typeMembershipId?: number;
+  typeMembership?: TypeMembershipAttributes;
+>>>>>>> origin/master
 }
