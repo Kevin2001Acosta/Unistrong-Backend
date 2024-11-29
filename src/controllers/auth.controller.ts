@@ -35,7 +35,7 @@ class AuthController {
 
       let additionalData = null;
 
-      // Validar el tipo de usuario y buscar información adicional si es necesario
+      // Validar el tipo de usuario y obtener datos adicionales
       if (user.userType === UserType.COACH) {
         additionalData = await Coach.findOne({ where: { user_id: user.id } });
       }
@@ -60,7 +60,7 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
-          additionalData,
+          additionalData: null,
         },
       });
     } catch (error) {
