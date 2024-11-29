@@ -51,23 +51,41 @@ class RoutineController {
     }
   }
 
-  async assignRoutineByEmail(req: Request, res: Response, next: NextFunction) {
-    const { email, routineName, scheduledDate } = req.body;
+  async assignRoutineByEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const { email, routineId, scheduledDate, recurrenceDay, time } = req.body;
+
     try {
-      if (!email || !routineName || !scheduledDate) {
+      // Validar campos obligatorios
+      if (!email || !routineId) {
+        return next(
+          createError(400, "Los campos obligatorios son: email y routineId.")
+        );
+      }
+
+      // Validar al menos un tipo de asignación (puntual o recurrente)
+      if (!scheduledDate && (recurrenceDay === undefined || !time)) {
         return next(
           createError(
             400,
-            "Todos los campos son obligatorios: email, routineName, scheduledDate."
+            "Debes proporcionar una fecha (scheduledDate) o un día de recurrencia (recurrenceDay) y una hora (time)."
           )
         );
       }
+
+      // Asignar la rutina al cliente
       await RoutineService.assignRoutineByEmail(
         email,
-        routineName,
-        scheduledDate
+        routineId,
+        scheduledDate ? new Date(scheduledDate) : undefined, // Conversión robusta de fecha
+        recurrenceDay,
+        time
       );
-      res.status(200).json({ message: "Rutina asignada correctamente" });
+
+      res.status(200).json({ message: "Rutina asignada correctamente." });
     } catch (error) {
       next(createError(400, (error as Error).message));
     }
@@ -79,7 +97,7 @@ class RoutineController {
       const routines = await RoutineService.getRoutinesByClientId(
         Number(clientId)
       );
-      return res.status(200).json(routines);
+      return res.status(200).json(routines); // Esto devolverá las rutinas con sus fechas recurrentes
     } catch (error) {
       next(createError(400, (error as Error).message));
     }
