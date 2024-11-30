@@ -193,6 +193,16 @@ class RoutineService {
               "category",
               "musclesWorked",
             ],
+            include: [
+              {
+                model: Client,
+                as: "clients",
+                attributes: ["id", "user_id", "coach_id"], // Agrega los atributos necesarios del cliente
+                through: {
+                  attributes: ["scheduledDate", "recurrenceDay", "time"], // Atributos de la tabla intermedia
+                },
+              },
+            ],
           },
         ],
       });

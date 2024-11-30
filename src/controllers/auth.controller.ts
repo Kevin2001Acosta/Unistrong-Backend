@@ -60,7 +60,7 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
-          additionalData: null,
+          additionalData,
         },
       });
     } catch (error) {
