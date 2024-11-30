@@ -9,6 +9,7 @@ import CoachService from "../coach/coach.services";
 import Users from "../../db/models/user.model";
 import { UserType } from "../../db/models/utils/user.types";
 import { calculateRecurrentDates } from "./calculateRoutines.services";
+import { format } from "date-fns";
 
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
@@ -67,94 +68,56 @@ class RoutineService {
   async assignRoutineByEmail(
     email: string,
     routineId: number,
-    scheduledDate?: Date,
-    recurrenceDay?: number, // Día de la semana (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
-    time?: string // Hora en formato "HH:mm"
-  ): Promise<void> {
+    scheduledDate: Date,
+    recurrenceDay: number
+  ): Promise<{ recurrentDates: Date[] }> {
     try {
       // Buscar el usuario por email
       const user = await Users.findOne({ where: { email } });
       if (!user) {
         throw new Error("Usuario no encontrado.");
       }
+
       if (user.userType !== UserType.CLIENT) {
         throw new Error("El usuario especificado no es un cliente.");
       }
 
-      // Verificar si el cliente existe en la tabla clientes
+      // Buscar el cliente asociado al usuario
       const client = await Client.findOne({ where: { user_id: user.id } });
       if (!client) {
         throw new Error("Cliente no encontrado.");
       }
 
-      // Buscar la rutina por ID
+      // Verificar si la rutina existe
       const routine = await Routines.findByPk(routineId);
       if (!routine) {
-        throw new Error("La rutina especificada no existe.");
+        throw new Error("Rutina no encontrada.");
       }
 
-      // Asignar el coach_id al cliente si no tiene uno
-      if (!client.coach_id) {
-        await client.update({ coach_id: routine.coachId });
-        console.log("Coach asignado al cliente");
-      }
+      // Extraer la hora desde `scheduledDate`
+      const hours = scheduledDate.getHours();
+      const minutes = scheduledDate.getMinutes();
+      const time = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`;
 
-      // Validar que al menos uno de los parámetros sea proporcionado
-      if (!scheduledDate && (recurrenceDay === undefined || !time)) {
-        throw new Error(
-          "Debes proporcionar una fecha (scheduledDate) o un día de recurrencia (recurrenceDay) y una hora (time)."
-        );
-      }
+      // Generar fechas recurrentes usando `calculateRecurrentDates`
+      const recurrentDates = calculateRecurrentDates(
+        recurrenceDay,
+        time,
+        scheduledDate
+      );
 
-      // Validar datos de recurrencia
-      if (recurrenceDay !== undefined && time) {
-        const existingRecurringAssignment = await ClientRoutines.findOne({
-          where: {
-            clientId: client.id,
-            routineId: routine.id,
-            recurrenceDay,
-            time,
-          },
-        });
-        if (existingRecurringAssignment) {
-          throw new Error(
-            "La rutina ya está asignada con esa recurrencia (día y hora)."
-          );
-        }
+      // Crear asignación de la rutina
+      await ClientRoutines.create({
+        clientId: client.id,
+        routineId: routine.id,
+        scheduledDate,
+        recurrenceDay,
+        time,
+      });
 
-        await ClientRoutines.create({
-          clientId: client.id,
-          routineId: routine.id,
-          recurrenceDay,
-          time,
-        });
-
-        console.log("Rutina recurrente asignada con éxito.");
-      }
-
-      // Validar asignación puntual con scheduledDate
-      if (scheduledDate) {
-        const existingScheduledAssignment = await ClientRoutines.findOne({
-          where: {
-            clientId: client.id,
-            routineId: routine.id,
-            scheduledDate,
-          },
-        });
-        if (existingScheduledAssignment) {
-          throw new Error(
-            "La rutina ya está asignada en la fecha especificada."
-          );
-        }
-
-        await ClientRoutines.create({
-          clientId: client.id,
-          routineId: routine.id,
-          scheduledDate,
-        });
-
-        console.log("Rutina asignada en la fecha específica.");
-      }
+      return { recurrentDates };
     } catch (error) {
       throw new Error(
         `Error al asignar la rutina: ${(error as Error).message}`
@@ -180,32 +143,33 @@ class RoutineService {
         throw new Error("Cliente no encontrado.");
       }
 
-      // Verificar si el cliente tiene rutinas
       if (!client.routines || client.routines.length === 0) {
         return { message: "Este cliente no tiene rutinas asignadas." };
       }
 
-      //Retorna las rutinas con los atributos adicionales de la tabla intermedia
       const routinesWithClientDetails = client.routines.map((routine: any) => {
-        const { client_routines, ...routineData } = routine.toJSON(); // se eliminan los datos de 'client_routines' para evitar duplicados
-        const { scheduledDate, recurrenceDay, time } = client_routines || {}; // Accedemos a los datos de 'client_routines'
+        const { client_routines, ...routineData } = routine.toJSON();
+        const { scheduledDate, recurrenceDay, time } = client_routines || {};
 
-        let recurrentDates: Date[] = [];
-        // Si existen recurrenceDay y time, calculamos las fechas recurrentes
-        if (recurrenceDay !== null && time) {
+        let recurrentDates: string[] = [];
+        if (recurrenceDay !== null && scheduledDate) {
+          const initialDate = new Date(scheduledDate);
           recurrentDates = calculateRecurrentDates(
             recurrenceDay,
-            time,
-            scheduledDate
-          );
+            time || format(initialDate, "HH:mm"),
+            initialDate
+          ).map((date) => format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")); // Formato ISO con zona horaria local
         }
 
         return {
-          ...routineData, // Retornamos solo los datos de la rutina
-          scheduledDate: scheduledDate || new Date().toISOString(), // Si no hay scheduledDate, usamos la fecha actual
+          ...routineData,
+          scheduledDate: format(
+            new Date(scheduledDate),
+            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+          ),
           recurrenceDay,
           time,
-          recurrentDates, // Añadimos las fechas recurrentes calculadas
+          recurrentDates,
         };
       });
 
