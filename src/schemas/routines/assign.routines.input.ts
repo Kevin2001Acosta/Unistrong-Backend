@@ -4,4 +4,5 @@ export interface assignRoutineInput {
   scheduledDate?: Date;
   recurrenceDay?: number;
   time?: string;
+  recurrentDates?: string[];
 }

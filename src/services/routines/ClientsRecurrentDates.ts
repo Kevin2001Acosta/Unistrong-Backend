@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { calculateRecurrentDates } from "./calculateRoutines.services"; // Importar la función de cálculo
+import { calculateRecurrentDates } from "./calculateRoutines.services";
 
 // Función para obtener las fechas recurrentes y formatearlas
 export function getRecurrentDatesFromClientData(
@@ -16,5 +16,5 @@ export function getRecurrentDatesFromClientData(
     recurrenceDay,
     time || format(initialDate, "HH:mm"),
     initialDate
-  ).map((date) => format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")); // Formato ISO con zona horaria local
+  ).map((date) => format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
 }

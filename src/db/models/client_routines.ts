@@ -14,6 +14,7 @@ class ClientRoutines
   public scheduledDate?: Date;
   public recurrenceDay?: number; // Día de la semana (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
   public time?: string; // Hora en formato HH:mm
+  public recurrentDates?: string[]; // Nuevas fechas recurrentes
 }
 
 ClientRoutines.init(
@@ -38,14 +39,18 @@ ClientRoutines.init(
     },
     scheduledDate: {
       type: DataTypes.DATE,
-      allowNull: true, // Hacemos que este campo sea obligatorio
+      allowNull: true,
     },
     recurrenceDay: {
-      type: DataTypes.INTEGER, // 0 (Domingo) - 6 (Sábado)
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     time: {
-      type: DataTypes.STRING, // "17:00" para las 5 PM
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    recurrentDates: {
+      type: DataTypes.JSON,
       allowNull: true,
     },
   },
@@ -53,5 +58,3 @@ ClientRoutines.init(
 );
 
 export default ClientRoutines;
-
-//react Calendar
