@@ -8,5 +8,5 @@ scenarios:
       - post:
           url: "/user/login"
           json:
-            email: "nikoartuvalelop@gmail.com"
-            password: "Niko23432@"
+            email: "cliente@gmail.com"
+            password: "contraseña12A*"

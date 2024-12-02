@@ -3,6 +3,9 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import { UserType } from "../db/models/utils/user.types";
+import Coach from "../db/models/coach.models";
+import Client from "../db/models/client.models";
 
 class LoginBestWayController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -49,6 +52,15 @@ class LoginBestWayController {
           message: "Credenciales incorrectas",
         });
       }
+      let additionalData = null;
+
+      if (user.userType === UserType.COACH) {
+        additionalData = await Coach.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.CLIENT) {
+        additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
 
       // Generar el token
       const token = AuthService.generateToken(user.id);
@@ -70,6 +82,7 @@ class LoginBestWayController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          additionalData,
         },
       });
     } catch (error) {

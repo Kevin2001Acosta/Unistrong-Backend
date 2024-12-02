@@ -51,23 +51,54 @@ class RoutineController {
     }
   }
 
-  async assignRoutineByEmail(req: Request, res: Response, next: NextFunction) {
-    const { email, routineName, scheduledDate } = req.body;
+  async assignRoutineByEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const { email, routineId, scheduledDate, recurrenceDay } = req.body;
+
     try {
-      if (!email || !routineName || !scheduledDate) {
+      // Validar campos obligatorios
+      if (
+        !email ||
+        !routineId ||
+        !scheduledDate ||
+        recurrenceDay === undefined
+      ) {
         return next(
           createError(
             400,
-            "Todos los campos son obligatorios: email, routineName, scheduledDate."
+            "Los campos obligatorios son: email, routineId, scheduledDate y recurrenceDay."
           )
         );
       }
-      await RoutineService.assignRoutineByEmail(
+
+      // Validar que `recurrenceDay` sea un valor válido (0-6)
+      if (recurrenceDay < 0 || recurrenceDay > 6) {
+        return next(
+          createError(400, "El día de recurrencia debe estar entre 0 y 6.")
+        );
+      }
+
+      // Conversión de `scheduledDate` a un objeto de tipo `Date`
+      const parsedScheduledDate = new Date(scheduledDate);
+      if (isNaN(parsedScheduledDate.getTime())) {
+        return next(createError(400, "La fecha proporcionada no es válida."));
+      }
+
+      // Llamar al servicio para asignar la rutina
+      const { recurrentDates } = await RoutineService.assignRoutineByEmail(
         email,
-        routineName,
-        scheduledDate
+        routineId,
+        parsedScheduledDate,
+        recurrenceDay
       );
-      res.status(200).json({ message: "Rutina asignada correctamente" });
+
+      res.status(200).json({
+        message: "Rutina asignada correctamente.",
+        recurrentDates,
+      });
     } catch (error) {
       next(createError(400, (error as Error).message));
     }
@@ -75,13 +106,32 @@ class RoutineController {
 
   async getClientRoutines(req: Request, res: Response, next: NextFunction) {
     const { clientId } = req.params;
+
     try {
+      // Validar que el clientId sea un número válido
+      if (!clientId || isNaN(Number(clientId))) {
+        return next(
+          createError(400, "El ID del cliente debe ser un número válido.")
+        );
+      }
+
+      // Llamar al servicio para obtener las rutinas del cliente
       const routines = await RoutineService.getRoutinesByClientId(
         Number(clientId)
       );
+
+      // Responder con las rutinas obtenidas
       return res.status(200).json(routines);
     } catch (error) {
-      next(createError(400, (error as Error).message));
+      // Manejo de errores centralizado
+      next(
+        createError(
+          500,
+          `Error al obtener las rutinas del cliente: ${
+            (error as Error).message
+          }`
+        )
+      );
     }
   }
 

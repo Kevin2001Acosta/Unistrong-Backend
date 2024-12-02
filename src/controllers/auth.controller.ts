@@ -3,6 +3,9 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import { UserType } from "../db/models/utils/user.types";
+import Coach from "../db/models/coach.models";
+import Client from "../db/models/client.models";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -30,6 +33,17 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      let additionalData = null;
+
+      // Validar el tipo de usuario y obtener datos adicionales
+      if (user.userType === UserType.COACH) {
+        additionalData = await Coach.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.CLIENT) {
+        additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
+
       // Configurar la cookie con el token
       res.cookie("token", token, {
         httpOnly: false,
@@ -46,6 +60,7 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          additionalData,
         },
       });
     } catch (error) {

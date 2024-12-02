@@ -13,4 +13,5 @@ export interface ClientAttributes {
   user?: Users;
   typeMembershipId?: number;
   typeMembership?: TypeMembership;
+  clientStats?: boolean;
 }
