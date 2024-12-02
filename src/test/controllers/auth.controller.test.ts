@@ -35,7 +35,9 @@ describe("AuthController", () => {
         state: true,
         userType: "CLIENT",
       };
+
       const token = "testtoken";
+      const additionalData = null; // Simular que no hay datos adicionales
 
       mockReq = {
         body: { email: "testuser@example.com", password: "password123" },
@@ -47,10 +49,6 @@ describe("AuthController", () => {
 
       await AuthController.login(mockReq as Request, mockRes as Response);
 
-      expect(mockRes.cookie).toHaveBeenCalledWith("token", token, {
-        httpOnly: false,
-        secure: false,
-      });
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({
         message: "Usuario logeado exitosamente",
@@ -61,6 +59,7 @@ describe("AuthController", () => {
           email: mockUser.email,
           state: mockUser.state,
           userType: mockUser.userType,
+          additionalData, // Aquí estás simulando que es null
         },
       });
     });

@@ -71,7 +71,15 @@ class ClientService {
 
   async getAllClient(): Promise<ClientAttributes[]> {
     try {
-      const client = await Client.findAll();
+      const client = await Client.findAll({
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: ["id", "email", "name"],
+          },
+        ],
+      });
       return client.length > 0 ? client : [];
     } catch (error) {
       throw new Error(`Error al obtener clientes: ${(error as Error).message}`);
@@ -117,7 +125,10 @@ class ClientService {
     }
   }
   // Nuevo método para actualizar parcialmente los datos del cliente
-  async updateClient(id: number, updateData: Partial<ClientInput>): Promise<Client | null> {
+  async updateClient(
+    id: number,
+    updateData: Partial<ClientInput>
+  ): Promise<Client | null> {
     try {
       const client = await Client.findByPk(id);
       if (!client) {
@@ -126,7 +137,9 @@ class ClientService {
       await client.update(updateData); // Actualización parcial
       return client;
     } catch (error) {
-      throw new Error(`Error al actualizar el cliente: ${(error as Error).message}`);
+      throw new Error(
+        `Error al actualizar el cliente: ${(error as Error).message}`
+      );
     }
   }
 

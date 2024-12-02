@@ -68,11 +68,11 @@ Client.init(
     },
     birthDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     height: {
       type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
+      allowNull: true,
     },
     diseases: {
       type: DataTypes.ARRAY(DataTypes.STRING),

@@ -8,6 +8,8 @@ import { assignRoutineInput } from "../../schemas/routines/assign.routines.input
 import CoachService from "../coach/coach.services";
 import Users from "../../db/models/user.model";
 import { UserType } from "../../db/models/utils/user.types";
+import { calculateRecurrentDates } from "./calculateRoutines.services";
+import { format } from "date-fns";
 
 class RoutineService {
   async createRoutine(routineData: RoutinesInput): Promise<RoutinesAttributes> {
@@ -65,36 +67,57 @@ class RoutineService {
 
   async assignRoutineByEmail(
     email: string,
-    routineName: string,
-    scheduledDate: Date
-  ): Promise<void> {
+    routineId: number,
+    scheduledDate: Date,
+    recurrenceDay: number
+  ): Promise<{ recurrentDates: Date[] }> {
     try {
       // Buscar el usuario por email
       const user = await Users.findOne({ where: { email } });
       if (!user) {
         throw new Error("Usuario no encontrado.");
       }
+
       if (user.userType !== UserType.CLIENT) {
         throw new Error("El usuario especificado no es un cliente.");
       }
 
-      // Verificar si el cliente existe en la tabla clientes
+      // Buscar el cliente asociado al usuario
       const client = await Client.findOne({ where: { user_id: user.id } });
       if (!client) {
         throw new Error("Cliente no encontrado.");
       }
-      //Busca la rutina por nombre
-      const routine = await Routines.findOne({ where: { name: routineName } });
+
+      // Verificar si la rutina existe
+      const routine = await Routines.findByPk(routineId);
       if (!routine) {
-        throw new Error("La rutina especificada no existe.");
+        throw new Error("Rutina no encontrada.");
       }
 
-      // Asignar la rutina al cliente en la tabla intermedia
+      // Extraer la hora desde `scheduledDate`
+      const hours = scheduledDate.getHours();
+      const minutes = scheduledDate.getMinutes();
+      const time = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`;
+
+      // Generar fechas recurrentes usando `calculateRecurrentDates`
+      const recurrentDates = calculateRecurrentDates(
+        recurrenceDay,
+        time,
+        scheduledDate
+      );
+
+      // Crear asignación de la rutina
       await ClientRoutines.create({
         clientId: client.id,
         routineId: routine.id,
         scheduledDate,
+        recurrenceDay,
+        time,
       });
+
+      return { recurrentDates };
     } catch (error) {
       throw new Error(
         `Error al asignar la rutina: ${(error as Error).message}`
@@ -104,30 +127,53 @@ class RoutineService {
 
   async getRoutinesByClientId(clientId: number) {
     try {
-      // Validar el id del cliente
-      const validClientId = Number(clientId);
-      console.log(typeof validClientId, validClientId);
-
-      if (isNaN(validClientId)) {
-        throw new Error("El id de Cliente no es un número válido");
-      }
-
-      const client = await Client.findByPk(validClientId, {
-        include: {
-          model: Routines,
-          as: "routines",
-          through: { attributes: [] },
-        },
+      const client = await Client.findByPk(clientId, {
+        include: [
+          {
+            model: Routines,
+            as: "routines",
+            through: {
+              attributes: ["scheduledDate", "recurrenceDay", "time"],
+            },
+          },
+        ],
       });
 
       if (!client) {
-        throw new Error("Cliente no Existe");
+        throw new Error("Cliente no encontrado.");
       }
 
       if (!client.routines || client.routines.length === 0) {
         return { message: "Este cliente no tiene rutinas asignadas." };
       }
-      return client.routines;
+
+      const routinesWithClientDetails = client.routines.map((routine: any) => {
+        const { client_routines, ...routineData } = routine.toJSON();
+        const { scheduledDate, recurrenceDay, time } = client_routines || {};
+
+        let recurrentDates: string[] = [];
+        if (recurrenceDay !== null && scheduledDate) {
+          const initialDate = new Date(scheduledDate);
+          recurrentDates = calculateRecurrentDates(
+            recurrenceDay,
+            time || format(initialDate, "HH:mm"),
+            initialDate
+          ).map((date) => format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")); // Formato ISO con zona horaria local
+        }
+
+        return {
+          ...routineData,
+          scheduledDate: format(
+            new Date(scheduledDate),
+            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+          ),
+          recurrenceDay,
+          time,
+          recurrentDates,
+        };
+      });
+
+      return routinesWithClientDetails;
     } catch (error) {
       throw new Error((error as Error).message);
     }
@@ -146,6 +192,16 @@ class RoutineService {
               "description",
               "category",
               "musclesWorked",
+            ],
+            include: [
+              {
+                model: Client,
+                as: "clients",
+                attributes: ["id", "user_id", "coach_id"], // Agrega los atributos necesarios del cliente
+                through: {
+                  attributes: ["scheduledDate", "recurrenceDay", "time"], // Atributos de la tabla intermedia
+                },
+              },
             ],
           },
         ],
