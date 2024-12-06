@@ -5,6 +5,7 @@ import createError from "http-errors";
 class ClientController {
   async createClient(req: Request, res: Response, next: NextFunction) {
     try {
+      req.body.user_id = req.body.userId;
       const client = await ClientService.createClient(req.body);
       res.status(201).json(client);
     } catch (error) {
@@ -59,6 +60,28 @@ class ClientController {
       next(createError(400, (error as Error).message));
     }
   }
+
+
+  async updateClientMembership(req: MembershipRequest, res: Response, next: NextFunction) {
+    try {
+
+      const { userId, idMembership } = req.body;
+      if (isNaN(userId) || isNaN(idMembership)) {
+        throw new Error(`ID de usuario: ${userId} o membresía inválido: ${idMembership}`);
+      }
+      const updatedClient = await ClientService.updateClientMembership(userId, idMembership);
+      res.status(200).json(updatedClient);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+  
+}
+interface MembershipRequest extends Request {
+  body: {
+    userId: number;
+    idMembership: number;
+  };
 }
 
 export default new ClientController();

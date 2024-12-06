@@ -7,4 +7,5 @@ export interface ClientInput {
   diseases?: string[];
   dietaryRestrictions?: string[];
   clientStats?: boolean;
+  membershipId?: number;
 }

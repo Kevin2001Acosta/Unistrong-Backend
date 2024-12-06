@@ -6,6 +6,7 @@ import UserService from "../services/user/user.services";
 import { UserType } from "../db/models/utils/user.types";
 import Coach from "../db/models/coach.models";
 import Client from "../db/models/client.models";
+import clientServices from "../services/client/client.services";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -50,6 +51,9 @@ class AuthController {
         secure: false,
       });
 
+      // buscar si ya existe la tabla client, si no existe enviar false
+      const clientexist: boolean = await clientServices.getClientByUserId(user.id);
+
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
@@ -62,6 +66,7 @@ class AuthController {
           userType: user.userType,
           additionalData,
         },
+        infoClientRegistered: clientexist,
       });
     } catch (error) {
       console.log("Error en el login:", error);

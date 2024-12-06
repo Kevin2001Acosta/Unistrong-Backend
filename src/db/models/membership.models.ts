@@ -1,19 +1,9 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/config.db";
-import { MembershipAttributes, MembershipInput } from "../../schemas/membership/membership.schema";
-import Client from "./client.models";
-
-
-class Membership 
-extends Model<MembershipAttributes, MembershipInput> 
-implements MembershipAttributes
-{
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../config/config.db'; // Adjust the path as necessary
+import { MembershipAttributes } from '../../schemas/membership/membership.schema';
+class Membership extends Model<MembershipAttributes> {
     declare id: number;
-    declare clientId: number;
-    declare startDate: Date;
-    declare endDate: Date;
     declare price: number;
-    declare active: boolean;
 }
 
 Membership.init(
@@ -21,39 +11,19 @@ Membership.init(
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
-        },
-        clientId: {
-            type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: Client,
-                key: 'id',
-            },
-        },
-        startDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        endDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
+            autoIncrement: false,
         },
         price: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
-        active: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true,
-        },
-
     },
     {
         sequelize,
         tableName: 'memberships',
+        timestamps: false,
     }
-)
+);
 
 export default Membership;

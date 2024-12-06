@@ -13,7 +13,7 @@ import Diets from "../models/diets.models";
 import ClientDiets from "../models/client_diets.models";
 import Reservations from "../models/reservations.models";
 import Membership from "../models/membership.models";
-import TypeMembership from "../models/type_membership.models";
+import MembershipPayment from "../models/membership.payment.models";
 
 async function loadModels() {
   try {
@@ -27,7 +27,7 @@ async function loadModels() {
 
     await Classes.sync({ alter: true });
 
-    await TypeMembership.sync({ alter: true });
+    await Membership.sync({ alter: true });
 
     await Client.sync({ alter: true });
 
@@ -44,7 +44,7 @@ async function loadModels() {
 
     await ClientRoutines.sync({ alter: true });
 
-    await Membership.sync({ alter: true });
+    await MembershipPayment.sync({ alter: true });
 
     //Declarar y cargar las asociaciones aqui
     // Relación Usuario-Cliente (uno a uno)
@@ -145,18 +145,13 @@ async function loadModels() {
       as: "clients",
     });
     // relación membresía-cliente
-    Client.hasMany(Membership, { foreignKey: "clientId", as: "memberships" });
-    Membership.belongsTo(Client, { foreignKey: "clientId", as: "client" });
+    Client.hasMany(MembershipPayment, { foreignKey: "clientId", as: "membershipPayments" });
+    MembershipPayment.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
     // relación cliente-tipo de membresía
-    Client.belongsTo(TypeMembership, {
-      foreignKey: "typeMembershipId",
-      as: "typeMembership",
-    });
-    TypeMembership.hasMany(Client, {
-      foreignKey: "typeMembershipId",
-      as: "clients",
-    });
+    Client.belongsTo(Membership, { foreignKey: "membershipId", as: "membership" });
+    Membership.hasMany(Client, { foreignKey: "membershipId", as: "clients" });
+
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
   }
