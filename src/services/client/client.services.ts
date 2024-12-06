@@ -92,6 +92,17 @@ class ClientService {
       const client = await Client.findByPk(id, {
         include: [
           { model: Users, as: "user", attributes: ["id", "name", "email"] },
+          {
+            model: Coach,
+            as: "coach",
+            include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
           { model: Routines, as: "routines", attributes: ["id", "name"] },
           { model: Diets, as: "diets", attributes: ["id", "name"] },
           { model: Membership, as: "Membership", attributes: ["id", "price"] },

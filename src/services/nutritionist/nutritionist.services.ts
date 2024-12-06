@@ -32,6 +32,7 @@ class NutritionistService {
           {
             model: Users,
             as: "user",
+            attributes: ["id", "name", "email"],
           },
         ],
       });

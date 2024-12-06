@@ -225,7 +225,7 @@ class RoutineService {
         throw new Error("Rutina no encontrada.");
       }
 
-      // Extraer la hora desde `scheduledDate` y asegurarse de que esté en la misma zona horaria
+      // Extraer la hora  en la misma zona horaria
       const hours = scheduledDate.getHours();
       const minutes = scheduledDate.getMinutes();
 
@@ -235,7 +235,7 @@ class RoutineService {
         hours
       );
 
-      // Generar fechas recurrentes usando `calculateRecurrentDates`
+      // Generar fechas recurrentes usando calculateRecurrentDates
       const recurrentDates = calculateRecurrentDates(
         recurrenceDay,
         format(correctedScheduledDate, "HH:mm"), // Hora formateada
