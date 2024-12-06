@@ -12,6 +12,7 @@ import {
 import Client from "../../db/models/client.models";
 import { UserType } from "../../db/models/utils/user.types";
 import Coach from "../../db/models/coach.models";
+import Nutritionist from "../../db/models/nutritionist.model";
 
 class UserService {
   updateUser(user: UserAtributes) {
@@ -41,7 +42,14 @@ class UserService {
         });
         console.log("cliente creado");
       }
-
+      //Crear tambien en la tabla nutriologo si es un nutriologo
+      if (user.userType === UserType.NUTRITIONIST) {
+        await Nutritionist.create({
+          user_id: user.id,
+        });
+        console.log("nutriologo creado");
+      }
+      //Crear tambien en la tabla coach si es un coach
       if (user.userType === UserType.COACH) {
         await Coach.create({
           user_id: user.id,

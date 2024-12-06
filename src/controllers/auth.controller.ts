@@ -6,6 +6,7 @@ import UserService from "../services/user/user.services";
 import { UserType } from "../db/models/utils/user.types";
 import Coach from "../db/models/coach.models";
 import Client from "../db/models/client.models";
+import Nutritionist from "../db/models/nutritionist.model";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -42,6 +43,12 @@ class AuthController {
 
       if (user.userType === UserType.CLIENT) {
         additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.NUTRITIONIST) {
+        additionalData = await Nutritionist.findOne({
+          where: { user_id: user.id },
+        });
       }
 
       // Configurar la cookie con el token

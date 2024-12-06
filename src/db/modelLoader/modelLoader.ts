@@ -14,6 +14,7 @@ import ClientDiets from "../models/client_diets.models";
 import Reservations from "../models/reservations.models";
 import Membership from "../models/membership.models";
 import TypeMembership from "../models/type_membership.models";
+import Admin from "../models/admin.models";
 
 async function loadModels() {
   try {
@@ -24,6 +25,8 @@ async function loadModels() {
     await Accountant.sync({ alter: true });
 
     await Nutritionist.sync({ alter: true });
+
+    await Admin.sync({ alter: true });
 
     await Classes.sync({ alter: true });
 
@@ -50,6 +53,10 @@ async function loadModels() {
     // Relación Usuario-Cliente (uno a uno)
     Users.hasOne(Client, { foreignKey: "user_id", as: "client" });
     Client.belongsTo(Users, { foreignKey: "user_id", as: "user" });
+
+    // Relación Usuario-Admin (uno a uno)
+    Users.hasOne(Admin, { foreignKey: "user_id", as: "admin" });
+    Admin.belongsTo(Users, { foreignKey: "user_id", as: "user" });
 
     // Relación Coach-Cliente (uno a muchos)
     Coach.hasMany(Client, { foreignKey: "coach_id", as: "clients" });
@@ -133,6 +140,12 @@ async function loadModels() {
       through: ClientRoutines,
       as: "clients",
     });
+    Diets.hasMany(ClientDiets, { foreignKey: "dietId", as: "clientDiets" });
+
+    ClientDiets.belongsTo(Diets, { foreignKey: "dietId", as: "diet" }); // Agregar alias 'diet'
+
+    // Relación de ClientDiets con Client
+    ClientDiets.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
     Client.belongsToMany(Diets, {
       foreignKey: "clientId",
