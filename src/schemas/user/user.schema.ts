@@ -6,7 +6,8 @@ export interface UserAtributes {
   dni: string;
   username: string;
   password: string;
-  phoneNumber: String;
-  state?: Boolean;
-  user_type?: UserType;
+  phoneNumber: string;
+  state?: boolean;
+  userType?: UserType;
 }
+

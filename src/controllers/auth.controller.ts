@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../services/user/auth.services";
 import createError from "http-errors";
+import UserService from "../services/user/user.services";
+import { UserType } from "../db/models/utils/user.types";
+import Coach from "../db/models/coach.models";
+import Client from "../db/models/client.models";
+import clientServices from "../services/client/client.services";
 import Users from "../db/models/user.model";
 
 class AuthController {
@@ -29,11 +34,27 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      let additionalData = null;
+
+      // Validar el tipo de usuario y obtener datos adicionales
+      if (user.userType === UserType.COACH) {
+        additionalData = await Coach.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.CLIENT) {
+        additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
+
       // Configurar la cookie con el token
       res.cookie("token", token, {
         httpOnly: false,
         secure: false,
       });
+
+      // buscar si ya existe la tabla client, si no existe enviar false
+      const clientexist: boolean = await clientServices.getClientByUserId(
+        user.id
+      );
 
       // Devolver el token y datos del usuario
       return res.status(200).json({
@@ -44,10 +65,13 @@ class AuthController {
           username: user.username,
           email: user.email,
           state: user.state,
+          userType: user.userType,
+          additionalData,
         },
+        infoClientRegistered: clientexist,
       });
     } catch (error) {
-      console.error("Error en el login:", error);
+      console.log("Error en el login:", error);
       //manejo de errores
       if (error instanceof createError.HttpError) {
         return res.status(error.status).json({
@@ -62,7 +86,6 @@ class AuthController {
       });
     }
   }
-
   async logout(req: Request, res: Response): Promise<Response> {
     try {
       res.clearCookie("token");
@@ -74,13 +97,32 @@ class AuthController {
     }
   }
 
-  async validateToken(req: Request, res: Response, next: NextFunction) {
+  async verifyToken(req: Request, res: Response, next: NextFunction) {
     try {
-      // El middleware ya habrá verificado el token y agregado el userId al req.body
-      const userId = req.body.userId;
-      res.status(200).json({ message: "Token válido", userId });
+      // Buscar el usuario usando el userId extraído del token
+      const user = await UserService.getUserById(req.body.userId);
+
+      // Si el usuario no existe, retornamos un error
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      // Si el token es válido, devolver la información del usuario
+      return res.status(200).json({
+        message: "Token válido",
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          state: user.state,
+          userType: user.userType,
+        },
+      });
     } catch (error) {
-      next(error); // Manejo de errores si ocurre algún problema
+      return res.status(400).json({
+        status: 400,
+        message: "Hubo un problema al verificar el token",
+      });
     }
   }
 }

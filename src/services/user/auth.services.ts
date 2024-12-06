@@ -30,10 +30,16 @@ class AuthService {
     });
     return token;
   }
-
-  // verificar token
+  //verificar token
   verifyToken(token: string): any {
     return jwt.verify(token, config.jwtSecret);
+  }
+
+  generateTokenEmail(userId: number, code: string): string {
+    const token = jwt.sign({ id: userId, code: code }, config.jwtSecret, {
+      expiresIn: "1h", // Token expira en 1 hora
+    });
+    return token;
   }
 }
 export default new AuthService();

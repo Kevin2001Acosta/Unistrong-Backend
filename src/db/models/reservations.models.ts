@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import Client from "../models/client.models";
-import Classes from "../models/classes.models";
+import Client from "./client.models";
+import Classes from "./classes.models";
 import { ReservationsAtributes } from "../../schemas/classes/reservations.schema";
 import { ReservationsInput } from "../../schemas/classes/reservations.input.schema";
 

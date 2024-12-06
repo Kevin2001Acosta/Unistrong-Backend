@@ -2,19 +2,19 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
 import { UserAtributes } from "../../schemas/user/user.schema";
 import { UserInput } from "../../schemas/user/user.input.schema";
-import { isValidUsername, isStrongPassword } from "../models/utils/constraints";
+import { isValidUsername, isStrongPassword } from "./utils/constraints";
 import { UserType } from "./utils/user.types";
 
 class Users extends Model<UserAtributes, UserInput> implements UserAtributes {
-  public id!: number;
-  public email!: string;
-  public name!: string;
-  public dni!: string;
-  public username!: string;
-  public password!: string;
-  public phoneNumber!: string;
-  public state!: boolean;
-  public user_type!: UserType;
+  declare id: number;
+  declare email: string;
+  declare name: string;
+  declare dni: string;
+  declare username: string;
+  declare password: string;
+  declare phoneNumber: string;
+  declare state: boolean;
+  declare userType: UserType;
 }
 
 Users.init(
@@ -52,7 +52,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_dni_key", // Nombrar la restricción de unicidad
+        name: "users_dni_key",
         msg: "El DNI ya está registrado",
       },
     },
@@ -60,7 +60,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_username_key", // Nombrar la restricción de unicidad
+        name: "users_username_key",
         msg: "El nombre de usuario ya está en uso",
       },
       validate: {
@@ -92,7 +92,7 @@ Users.init(
       allowNull: false,
       defaultValue: false,
     },
-    user_type: {
+    userType: {
       type: DataTypes.ENUM(
         UserType.ADMIN,
         UserType.CLIENT,
@@ -109,6 +109,12 @@ Users.init(
     tableName: "users",
     timestamps: true,
     underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["email"],
+      },
+    ],
   }
 );
 

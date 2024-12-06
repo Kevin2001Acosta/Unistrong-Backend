@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/config.db";
-import Client from "../models/client.models";
-import Diets from "../models/diets.models";
+import Client from "./client.models";
+import Diets from "./diets.models";
 
 class ClientDiets extends Model {
   public clientId!: number;
