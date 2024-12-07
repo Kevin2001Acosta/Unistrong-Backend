@@ -1,11 +1,21 @@
 import Admin from "../../db/models/admin.models";
+import Client from "../../db/models/client.models";
 import Coach from "../../db/models/coach.models";
 import Nutritionist from "../../db/models/nutritionist.model";
 import Users from "../../db/models/user.model";
+import {
+  isStrongPassword,
+  isValidUsername,
+} from "../../db/models/utils/constraints";
 import { UserType } from "../../db/models/utils/user.types";
 import { AdminInput } from "../../schemas/admin/admin.schema";
 import { CoachInputAdmin } from "../../schemas/coach/coach.input.admin";
 import { NutriInputAdmin } from "../../schemas/nutritionist/nutri.input.admin";
+import { UserInput } from "../../schemas/user/user.input.schema";
+import { UserAtributes } from "../../schemas/user/user.schema";
+import { UniqueConstraintError } from "sequelize";
+import createError from "http-errors";
+import AuthService from "../../services/user/auth.services";
 
 class AdminService {
   async createAdmin(adminData: AdminInput): Promise<Admin> {
@@ -27,40 +37,116 @@ class AdminService {
     return newAdmin;
   }
 
-  async createCoach(coachData: CoachInputAdmin): Promise<Coach> {
-    const user = await Users.findOne({ where: { email: coachData.email } });
-    if (!user) {
-      throw new Error("El usuario con el email proporcionado no existe.");
-    }
+  async createUserAnyType(userData: UserInput): Promise<UserAtributes> {
+    try {
+      console.log("usuario:", userData);
 
-    const existingCoach = await Coach.findOne({ where: { user_id: user.id } });
-    if (existingCoach) {
-      throw new Error("El usuario ya está registrado como coach.");
-    }
+      // Validaciones de contraseña y nombre de usuario
+      isStrongPassword(userData.password);
+      isValidUsername(userData.username);
 
-    user.userType = UserType.COACH;
-    await user.save();
-    const newCoach = await Coach.create({ user_id: user.id });
-    return newCoach;
+      // Hashear la contraseña
+      const hashedPassword = await AuthService.hashPassword(userData.password);
+
+      // Crear el usuario
+      const user = await Users.create({
+        ...userData,
+        password: hashedPassword,
+      });
+
+      //Crear tambien en la tabla cliente si es un cliente
+      if (user.userType === UserType.CLIENT) {
+        await Client.create({
+          user_id: user.id,
+        });
+        console.log("cliente creado");
+      }
+      //Crear tambien en la tabla nutriologo si es un nutriologo
+      if (user.userType === UserType.NUTRITIONIST) {
+        await Nutritionist.create({
+          user_id: user.id,
+        });
+        console.log("nutriologo creado");
+      }
+      //Crear tambien en la tabla coach si es un coach
+      if (user.userType === UserType.COACH) {
+        await Coach.create({
+          user_id: user.id,
+        });
+        console.log("coach creado");
+      }
+      return user;
+    } catch (error) {
+      // Manejo específico de errores de unicidad
+      if (error instanceof UniqueConstraintError) {
+        if ((error.parent as any)?.constraint === "users_email_key") {
+          throw createError(409, "El correo electrónico ya está registrado.");
+        }
+        if ((error.parent as any)?.constraint === "users_username_key") {
+          throw createError(409, "El nombre de usuario ya está en uso.");
+        }
+        if ((error.parent as any)?.constraint === "users_dni_key") {
+          throw createError(409, "El DNI ya está registrado.");
+        }
+        throw createError(409, "Ya existe un registro con este dato.");
+      }
+
+      throw createError(
+        400,
+        `Error al crear el usuario: ${(error as Error).message}`
+      );
+    }
   }
 
-  async createNutri(coachData: NutriInputAdmin): Promise<Nutritionist> {
-    const user = await Users.findOne({ where: { email: coachData.email } });
-    if (!user) {
-      throw new Error("El usuario con el email proporcionado no existe.");
-    }
-
-    const existingNutri = await Nutritionist.findOne({
-      where: { user_id: user.id },
+  async assignCoachToClient(
+    clientEmail: string,
+    coachEmail: string
+  ): Promise<void> {
+    // 1. Buscar al cliente por email
+    const clientUser = await Users.findOne({
+      where: { email: clientEmail, userType: UserType.CLIENT },
     });
-    if (existingNutri) {
-      throw new Error("El usuario ya está registrado como nutriologo.");
+
+    if (!clientUser) {
+      throw createError(404, "El cliente no existe o no tiene el tipo CLIENT.");
     }
 
-    user.userType = UserType.NUTRITIONIST;
-    await user.save();
-    const newNutri = await Nutritionist.create({ user_id: user.id });
-    return newNutri;
+    // 2. Verificar si el cliente ya tiene un coach asignado
+    const client = await Client.findOne({ where: { user_id: clientUser.id } });
+
+    if (!client) {
+      throw createError(
+        404,
+        "El cliente no tiene un perfil en la tabla Clients."
+      );
+    }
+
+    if (client.coach_id) {
+      throw createError(400, "El cliente ya tiene un coach asignado.");
+    }
+
+    // 3. Buscar al coach por email
+    const coachUser = await Users.findOne({
+      where: { email: coachEmail, userType: UserType.COACH },
+    });
+
+    if (!coachUser) {
+      throw createError(404, "El coach no existe o no tiene el tipo COACH.");
+    }
+
+    // 4. Verificar si el coach está registrado en la tabla Coaches
+    const coach = await Coach.findOne({ where: { user_id: coachUser.id } });
+
+    if (!coach) {
+      throw createError(
+        404,
+        "El coach no tiene un perfil en la tabla Coaches."
+      );
+    }
+
+    // 5. Asignar el coach al cliente
+    client.coach_id = coach.id;
+    await client.save();
   }
 }
 

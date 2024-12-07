@@ -1,5 +1,4 @@
 import { UserAtributes } from "../../schemas/user/user.schema";
-import { UserState } from "../../db/models/utils/user.state";
 import { UserInput } from "../../schemas/user/user.input.schema";
 import Users from "../../db/models/user.model";
 import AuthService from "././auth.services";
@@ -58,7 +57,7 @@ class UserService {
       }
       return user;
     } catch (error) {
-      // Errores de unicidad
+      // Manejo específico de errores de unicidad
       if (error instanceof UniqueConstraintError) {
         if ((error.parent as any)?.constraint === "users_email_key") {
           throw createError(409, "El correo electrónico ya está registrado.");

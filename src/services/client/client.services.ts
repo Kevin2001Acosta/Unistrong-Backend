@@ -12,7 +12,6 @@ import Membership from "../../db/models/membership.models";
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
     try {
-
       // Verificar si el usuario existe
       const user = await Users.findByPk(clientData.user_id);
       if (!user) {
@@ -47,9 +46,10 @@ class ClientService {
       });
 
       if (verifyClient) {
-        throw new Error("El usuario ya tiene un cliente asociado,\nEntre al perfil y actualice su información");
+        throw new Error(
+          "El usuario ya tiene un cliente asociado,\nEntre al perfil y actualice su información"
+        );
       }
-
 
       // Crear el cliente
       const client = await Client.create({
@@ -154,31 +154,34 @@ class ClientService {
     }
   }
 
-  async updateClientMembership(userId: number, idMembership: number) : Promise<ClientAttributes | null>{
+  async updateClientMembership(
+    userId: number,
+    idMembership: number
+  ): Promise<ClientAttributes | null> {
     try {
       // verificar si el usuario es tipo cliente
       const user = await Users.findByPk(userId);
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-      if(user.userType !== UserType.CLIENT){
+      if (user.userType !== UserType.CLIENT) {
         throw new Error("El usuario no es del tipo cliente");
       }
 
       // busco el cliente
-      const client = await Client.findOne({where: {user_id: userId}});
-      if(!client){
+      const client = await Client.findOne({ where: { user_id: userId } });
+      if (!client) {
         throw new Error("Cliente no encontrado");
       }
 
       //verifico que no sea la misma membresía
-      if(client.membershipId === idMembership){
+      if (client.membershipId === idMembership) {
         return client;
       }
 
       // verifico la membresía
       const membership = await Membership.findByPk(idMembership);
-      if(!membership){
+      if (!membership) {
         throw new Error("Membresía no encontrada");
       }
 
@@ -187,46 +190,72 @@ class ClientService {
       await client.save();
 
       return client;
-
-
-
-    }catch(error){
-      throw new Error(`Error al actualizar membresía: ${(error as Error).message}`);
+    } catch (error) {
+      throw new Error(
+        `Error al actualizar membresía: ${(error as Error).message}`
+      );
     }
-
   }
 
   async getExistClientByUserId(userId: number): Promise<boolean> {
     try {
       const client = await Client.findOne({ where: { user_id: userId } });
-      return !!client;  // la doble negación retorna un booleano directamente, true si existe cliente
+      return !!client; // la doble negación retorna un booleano directamente, true si existe cliente
     } catch (error) {
       throw new Error(
-        `Error al obtener el cliente por id de usuario: ${(error as Error).message}`
+        `Error al obtener el cliente por id de usuario: ${
+          (error as Error).message
+        }`
       );
     }
   }
 
   async getClientByUserId(userId: number): Promise<Client | null> {
     try {
-      const client = await Client.findOne({ 
+      const client = await Client.findOne({
         where: { user_id: userId },
         include: [
           {
             model: Membership,
             as: "membership",
-            attributes: ["id", "price"]
+            attributes: ["id", "price"],
           },
         ],
-       });
-      return client;  // Retorna el cliente o null si no existe
+      });
+      return client; // Retorna el cliente o null si no existe
     } catch (error) {
       throw new Error(
-        `Error al obtener el cliente por id de usuario: ${(error as Error).message}`
+        `Error al obtener el cliente por id de usuario: ${
+          (error as Error).message
+        }`
       );
     }
   }
 
+  async getClientWithCoachAndUser(clientId: number) {
+    const client = await Client.findOne({
+      where: { id: clientId },
+      include: [
+        {
+          model: Coach,
+          as: "coach", // Esto accede al coach asociado con el cliente
+          include: [
+            {
+              model: Users, // Aquí se accede al 'user' asociado al coach
+              as: "user",
+              attributes: ["id", "name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
+
+    return client;
+  }
 }
 
 export default new ClientService();
