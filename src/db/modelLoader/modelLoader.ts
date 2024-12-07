@@ -3,6 +3,7 @@ import Users from "../models/user.model";
 import Client from "../models/client.models";
 import Coach from "../models/coach.models";
 import Routines from "../models/routines.models";
+import Verification from "../models/verification.models";
 import ClientRoutines from "../models/client_routines";
 import Nutritionist from "../models/nutritionist.model";
 import Classes from "../models/classes.models";
@@ -11,6 +12,9 @@ import Accountant from "../models/acountant.models";
 import Diets from "../models/diets.models";
 import ClientDiets from "../models/client_diets.models";
 import Reservations from "../models/reservations.models";
+import Membership from "../models/membership.models";
+import MembershipPayment from "../models/membership.payment.models";
+import Admin from "../models/admin.models";
 
 async function loadModels() {
   try {
@@ -22,26 +26,37 @@ async function loadModels() {
 
     await Nutritionist.sync({ alter: true });
 
+    await Admin.sync({ alter: true });
+
     await Classes.sync({ alter: true });
+
+    await Membership.sync({ alter: true });
 
     await Client.sync({ alter: true });
 
     await Reservations.sync({ alter: true });
 
     await ClientCharacteristics.sync({ alter: true });
-
     await Diets.sync({ alter: true });
 
     await ClientDiets.sync({ alter: true });
 
     await Routines.sync({ alter: true });
 
+    await Verification.sync({ alter: true });
+
     await ClientRoutines.sync({ alter: true });
+
+    await MembershipPayment.sync({ alter: true });
 
     //Declarar y cargar las asociaciones aqui
     // Relación Usuario-Cliente (uno a uno)
     Users.hasOne(Client, { foreignKey: "user_id", as: "client" });
     Client.belongsTo(Users, { foreignKey: "user_id", as: "user" });
+
+    // Relación Usuario-Admin (uno a uno)
+    Users.hasOne(Admin, { foreignKey: "user_id", as: "admin" });
+    Admin.belongsTo(Users, { foreignKey: "user_id", as: "user" });
 
     // Relación Coach-Cliente (uno a muchos)
     Coach.hasMany(Client, { foreignKey: "coach_id", as: "clients" });
@@ -62,6 +77,9 @@ async function loadModels() {
     // Relación Usuario-Nutritionist (uno a uno)
     Users.hasOne(Nutritionist, { foreignKey: "user_id", as: "nutritionist" });
     Nutritionist.belongsTo(Users, { foreignKey: "user_id", as: "user" });
+
+    Users.hasMany(Verification, { foreignKey: "userId", as: "verifications" }); // Un usuario tiene muchas verificaciones
+    Verification.belongsTo(Users, { foreignKey: "userId", as: "user" }); // Una verificación pertenece a un usuario
 
     // Relación Cliente-Clases (muchos a muchos) através de la tabla Reservations
     Client.belongsToMany(Classes, {
@@ -101,6 +119,16 @@ async function loadModels() {
       as: "client",
     });
 
+    Coach.hasMany(Routines, {
+      foreignKey: "coachId",
+      as: "routines",
+    });
+
+    Routines.belongsTo(Coach, {
+      foreignKey: "coachId",
+      as: "coach",
+    });
+
     // Relación muchos a muchos entre Client y Routine a través de la tabla ClientRoutines
     Client.belongsToMany(Routines, {
       foreignKey: "clientId",
@@ -112,6 +140,12 @@ async function loadModels() {
       through: ClientRoutines,
       as: "clients",
     });
+    Diets.hasMany(ClientDiets, { foreignKey: "dietId", as: "clientDiets" });
+
+    ClientDiets.belongsTo(Diets, { foreignKey: "dietId", as: "diet" }); // Agregar alias 'diet'
+
+    // Relación de ClientDiets con Client
+    ClientDiets.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
     Client.belongsToMany(Diets, {
       foreignKey: "clientId",
@@ -123,6 +157,22 @@ async function loadModels() {
       through: ClientDiets,
       as: "clients",
     });
+    // relación membresía-cliente
+    Client.hasMany(MembershipPayment, {
+      foreignKey: "clientId",
+      as: "membershipPayments",
+    });
+    MembershipPayment.belongsTo(Client, {
+      foreignKey: "clientId",
+      as: "client",
+    });
+
+    // relación cliente-tipo de membresía
+    Client.belongsTo(Membership, {
+      foreignKey: "membershipId",
+      as: "membership",
+    });
+    Membership.hasMany(Client, { foreignKey: "membershipId", as: "clients" });
   } catch (error) {
     console.error("Error al crear las tablas o asociaciones:", error);
   }

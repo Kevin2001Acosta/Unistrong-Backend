@@ -1,7 +1,6 @@
 import { NutritionistAtributes } from "../../schemas/nutritionist/nutritionist.schema";
 import { NutritionistInput } from "../../schemas/nutritionist/nutritionist.input.schema";
 import Nutritionist from "../../db/models/nutritionist.model";
-import Client from "../../db/models/client.models";
 import Users from "../../db/models/user.model";
 import { UserType } from "../../db/models/utils/user.types";
 
@@ -14,11 +13,8 @@ class NutritionistService {
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-
-      if (user.user_type !== UserType.NUTRITIONIST) {
-        throw new Error("El tipo de usuario no es 'nutriologo'");
-      }
-
+      user.userType = UserType.NUTRITIONIST;
+      await user.save();
       const nutri = await Nutritionist.create({
         user_id: nutritionistData.user_id,
       });
@@ -35,6 +31,7 @@ class NutritionistService {
           {
             model: Users,
             as: "user",
+            attributes: ["id", "name", "email"],
           },
         ],
       });

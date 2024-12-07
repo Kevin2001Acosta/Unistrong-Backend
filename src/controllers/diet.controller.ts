@@ -43,5 +43,58 @@ class DietController {
       next(createError(400, (error as Error).message));
     }
   }
+
+  async assignDietByEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, dietId } = req.body;
+
+      // Validar los datos de entrada
+      if (!email) {
+        throw new Error("El email es obligatorio.");
+      }
+      if (!dietId || isNaN(dietId)) {
+        throw new Error("ID de dieta inválido.");
+      }
+
+      // Llamar al servicio para asignar la dieta
+      await DietsServices.assignDietByEmail(email, Number(dietId));
+
+      res
+        .status(200)
+        .json({ message: "Dieta asignada correctamente al cliente." });
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+
+  async getDietsByNutritionist(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { id } = req.params;
+
+      if (!id || isNaN(Number(id))) {
+        throw new Error("ID de nutriólogo inválido.");
+      }
+
+      const diets = await DietsServices.getDietsByNutritionist(Number(id));
+      res.status(200).json(diets);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+
+  async getDietsByClient(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params; // Obtener el clientId de los parámetros de la URL
+      const diets = await DietsServices.getDietsByClient(Number(id)); // Llamar al servicio
+
+      res.status(200).json(diets); // Devolver las dietas al cliente
+    } catch (error) {
+      next(createError(400, (error as Error).message)); // Manejar errores
+    }
+  }
 }
 export default new DietController();

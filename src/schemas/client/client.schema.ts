@@ -1,4 +1,6 @@
 import Users from "../../db/models/user.model";
+import { MembershipAttributes } from "../membership/membership.schema";
+
 export interface ClientAttributes {
   id: number;
   user_id: number;
@@ -9,4 +11,7 @@ export interface ClientAttributes {
   diseases?: string[];
   dietaryRestrictions?: string[];
   user?: Users;
+  membershipId?: number;
+  membership?: MembershipAttributes;
+  clientStats?: boolean;
 }

@@ -1,2 +1,15 @@
 node_modules
 .env
+coverage
+*.pem
+
+## ignorar archivos de exportación de diagrama
+*.pdf
+*.svg
+*.png
+
+.env.local
+docker-compose.yml
+Dockerfile
+.dockerignore
+```
