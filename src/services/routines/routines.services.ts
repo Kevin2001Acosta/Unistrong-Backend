@@ -378,6 +378,49 @@ class RoutineService {
     }
   }
 
+  // async getRoutinesByCoachId(coachId: number) {
+  //   try {
+  //     const coach = await Coach.findByPk(coachId, {
+  //       include: [
+  //         {
+  //           model: Routines,
+  //           as: "routines",
+  //           attributes: [
+  //             "id",
+  //             "name",
+  //             "description",
+  //             "category",
+  //             "musclesWorked",
+  //           ],
+  //           include: [
+  //             {
+  //               model: Client,
+  //               as: "clients",
+  //               attributes: ["id", "user_id", "coach_id"],
+  //               through: {
+  //                 attributes: [
+  //                   "scheduledDate",
+  //                   "recurrenceDay",
+  //                   "time",
+  //                   "recurrentDates",
+  //                 ],
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     });
+
+  //     if (!coach) {
+  //       throw new Error("Coach no encontrado.");
+  //     }
+
+  //     return coach;
+  //   } catch (error) {
+  //     throw new Error(`Error al obtener rutinas: ${(error as Error).message}`);
+  //   }
+  // }
+
   async getRoutinesByCoachId(coachId: number) {
     try {
       const coach = await Coach.findByPk(coachId, {

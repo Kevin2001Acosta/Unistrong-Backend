@@ -62,6 +62,27 @@ class AdminService {
     const newNutri = await Nutritionist.create({ user_id: user.id });
     return newNutri;
   }
+
+  async AdminExist(id: number): Promise<boolean | null> {
+    try {
+      const admin = await Admin.findOne({
+        where: {
+          user_id:id,
+        },
+        attributes: ["user_id"],
+      });
+
+      if (!admin) {
+        throw new Error("El administrador no existe");
+      }
+      
+      return true;
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el administrador: ${(error as Error).message}`
+      );
+    }
+  }
 }
 
 export default new AdminService();

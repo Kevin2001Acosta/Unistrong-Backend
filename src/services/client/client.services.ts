@@ -72,11 +72,12 @@ class ClientService {
   async getAllClient(): Promise<ClientAttributes[]> {
     try {
       const client = await Client.findAll({
+        attributes: ["id", "user_id"],
         include: [
           {
             model: Users,
             as: "user",
-            attributes: ["id", "email", "name"],
+            attributes: ["username", "email", "name", "dni", "phone_number", "state"],
           },
         ],
       });

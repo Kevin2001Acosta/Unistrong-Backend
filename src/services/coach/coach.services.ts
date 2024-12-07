@@ -26,11 +26,12 @@ class CoachService {
   async getAllCoach(): Promise<any[]> {
     try {
       const coaches = await Coach.findAll({
+        attributes: ["id", "user_id"],
         include: [
           {
             model: Users,
             as: "user",
-            attributes: ["id", "email", "name"],
+            attributes: ["username", "email", "name", "dni", "phone_number", "state"],
           },
         ],
       });
