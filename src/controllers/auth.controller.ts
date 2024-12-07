@@ -60,7 +60,7 @@ class AuthController {
       });
 
       // buscar si ya existe la tabla client, si no existe enviar false
-      const clientexist: boolean = await clientServices.getClientByUserId(
+      const clientexist: boolean = await clientServices.getExistClientByUserId(
         user.id
       );
 

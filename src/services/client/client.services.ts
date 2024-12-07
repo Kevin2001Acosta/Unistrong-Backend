@@ -196,10 +196,30 @@ class ClientService {
 
   }
 
-  async getClientByUserId(userId: number): Promise<boolean> {
+  async getExistClientByUserId(userId: number): Promise<boolean> {
     try {
       const client = await Client.findOne({ where: { user_id: userId } });
       return !!client;  // la doble negación retorna un booleano directamente, true si existe cliente
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el cliente por id de usuario: ${(error as Error).message}`
+      );
+    }
+  }
+
+  async getClientByUserId(userId: number): Promise<Client | null> {
+    try {
+      const client = await Client.findOne({ 
+        where: { user_id: userId },
+        include: [
+          {
+            model: Membership,
+            as: "membership",
+            attributes: ["id", "price"]
+          },
+        ],
+       });
+      return client;  // Retorna el cliente o null si no existe
     } catch (error) {
       throw new Error(
         `Error al obtener el cliente por id de usuario: ${(error as Error).message}`

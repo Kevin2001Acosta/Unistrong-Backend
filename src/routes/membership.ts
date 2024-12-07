@@ -1,10 +1,15 @@
 // src/routes/membership.routes.ts
 import { Router } from "express";
 import MembershipController from "../controllers/membership.controller";
+import { verifyToken } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/register", MembershipController.registerMembership);
-router.get("/info", MembershipController.getMembershipRemainingDays);
+router.post("/register",verifyToken, MembershipController.registerMembership);
+
+
+// MembershipPayments
+router.get("/remainingDays", MembershipController.getMembershipRemainingDays);
+
 
 export { router };
