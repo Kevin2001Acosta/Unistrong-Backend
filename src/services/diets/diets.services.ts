@@ -7,6 +7,7 @@ import { assignDietsInput } from "../../schemas/diets/assign.diets.input";
 import ClientDiets from "../../db/models/client_diets.models";
 import Users from "../../db/models/user.model";
 import { UserType } from "../../db/models/utils/user.types";
+import { model } from "mongoose";
 
 class DietsService {
   async createDiet(dietData: DietsInput): Promise<DietsAtributes> {
@@ -30,6 +31,13 @@ class DietsService {
             model: Client,
             as: "clients",
             attributes: ["id", "user_id"],
+            include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["id", "name"],
+              },
+            ],
           },
         ],
       });
@@ -77,7 +85,7 @@ class DietsService {
         throw new Error("Cliente no encontrado.");
       }
 
-      // Verificar si la rutina existe
+      // Verificar si la dieta existe
       const diet = await Diets.findByPk(dietId);
       if (!diet) {
         throw new Error("Dieta no encontrada.");
@@ -93,20 +101,56 @@ class DietsService {
     }
   }
 
-  async getDietsByNutritionist(nutritionistId: number): Promise<Diets[]> {
-    if (!nutritionistId || isNaN(nutritionistId)) {
-      throw new Error("ID de nutriólogo inválido.");
+  // async getDietsByNutritionist(nutritionistId: number): Promise<Diets[]> {
+  //   if (!nutritionistId || isNaN(nutritionistId)) {
+  //     throw new Error("ID de nutriólogo inválido.");
+  //   }
+
+  //   const diets = await Diets.findAll({
+  //     where: { nutritionistId },
+  //   });
+
+  //   if (diets.length === 0) {
+  //     throw new Error("No se encontraron dietas para este nutriólogo.");
+  //   }
+
+  //   return diets;
+  // }
+
+  async getDietsByNutritionist(nutritionistId: number) {
+    try {
+      const nutri = await Nutritionist.findByPk(nutritionistId, {
+        include: [
+          {
+            model: Diets,
+            as: "diets",
+            attributes: ["id", "name", "description", "type"],
+            include: [
+              {
+                model: Client,
+                as: "clients",
+                attributes: ["id", "user_id"],
+                include: [
+                  {
+                    model: Users,
+                    as: "user",
+                    attributes: ["id", "name"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!nutri) {
+        throw new Error("Nutriologo no encontrado.");
+      }
+
+      return nutri;
+    } catch (error) {
+      throw new Error(`Error al obtener dietas: ${(error as Error).message}`);
     }
-
-    const diets = await Diets.findAll({
-      where: { nutritionistId },
-    });
-
-    if (diets.length === 0) {
-      throw new Error("No se encontraron dietas para este nutriólogo.");
-    }
-
-    return diets;
   }
 
   async getDietsByClient(clientId: number) {

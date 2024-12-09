@@ -76,7 +76,7 @@ class ClientService {
           {
             model: Users,
             as: "user",
-            attributes: ["id", "email", "name"],
+            attributes: ["id", "email", "name", "userType"],
           },
         ],
       });

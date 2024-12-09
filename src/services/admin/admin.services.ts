@@ -102,7 +102,7 @@ class AdminService {
     clientEmail: string,
     coachEmail: string
   ): Promise<void> {
-    // 1. Buscar al cliente por email
+    //Buscar al cliente por email
     const clientUser = await Users.findOne({
       where: { email: clientEmail, userType: UserType.CLIENT },
     });
@@ -111,7 +111,7 @@ class AdminService {
       throw createError(404, "El cliente no existe o no tiene el tipo CLIENT.");
     }
 
-    // 2. Verificar si el cliente ya tiene un coach asignado
+    //Verificar si el cliente ya tiene un coach asignado
     const client = await Client.findOne({ where: { user_id: clientUser.id } });
 
     if (!client) {
@@ -125,7 +125,7 @@ class AdminService {
       throw createError(400, "El cliente ya tiene un coach asignado.");
     }
 
-    // 3. Buscar al coach por email
+    //Buscar al coach por email
     const coachUser = await Users.findOne({
       where: { email: coachEmail, userType: UserType.COACH },
     });
@@ -134,7 +134,7 @@ class AdminService {
       throw createError(404, "El coach no existe o no tiene el tipo COACH.");
     }
 
-    // 4. Verificar si el coach está registrado en la tabla Coaches
+    //Verificar si el coach está registrado en la tabla Coaches
     const coach = await Coach.findOne({ where: { user_id: coachUser.id } });
 
     if (!coach) {
@@ -144,8 +144,58 @@ class AdminService {
       );
     }
 
-    // 5. Asignar el coach al cliente
+    //Asignar el coach al cliente
     client.coach_id = coach.id;
+    await client.save();
+  }
+
+  async assignNutritionistToClient(
+    clientEmail: string,
+    nutriEmail: string
+  ): Promise<void> {
+    //Buscar al cliente por email
+    const clientUser = await Users.findOne({
+      where: { email: clientEmail, userType: UserType.CLIENT },
+    });
+
+    if (!clientUser) {
+      throw createError(404, "El cliente no existe o no tiene el tipo CLIENT.");
+    }
+
+    //Verificar si el cliente ya tiene un coach asignado
+    const client = await Client.findOne({ where: { user_id: clientUser.id } });
+
+    if (!client) {
+      throw createError(
+        404,
+        "El cliente no tiene un perfil en la tabla Clients."
+      );
+    }
+
+    if (client.nutritionist_id) {
+      throw createError(400, "El cliente ya tiene un nutriologo asignado.");
+    }
+
+    //Buscar al coach por email
+    const nutri = await Users.findOne({
+      where: { email: nutriEmail, userType: UserType.NUTRITIONIST },
+    });
+
+    if (!nutri) {
+      throw createError(404, "El coach no existe.");
+    }
+
+    //Verificar si el coach está registrado en la tabla Coaches
+    const nutriExist = await Nutritionist.findOne({
+      where: { user_id: nutri.id },
+    });
+
+    if (!nutriExist) {
+      throw createError(404, "El coach no tiene un perfil.");
+    }
+
+    //Asignar el nutriologo al cliente
+    client.nutritionist_id = nutriExist.id;
     await client.save();
   }
 }

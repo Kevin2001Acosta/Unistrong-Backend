@@ -42,6 +42,29 @@ class AdminController {
       next(createError(400, (error as Error).message));
     }
   }
+
+  async assignNutriToClient(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { clientEmail, nutriEmail } = req.body;
+
+      // Validación de parámetros
+      if (!clientEmail || !nutriEmail) {
+        throw new Error(
+          "Se requiere el correo electrónico del cliente y del nutriologo."
+        );
+      }
+
+      const result = await AdminService.assignNutritionistToClient(
+        clientEmail,
+        nutriEmail
+      );
+      res
+        .status(200)
+        .json({ message: "Nutriologo asignado correctamente", result });
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
 }
 
 export default new AdminController();
