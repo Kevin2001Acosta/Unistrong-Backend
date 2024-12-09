@@ -4,7 +4,8 @@ import adminController from "../controllers/admin.controller";
 const router = Router();
 
 router.post("/", adminController.createAdmin);
-router.post("/coach", adminController.createCoach);
-router.post("/nutri", adminController.createCNutri);
+router.post("/createAny", adminController.createUserAnyType);
+router.post("/assignCoach", adminController.assignCoachToClient);
+router.post("/assignNutri", adminController.assignNutriToClient);
 
 export { router };
