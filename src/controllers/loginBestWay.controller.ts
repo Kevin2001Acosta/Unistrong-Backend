@@ -63,8 +63,8 @@ class LoginBestWayController {
         additionalData = await Client.findOne({ where: { user_id: user.id } });
       }
 
-      // buscar si ya existe la tabla client, si no existe enviar false
-      const clientexist: boolean = await clientServices.getExistClientByUserId(user.id);
+      // buscar si los campos están llenos, si están vacíos enviar false
+      const clientexist: boolean = await clientServices.getfilledFilledByUserId(user.id);
 
       // Generar el token
       const token = AuthService.generateToken(user.id);

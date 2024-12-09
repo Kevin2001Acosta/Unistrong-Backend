@@ -68,6 +68,51 @@ class ClientService {
       throw new Error(`Error al crear cliente: ${(error as Error).message}`);
     }
   }
+  async fillClientFields(clientData: ClientInput): Promise<ClientAttributes> {
+    try {
+
+      // Verificar si el usuario existe
+      const user = await Users.findByPk(clientData.user_id);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      if (user.userType !== UserType.CLIENT) {
+        throw new Error("El usuario no es del tipo cliente");
+      }
+
+      // verificar si el usuario ya tiene un cliente asociado
+      const client = await Client.findOne({
+        where: { user_id: clientData.user_id },
+      });
+
+      if (!client) {
+        throw new Error("El usuario No tiene un cliente asociado");
+      }
+      
+      // Llenar campos de cliente solo si están presentes en clientData
+      if (clientData.birthDate !== undefined) {
+        client.birthDate = clientData.birthDate;
+      }
+      if (clientData.height !== undefined) {
+        client.height = clientData.height;
+      }
+      if (clientData.diseases !== undefined) {
+        client.diseases = clientData.diseases;
+      }
+      if (clientData.dietaryRestrictions !== undefined) {
+        client.dietaryRestrictions = clientData.dietaryRestrictions;
+      }
+      if (clientData.membershipId !== undefined) {
+        client.membershipId = clientData.membershipId;
+      }
+      await client.save();
+
+      return client;
+    } catch (error) {
+      throw new Error(`Error al llenar campos: ${(error as Error).message}`);
+    }
+  }
 
   async getAllClient(): Promise<ClientAttributes[]> {
     try {
@@ -196,10 +241,20 @@ class ClientService {
 
   }
 
-  async getExistClientByUserId(userId: number): Promise<boolean> {
+  async getfilledFilledByUserId(userId: number): Promise<boolean> {
     try {
       const client = await Client.findOne({ where: { user_id: userId } });
-      return !!client;  // la doble negación retorna un booleano directamente, true si existe cliente
+      if (
+        client &&
+        (client.birthDate === null || client.birthDate === undefined) &&
+        (client.height === null || client.height === undefined) &&
+        (client.diseases === null || client.diseases.length === 0) &&
+        (client.dietaryRestrictions === null || client.dietaryRestrictions.length === 0) &&
+        (client.membershipId === null || client.membershipId === undefined)
+      ){
+        return false; // los campos están vacíos
+      };
+      return true; // Algún campo fué llenado
     } catch (error) {
       throw new Error(
         `Error al obtener el cliente por id de usuario: ${(error as Error).message}`

@@ -12,6 +12,19 @@ class ClientController {
       next(createError(400, (error as Error).message));
     }
   }
+  async fillClientFields(req: Request, res: Response, next: NextFunction) {
+    try {
+      req.body.user_id = req.body.userId;
+      const client = await ClientService.fillClientFields(req.body);
+      res.status(200).json({
+        message: "Campos de cliente actualizados",
+        client,
+      });
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+
 
   async getAllClients(req: Request, res: Response, next: NextFunction) {
     try {
