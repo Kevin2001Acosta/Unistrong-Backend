@@ -1,13 +1,12 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 import { testConnection } from "./db/config/config.db";
 import { loadModels } from "./db/modelLoader/modelLoader";
 import errorHandler from "./middleware/errorHandler";
 
 import { router } from "./routes/index";
-
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 dotenv.config();
 
