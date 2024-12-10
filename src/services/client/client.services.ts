@@ -122,11 +122,7 @@ class ClientService {
           {
             model: Users,
             as: "user",
-<<<<<<< HEAD
-            attributes: ["username", "email", "name", "dni", "phone_number", "state"],
-=======
-            attributes: ["id", "email", "name", "userType"],
->>>>>>> master
+            attributes: ["id", "username", "email", "name", "dni", "phone_number", "state", "userType"],
           },
         ],
       });
