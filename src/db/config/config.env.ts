@@ -3,7 +3,7 @@ dotenv.config();
 
 const config = {
   env: process.env.NODE_ENV,
-  port: 3001,
+  port: process.env.PORT || 3001,
   dbUser: process.env.DB_USER,
   dbPassword: process.env.DB_PASSWORD,
   dbHost: process.env.DB_HOST,
