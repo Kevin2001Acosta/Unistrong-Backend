@@ -147,6 +147,12 @@ async function loadModels() {
     // Relación de ClientDiets con Client
     ClientDiets.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 
+    Nutritionist.hasMany(Diets, { foreignKey: "nutritionistId", as: "diets" });
+    Diets.belongsTo(Nutritionist, {
+      foreignKey: "nutritionistId",
+      as: "nutritionist",
+    });
+
     Client.belongsToMany(Diets, {
       foreignKey: "clientId",
       through: ClientDiets,

@@ -24,7 +24,6 @@ class NutritionistService {
     }
   }
 
-  //Obtener nutriologo con su informacion de usuario
   async getAllNutritionist(): Promise<any[]> {
     try {
       const nutri = await Nutritionist.findAll({

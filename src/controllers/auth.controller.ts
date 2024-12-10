@@ -59,10 +59,10 @@ class AuthController {
         secure: false,
       });
 
-      // buscar si ya existe la tabla client, si no existe enviar false
-      const clientexist: boolean = await clientServices.getClientByUserId(
+
+      const clientexist: boolean = await clientServices.getfilledFilledByUserId(
         user.id
-      );
+      );// si hay algúno de los campos llenos, envíe true si ningúno está lleno false
 
       // Devolver el token y datos del usuario
       return res.status(200).json({
