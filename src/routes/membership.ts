@@ -9,7 +9,7 @@ router.post("/register",verifyToken, MembershipController.registerMembership);
 
 
 // MembershipPayments
-router.get("/remainingDays", MembershipController.getMembershipRemainingDays);
+router.post("/remainingDays", MembershipController.getMembershipRemainingDays);
 
 
 export { router };

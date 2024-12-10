@@ -25,7 +25,7 @@ class MembershipController {
     }
 
     async getMembershipRemainingDays(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const userId = req.body.userId;
+        const userId: number = req.body.userId;
         try {
             const infoRemainingDays = await membershipServices.getMembershipRemainingDays(userId);
             res.status(200).json( infoRemainingDays ); // devuelve: remainingDays, endDate, message
