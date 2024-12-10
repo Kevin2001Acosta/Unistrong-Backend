@@ -10,6 +10,5 @@ coverage
 
 .env.local
 docker-compose.yml
-Dockerfile
 .dockerignore
 ```
