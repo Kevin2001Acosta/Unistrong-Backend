@@ -203,7 +203,7 @@ class AdminService {
     try {
       const admin = await Admin.findOne({
         where: {
-          user_id:id,
+          user_id: id,
         },
         attributes: ["user_id"],
       });
@@ -211,11 +211,31 @@ class AdminService {
       if (!admin) {
         throw new Error("El administrador no existe");
       }
-      
+
       return true;
     } catch (error) {
       throw new Error(
         `Error al obtener el administrador: ${(error as Error).message}`
+      );
+    }
+  }
+
+  async deactivateUser(email: string): Promise<void> {
+    try {
+      // Buscar al usuario por email
+      const user = await Users.findOne({ where: { email } });
+
+      if (!user) {
+        throw createError(404, "El usuario no existe.");
+      }
+
+      // Actualizar el estado a falso
+      user.state = false;
+      await user.save();
+    } catch (error) {
+      throw createError(
+        400,
+        `Error al desactivar el usuario: ${(error as Error).message}`
       );
     }
   }

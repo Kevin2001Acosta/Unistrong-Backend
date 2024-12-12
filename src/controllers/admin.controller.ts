@@ -74,12 +74,14 @@ class AdminController {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        throw new Error("No se proporcionó un token en el encabezado de autorización.");
+        throw new Error(
+          "No se proporcionó un token en el encabezado de autorización."
+        );
       }
 
-      const parts = authHeader.split(' ');
-      if (parts.length !== 2 || parts[0] !== 'Bearer') {
-          throw new Error("Formato del token inválido.");
+      const parts = authHeader.split(" ");
+      if (parts.length !== 2 || parts[0] !== "Bearer") {
+        throw new Error("Formato del token inválido.");
       }
 
       const tokenBearer = parts[1];
@@ -90,9 +92,11 @@ class AdminController {
       if (isAdmin) {
         const coaches = await CoachService.getAllCoach();
         res.status(201).json(coaches);
-      }
-      else{
-        throw createError(401, "El usuario no es un admin, no está habilitado para esta función.");
+      } else {
+        throw createError(
+          401,
+          "El usuario no es un admin, no está habilitado para esta función."
+        );
       }
     } catch (error) {
       next(createError(400, (error as Error).message));
@@ -103,12 +107,14 @@ class AdminController {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        throw new Error("No se proporcionó un token en el encabezado de autorización.");
+        throw new Error(
+          "No se proporcionó un token en el encabezado de autorización."
+        );
       }
 
-      const parts = authHeader.split(' ');
-      if (parts.length !== 2 || parts[0] !== 'Bearer') {
-          throw new Error("Formato del token inválido.");
+      const parts = authHeader.split(" ");
+      if (parts.length !== 2 || parts[0] !== "Bearer") {
+        throw new Error("Formato del token inválido.");
       }
 
       const tokenBearer = parts[1];
@@ -119,9 +125,11 @@ class AdminController {
       if (isAdmin) {
         const nutritionists = await NutritionistService.getAllNutritionist();
         res.status(200).json(nutritionists);
-      }
-      else{
-        throw createError(401, "El usuario no es un admin, no está habilitado para esta función.");
+      } else {
+        throw createError(
+          401,
+          "El usuario no es un admin, no está habilitado para esta función."
+        );
       }
     } catch (error) {
       next(createError(400, (error as Error).message));
@@ -132,12 +140,14 @@ class AdminController {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        throw new Error("No se proporcionó un token en el encabezado de autorización.");
+        throw new Error(
+          "No se proporcionó un token en el encabezado de autorización."
+        );
       }
 
-      const parts = authHeader.split(' ');
-      if (parts.length !== 2 || parts[0] !== 'Bearer') {
-          throw new Error("Formato del token inválido.");
+      const parts = authHeader.split(" ");
+      if (parts.length !== 2 || parts[0] !== "Bearer") {
+        throw new Error("Formato del token inválido.");
       }
 
       const tokenBearer = parts[1];
@@ -148,10 +158,28 @@ class AdminController {
       if (isAdmin) {
         const clients = await ClientService.getAllClient();
         res.status(200).json(clients);
+      } else {
+        throw createError(
+          401,
+          "El usuario no es un admin, no está habilitado para esta función."
+        );
       }
-      else{
-        throw createError(401, "El usuario no es un admin, no está habilitado para esta función.");
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+
+  async deactivateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        throw new Error("El correo electrónico es requerido.");
       }
+
+      await AdminService.deactivateUser(email);
+
+      res.status(200).json({ message: "Usuario desactivado correctamente" });
     } catch (error) {
       next(createError(400, (error as Error).message));
     }

@@ -31,7 +31,14 @@ class CoachService {
           {
             model: Users,
             as: "user",
-            attributes: ["username", "email", "name", "dni", "phone_number", "state"],
+            attributes: [
+              "username",
+              "email",
+              "name",
+              "dni",
+              "phone_number",
+              "state",
+            ],
           },
         ],
       });
@@ -47,7 +54,9 @@ class CoachService {
   async getClientsByCoachId(coachId: number): Promise<any> {
     try {
       const coachWithClients = await Coach.findByPk(coachId, {
-        include: [{ model: Client, as: "clients" }],
+        include: [
+          { model: Client, as: "clients", attributes: ["id", "user_id"] },
+        ],
       });
 
       if (!coachWithClients) {
