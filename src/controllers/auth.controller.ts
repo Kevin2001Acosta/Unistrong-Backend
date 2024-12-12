@@ -6,7 +6,7 @@ import UserService from "../services/user/user.services";
 import { UserType } from "../db/models/utils/user.types";
 import Coach from "../db/models/coach.models";
 import Client from "../db/models/client.models";
-
+import VerificationServices from "../services/verification/verification.services";
 import clientServices from "../services/client/client.services";
 import Nutritionist from "../db/models/nutritionist.model";
 
@@ -36,6 +36,11 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      const stateUser = user.state;
+      if(!stateUser){
+        throw createError(403, "La cuenta ha sido desactivada");
+      }
+      
       let additionalData = null;
 
       // Validar el tipo de usuario y obtener datos adicionales
@@ -63,7 +68,6 @@ class AuthController {
       const clientexist: boolean = await clientServices.getfilledFilledByUserId(
         user.id
       );// si hay algúno de los campos llenos, envíe true si ningúno está lleno false
-
       // Devolver el token y datos del usuario
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
@@ -115,6 +119,7 @@ class AuthController {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
+      const isverified = await VerificationServices.isClientVerified(user.id);
       // Si el token es válido, devolver la información del usuario
       return res.status(200).json({
         message: "Token válido",
@@ -124,6 +129,7 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          infoClienteVerified: isverified,
         },
       });
     } catch (error) {

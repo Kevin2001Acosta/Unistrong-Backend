@@ -166,12 +166,6 @@ export const verifyEmail = async (req: VerificationEmailRequest, res: Response) 
         // Verificar el código de verificación
         await verificationService.verifyCodeoOfEmail(user.id, user.code);
 
-        // Actualizar el estado de verificación del usuario en la base de datos
-        await Users.update(
-            { state: true }, // Cambia el estado a verdadero
-            { where: { id: user.id } }
-        );
-
         // Enviar respuesta de éxito
         res.status(200).json({ 
             message: "Código de verificación válido y estado actualizado.",
