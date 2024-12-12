@@ -220,22 +220,48 @@ class AdminService {
     }
   }
 
-  async deactivateUser(email: string): Promise<void> {
+  async deactivateUsers(emails: string[]): Promise<void> {
     try {
-      // Buscar al usuario por email
-      const user = await Users.findOne({ where: { email } });
-
-      if (!user) {
-        throw createError(404, "El usuario no existe.");
+      // Verificar si la lista de correos no está vacía
+      if (!emails || emails.length === 0) {
+        throw createError(400, "Debe proporcionar al menos un email.");
       }
 
-      // Actualizar el estado a falso
-      user.state = false;
-      await user.save();
+      // Buscar usuarios por sus correos electrónicos
+      const users = await Users.findAll({
+        where: {
+          email: emails,
+        },
+      });
+
+      // Validar si todos los correos proporcionados corresponden a usuarios existentes
+      const foundEmails = users.map((user) => user.email);
+      const notFoundEmails = emails.filter(
+        (email) => !foundEmails.includes(email)
+      );
+
+      if (notFoundEmails.length > 0) {
+        throw createError(
+          404,
+          `No se encontraron los siguientes usuarios: ${notFoundEmails.join(
+            ", "
+          )}.`
+        );
+      }
+
+      // Desactivar los usuarios encontrados
+      await Users.update(
+        { state: false }, // Actualizar el estado a `false`
+        {
+          where: {
+            email: emails,
+          },
+        }
+      );
     } catch (error) {
       throw createError(
         400,
-        `Error al desactivar el usuario: ${(error as Error).message}`
+        `Error al desactivar usuarios: ${(error as Error).message}`
       );
     }
   }

@@ -169,17 +169,22 @@ class AdminController {
     }
   }
 
-  async deactivateUser(req: Request, res: Response, next: NextFunction) {
+  async deactivateUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email } = req.body;
+      const { emails } = req.body;
 
-      if (!email) {
-        throw new Error("El correo electrónico es requerido.");
+      // Validar que se envíen correos electrónicos
+      if (!emails || !Array.isArray(emails) || emails.length === 0) {
+        throw new Error(
+          "Se debe proporcionar un array de correos electrónicos."
+        );
       }
 
-      await AdminService.deactivateUser(email);
+      // Llamar al servicio para desactivar los usuarios
+      await AdminService.deactivateUsers(emails);
 
-      res.status(200).json({ message: "Usuario desactivado correctamente" });
+      // Responder con éxito
+      res.status(200).json({ message: "Usuarios desactivados correctamente." });
     } catch (error) {
       next(createError(400, (error as Error).message));
     }
