@@ -189,6 +189,36 @@ class AdminController {
       next(createError(400, (error as Error).message));
     }
   }
+
+  async updateUsersState(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { emails } = req.body;
+
+      // Validar que se envíe un array de actualizaciones
+      if (!Array.isArray(emails) || emails.length === 0) {
+        throw new Error("Se debe proporcionar un array de emails.");
+      }
+
+      // Validar el formato de cada actualización
+      for (const { email, state } of emails) {
+        if (typeof email !== "string" || typeof state !== "boolean") {
+          throw new Error(
+            "Cada elemento del array debe incluir un email y un estado booleano."
+          );
+        }
+      }
+
+      // Llamar al servicio para actualizar el estado de los usuarios
+      await AdminService.updateUsersState(emails);
+
+      // Responder con éxito
+      res.status(200).json({
+        message: "El estado de los usuarios se actualizó correctamente.",
+      });
+    } catch (error) {
+      next(createError(400, (error as Error).message)); // Se mantiene el manejo de errores
+    }
+  }
 }
 
 export default new AdminController();
