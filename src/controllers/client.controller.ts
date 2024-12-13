@@ -63,12 +63,7 @@ class ClientController {
   // Nuevo método para actualizar campos parciales del cliente
   async updateClient(req: Request, res: Response, next: NextFunction) {
     try {
-      const clientId = parseInt(req.params.id);
-      if (isNaN(clientId)) {
-        throw new Error("ID de cliente inválido");
-      }
       const updatedClient = await ClientService.updateClient(
-        clientId,
         req.body
       );
       res.status(200).json(updatedClient);
@@ -113,6 +108,23 @@ class ClientController {
 
       // Llamada al servicio para obtener el cliente, coach y usuario asociados
       const client = await ClientService.getClientWithCoachAndUser(clientId);
+
+      res.status(200).json(client);
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
+
+  async getClientByUserId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = parseInt(req.params.id); // Obtener el ID del usuario desde los parámetros de la ruta
+
+      if (isNaN(userId)) {
+        throw new Error("ID de usuario inválido");
+      }
+
+      // Llamada al servicio para obtener el cliente asociado al usuario
+      const client = await ClientService.getClientByUserId(userId);
 
       res.status(200).json(client);
     } catch (error) {

@@ -8,6 +8,12 @@ import Nutritionist from "../../db/models/nutritionist.model";
 import Routines from "../../db/models/routines.models";
 import Diets from "../../db/models/diets.models";
 import Membership from "../../db/models/membership.models";
+import {
+  isStrongPassword,
+  isValidUsername,
+} from "../../db/models/utils/constraints";
+import authServices from "../user/auth.services";
+import { UserAtributes } from "../../schemas/user/user.schema";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
@@ -180,18 +186,56 @@ class ClientService {
       );
     }
   }
+
   // Nuevo método para actualizar parcialmente los datos del cliente
   async updateClient(
-    id: number,
-    updateData: Partial<ClientInput>
-  ): Promise<Client | null> {
+    updateData: UptadeClientRequest
+  ): Promise<{user: UserAtributes, client: ClientAttributes}> {
     try {
-      const client = await Client.findByPk(id);
+
+      const user = await Users.findByPk(updateData.userId);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      if (user.userType !== UserType.CLIENT) {
+        throw new Error("El usuario no es del tipo cliente");
+      }
+
+      const client = await Client.findOne({ where: { user_id: updateData.userId } });
+
       if (!client) {
         throw new Error("Cliente no encontrado");
       }
-      await client.update(updateData); // Actualización parcial
-      return client;
+      if (updateData.password){
+      isStrongPassword(updateData.password);
+      }
+      const pass = await authServices.comparePasswords(updateData.passwordCurrent || "", user.password);
+
+      if (!pass) {
+        throw new Error("Contraseña actual incorrecta");
+      }
+
+      let hashedPassword: string | undefined;
+      if(updateData.password){
+      hashedPassword= await authServices.hashPassword(updateData.password);
+      }
+      user.name = updateData.name || user.name;
+      user.email = updateData.email || user.email;
+      user.dni = updateData.dni || user.dni;
+      user.password =  hashedPassword || user.password;
+      user.phoneNumber = updateData.phoneNumber || user.phoneNumber;
+      client.birthDate = updateData.birthDate || client.birthDate;
+      client.height = updateData.height || client.height;
+      client.diseases = updateData.diseases || client.diseases;
+      client.dietaryRestrictions = updateData.dietaryRestrictions || client.dietaryRestrictions;
+
+      await user.save();
+      await client.save();
+
+      return {user, client};
+
+       // Actualización parcial
     } catch (error) {
       throw new Error(
         `Error al actualizar el cliente: ${(error as Error).message}`
@@ -275,6 +319,11 @@ class ClientService {
             as: "membership",
             attributes: ["id", "price"],
           },
+          {
+            model: Users,
+            as: "user",
+            attributes: ["id", "name", "email", "dni", "phoneNumber"],
+          }
         ],
       });
       return client; // Retorna el cliente o null si no existe
@@ -314,3 +363,17 @@ class ClientService {
 }
 
 export default new ClientService();
+
+interface UptadeClientRequest {
+  userId: number;
+  name?: string;
+  email?: string;
+  passwordCurrent?: string;
+  password?: string;
+  dni?: string;
+  phoneNumber?: string;
+  birthDate?: Date;
+  height?: number;
+  diseases?: string[];
+  dietaryRestrictions?: string[];
+};
