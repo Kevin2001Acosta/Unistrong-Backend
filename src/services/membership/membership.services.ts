@@ -16,6 +16,10 @@ class MembershipServices {
         if(!client.membership){
             throw new Error("El cliente no tiene un tipo de membresía asignado");
         }
+        const { remainingDays } = await this.getMembershipRemainingDays(userId);
+        if(remainingDays > 0){
+            throw new Error("No puedes pagar una membresía si tienes una activa");
+        }
 
         // registrar la membresía
         const membership = await MembershipPayment.create({
@@ -51,7 +55,10 @@ class MembershipServices {
             });
 
             if(!membership){
-                throw new Error("No Tienes membresías pagadas");
+                return {
+                    remainingDays: 0, // positivo, no ha vencido; negativo, ya vencio
+                    message: "No tienes membresías pagadas aún", // mensaje personalizado
+                    };
             }
 
             // Calcular los días restantes
