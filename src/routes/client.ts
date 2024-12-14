@@ -11,7 +11,7 @@ router.get("/", ClientController.getAllClients);
 router.get("/:id", ClientController.getClientById);
 router.get("/:id/user", ClientController.getUserByClientId);
 // Nueva ruta para actualizar parcialmente un cliente
-router.patch("/edit_perfil_client",verifyToken, ClientController.updateClient);
+router.put("/edit_perfil_client",verifyToken, ClientController.updateClient);
 router.put(
   "/update_membership",
   verifyToken,
