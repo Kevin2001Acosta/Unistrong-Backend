@@ -89,7 +89,7 @@ Users.init(
     },
     state: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: true,
     },
     userType: {

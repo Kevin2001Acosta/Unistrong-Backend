@@ -69,6 +69,7 @@ class AuthController {
         user.id
       );// si hay algúno de los campos llenos, envíe true si ningúno está lleno false
       // Devolver el token y datos del usuario
+      const isverified = await VerificationServices.isClientVerified(user.id);
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
         token,
@@ -79,6 +80,7 @@ class AuthController {
           state: user.state,
           userType: user.userType,
           additionalData,
+          infoClienteVerified: isverified,
         },
         infoClientRegistered: clientexist,
       });

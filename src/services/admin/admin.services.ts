@@ -51,6 +51,7 @@ class AdminService {
       // Crear el usuario
       const user = await Users.create({
         ...userData,
+        state:true,
         password: hashedPassword,
       });
 
