@@ -232,6 +232,29 @@ class RoutineController {
     }
   }
 
+  // async getCoachRoutines(req: Request, res: Response, next: NextFunction) {
+  //   const { coachId } = req.params;
+
+  //   try {
+  //     const coach = await RoutineService.getRoutinesByCoachId(Number(coachId));
+
+  //     if (!coach || !coach.routines || coach.routines.length === 0) {
+  //       return res
+  //         .status(404)
+  //         .json({ message: "No se encontraron rutinas para este coach." });
+  //     }
+
+  //     return res.status(200).json(coach.routines);
+  //   } catch (error) {
+  //     next(
+  //       createError(
+  //         400,
+  //         `Error al obtener rutinas: ${(error as Error).message}`
+  //       )
+  //     );
+  //   }
+  // }
+
   async getCoachRoutines(req: Request, res: Response, next: NextFunction) {
     const { coachId } = req.params;
 

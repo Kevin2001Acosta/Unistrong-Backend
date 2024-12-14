@@ -1,23 +1,21 @@
-# Usa una imagen base de Node.js (ajusta según tu entorno)
-FROM node:16
+# Usa una imagen base de Node.js
+FROM node:18-alpine
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos de tu proyecto
-COPY package*.json package-lock.json ./
-
-# Instala las dependencias
+# Copia el package.json y package-lock.json para instalar dependencias
+COPY package*.json ./
 RUN npm install
 
-# Copia todos los archivos del proyecto
+# Copia el código fuente
 COPY . .
 
-# Copia el archivo .env.local para pruebas locales
+# Compila TypeScript a JavaScript
+RUN npx tsc
 
-
-# Expone el puerto
+# Expón el puerto 3001
 EXPOSE 3001
 
-# Comando para iniciar la aplicación
-CMD ["npm","start"]
+# Comando para ejecutar la aplicación
+CMD ["npm", "start"]
