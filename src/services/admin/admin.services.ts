@@ -204,7 +204,7 @@ class AdminService {
     try {
       const admin = await Admin.findOne({
         where: {
-          user_id:id,
+          user_id: id,
         },
         attributes: ["user_id"],
       });
@@ -212,11 +212,87 @@ class AdminService {
       if (!admin) {
         throw new Error("El administrador no existe");
       }
-      
+
       return true;
     } catch (error) {
       throw new Error(
         `Error al obtener el administrador: ${(error as Error).message}`
+      );
+    }
+  }
+
+  async deactivateUsers(emails: string[]): Promise<void> {
+    try {
+      // Verificar si la lista de correos no está vacía
+      if (!emails || emails.length === 0) {
+        throw createError(400, "Debe proporcionar al menos un email.");
+      }
+
+      // Buscar usuarios por sus correos electrónicos
+      const users = await Users.findAll({
+        where: {
+          email: emails,
+        },
+      });
+
+      // Validar si todos los correos proporcionados corresponden a usuarios existentes
+      const foundEmails = users.map((user) => user.email);
+      const notFoundEmails = emails.filter(
+        (email) => !foundEmails.includes(email)
+      );
+
+      if (notFoundEmails.length > 0) {
+        throw createError(
+          404,
+          `No se encontraron los siguientes usuarios: ${notFoundEmails.join(
+            ", "
+          )}.`
+        );
+      }
+
+      // Desactivar los usuarios encontrados
+      await Users.update(
+        { state: false }, // Actualizar el estado a `false`
+        {
+          where: {
+            email: emails,
+          },
+        }
+      );
+    } catch (error) {
+      throw createError(
+        400,
+        `Error al desactivar usuarios: ${(error as Error).message}`
+      );
+    }
+  }
+
+  async updateUsersState(
+    emails: { email: string; state: boolean }[]
+  ): Promise<void> {
+    try {
+      for (const { email } of emails) {
+        // Buscar al usuario por email
+        const user = await Users.findOne({ where: { email } });
+
+        if (!user) {
+          throw new Error(`El usuario con el email ${email} no existe.`);
+        }
+
+        console.log(`Estado actual de ${email}: ${user.state}`); // Para depuración
+
+        // Cambiar el estado del usuario: si es 'false', cambiar a 'true' y viceversa
+        user.state = !user.state; // Invierte el estado
+        console.log(`Nuevo estado de ${email}: ${user.state}`); // Para depuración
+
+        // Guardar los cambios en la base de datos
+        await user.save();
+      }
+    } catch (error) {
+      throw new Error(
+        `Error al actualizar el estado de los usuarios: ${
+          (error as Error).message
+        }`
       );
     }
   }
