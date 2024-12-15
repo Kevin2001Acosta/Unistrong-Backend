@@ -24,4 +24,7 @@ router.get("/get-pdf-characteristics/:userId",StatisticsControllers.generateStat
 
 router.get("/ByUser/:id", ClientController.getClientByUserId);
 
+// Nuevo endpoint para generar y enviar el PDF por correo
+router.post("/send-pdf/:userId", verifyToken, StatisticsControllers.generateAndSendPDF);
+
 export { router };

@@ -4,6 +4,11 @@ interface EmailOptions {
     to: string;
     subject: string;
     text: string;
+    attachments?: {
+      filename: string;
+      content: Buffer;
+      contentType: string;
+    }[];
 }
 
 export class EmailService {
@@ -23,12 +28,14 @@ export class EmailService {
     });
   }
 
-  async sendEmail({to, subject, text}:EmailOptions): Promise<void> {
+  async sendEmail({to, subject, text, attachments}:EmailOptions): Promise<void> {
     await this.transporter.sendMail({
       from: this.userEmail,
       to,
       subject,
       text,
+      attachments,
+
     });
   }
 }

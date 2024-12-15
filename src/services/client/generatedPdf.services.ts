@@ -34,7 +34,7 @@ class PDFGeneratorService {
     doc.pipe(stream);
 
     // logo
-    const logo = "assets/unistrong.jpg";
+    const logo = "assets/unistrong(2).png";
     doc.image(logo,doc.page.width-150, 20, {width: 100});
 
     const currentDate = new Date().toLocaleDateString();
