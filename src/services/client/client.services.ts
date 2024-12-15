@@ -191,7 +191,7 @@ class ClientService {
   // Nuevo método para actualizar parcialmente los datos del cliente
   async updateClient(
     updateData: UptadeClientRequest
-  ): Promise<{user: UserAtributes, client: ClientAttributes}> {
+  ): Promise<{user: UserAtributes, client: ClientAttributes, message: string}> {
     try {
 
       const user = await Users.findByPk(updateData.userId);
@@ -208,23 +208,25 @@ class ClientService {
       if (!client) {
         throw new Error("Cliente no encontrado");
       }
-      if (updateData.password){
-      isStrongPassword(updateData.password);
+      let count = 0;
+      const passExist = !!updateData.passwordCurrent; 
+      if(passExist){ // si existe la contraseña actual
+        if (updateData.password){ // si existe la contraseña nueva
+          isStrongPassword(updateData.password); // validar requisitos de la contraseña nueva
+          const pass = await authServices.comparePasswords(updateData.passwordCurrent!, user.password); //comparar la contraseña actual con la almacenada
+          if (!pass) { // si no pasa. contraseña incorrecta
+            throw new Error("Contraseña actual incorrecta");
+          }
+          let hashedPassword: string;
+          hashedPassword= await authServices.hashPassword(updateData.password);
+          user.password =  hashedPassword;
+          count++;
+        }
       }
-      const pass = await authServices.comparePasswords(updateData.passwordCurrent || "", user.password);
 
-      if (!pass) {
-        throw new Error("Contraseña actual incorrecta");
-      }
-
-      let hashedPassword: string | undefined;
-      if(updateData.password){
-      hashedPassword= await authServices.hashPassword(updateData.password);
-      }
       user.name = updateData.name || user.name;
       user.email = updateData.email || user.email;
       user.dni = updateData.dni || user.dni;
-      user.password =  hashedPassword || user.password;
       user.phoneNumber = updateData.phoneNumber || user.phoneNumber;
       client.birthDate = updateData.birthDate || client.birthDate;
       client.height = updateData.height || client.height;
@@ -233,8 +235,9 @@ class ClientService {
 
       await user.save();
       await client.save();
+      const message = count > 0 ? "Todos los datos actualizados" : "Datos actualizados, menos la contraseña";
 
-      return {user, client};
+      return {user, client, message};
 
        // Actualización parcial
     } catch (error) {
