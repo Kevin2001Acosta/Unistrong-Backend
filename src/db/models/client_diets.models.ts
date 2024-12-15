@@ -6,6 +6,8 @@ import Diets from "./diets.models";
 class ClientDiets extends Model {
   public clientId!: number;
   public dietId!: number;
+  public client?: Client; // Relación con Client
+  public diet?: Diets; // Relación con Diets
 }
 
 ClientDiets.init(

@@ -6,8 +6,6 @@ import AuthService from "../services/user/auth.services";
 import verificationService, { userResponse } from "../services/verification/verification.services";
 import userServices from "../services/user/user.services";
 import Users from "../db/models/user.model";
-import UserModel from "../db/models/user.model";
-
 interface VerificationRequest extends Request { // recibe el email del usuario
     body: {
         email: string;
@@ -167,12 +165,6 @@ export const verifyEmail = async (req: VerificationEmailRequest, res: Response) 
 
         // Verificar el código de verificación
         await verificationService.verifyCodeoOfEmail(user.id, user.code);
-
-        // Actualizar el estado de verificación del usuario en la base de datos
-        await UserModel.update(
-            { state: true }, // Cambia el estado a verdadero
-            { where: { id: user.id } }
-        );
 
         // Enviar respuesta de éxito
         res.status(200).json({ 

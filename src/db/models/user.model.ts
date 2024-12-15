@@ -29,7 +29,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_email_key", // Nombrar la restricción de unicidad
+        name: "users_email_key",
         msg: "El correo electrónico ya está registrado",
       },
       validate: {
@@ -52,7 +52,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_dni_key", // Nombrar la restricción de unicidad
+        name: "users_dni_key",
         msg: "El DNI ya está registrado",
       },
     },
@@ -60,7 +60,7 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: "users_username_key", // Nombrar la restricción de unicidad
+        name: "users_username_key",
         msg: "El nombre de usuario ya está en uso",
       },
       validate: {
@@ -89,8 +89,8 @@ Users.init(
     },
     state: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      allowNull: true,
+      defaultValue: true,
     },
     userType: {
       type: DataTypes.ENUM(
@@ -112,7 +112,7 @@ Users.init(
     indexes: [
       {
         unique: true,
-        fields: ["email"], //index para el campo email
+        fields: ["email"],
       },
     ],
   }

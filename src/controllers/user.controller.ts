@@ -97,6 +97,34 @@ class UserController {
       next(createError(400, (error as Error).message));
     }
   }
+
+
+  async updateUserMeasurements(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;  // Obtenemos el ID desde los parámetros
+      const { weight, waist, legs, arms, chest, glutes} = req.body;  // Obtenemos los nuevos campos desde el cuerpo de la solicitud
+  
+      // Creamos un objeto con los campos que están presentes en la solicitud
+      const updateData: { weight?: number; height?:number; waist?: number; legs?: number, arms?: number,
+        chest?:number, glutes?: number} = {};
+  
+      if (weight) updateData.weight = weight; 
+      if (waist) updateData.waist = waist;  
+      if (legs) updateData.legs = legs;  
+      if (arms) updateData.arms = arms;  
+      if (chest) updateData.chest = chest;  
+      if (glutes) updateData.glutes = glutes;  
+  
+      // Llamamos al servicio para actualizar los campos proporcionados
+      const updatedUserMeasurements = await UserService.updateUserMeasurements(Number(id), updateData);
+  
+      // Retornamos la respuesta con el usuario actualizado
+      res.status(200).json(updatedUserMeasurements);
+      
+    } catch (error) {
+      next(createError(400, (error as Error).message));
+    }
+  }
   
 }
 

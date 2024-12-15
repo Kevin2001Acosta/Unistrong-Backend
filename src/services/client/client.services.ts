@@ -8,11 +8,16 @@ import Nutritionist from "../../db/models/nutritionist.model";
 import Routines from "../../db/models/routines.models";
 import Diets from "../../db/models/diets.models";
 import Membership from "../../db/models/membership.models";
+import {
+  isStrongPassword,
+  isValidUsername,
+} from "../../db/models/utils/constraints";
+import authServices from "../user/auth.services";
+import { UserAtributes } from "../../schemas/user/user.schema";
 
 class ClientService {
   async createClient(clientData: ClientInput): Promise<ClientAttributes> {
     try {
-
       // Verificar si el usuario existe
       const user = await Users.findByPk(clientData.user_id);
       if (!user) {
@@ -47,9 +52,10 @@ class ClientService {
       });
 
       if (verifyClient) {
-        throw new Error("El usuario ya tiene un cliente asociado,\nEntre al perfil y actualice su información");
+        throw new Error(
+          "El usuario ya tiene un cliente asociado,\nEntre al perfil y actualice su información"
+        );
       }
-
 
       // Crear el cliente
       const client = await Client.create({
@@ -68,10 +74,64 @@ class ClientService {
       throw new Error(`Error al crear cliente: ${(error as Error).message}`);
     }
   }
+  async fillClientFields(clientData: ClientInput): Promise<ClientAttributes> {
+    try {
+
+      // Verificar si el usuario existe
+      const user = await Users.findByPk(clientData.user_id);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      if (user.userType !== UserType.CLIENT) {
+        throw new Error("El usuario no es del tipo cliente");
+      }
+
+      // verificar si el usuario ya tiene un cliente asociado
+      const client = await Client.findOne({
+        where: { user_id: clientData.user_id },
+      });
+
+      if (!client) {
+        throw new Error("El usuario No tiene un cliente asociado");
+      }
+      
+      // Llenar campos de cliente solo si están presentes en clientData
+      if (clientData.birthDate !== undefined) {
+        client.birthDate = clientData.birthDate;
+      }
+      if (clientData.height !== undefined) {
+        client.height = clientData.height;
+      }
+      if (clientData.diseases !== undefined) {
+        client.diseases = clientData.diseases;
+      }
+      if (clientData.dietaryRestrictions !== undefined) {
+        client.dietaryRestrictions = clientData.dietaryRestrictions;
+      }
+      if (clientData.membershipId !== undefined) {
+        client.membershipId = clientData.membershipId;
+      }
+      await client.save();
+
+      return client;
+    } catch (error) {
+      throw new Error(`Error al llenar campos: ${(error as Error).message}`);
+    }
+  }
 
   async getAllClient(): Promise<ClientAttributes[]> {
     try {
-      const client = await Client.findAll();
+      const client = await Client.findAll({
+        attributes: ["id", "user_id"],
+        include: [
+          {
+            model: Users,
+            as: "user",
+            attributes: ["id", "username", "email", "name", "dni", "phone_number", "state", "userType"],
+          },
+        ],
+      });
       return client.length > 0 ? client : [];
     } catch (error) {
       throw new Error(`Error al obtener clientes: ${(error as Error).message}`);
@@ -84,6 +144,17 @@ class ClientService {
       const client = await Client.findByPk(id, {
         include: [
           { model: Users, as: "user", attributes: ["id", "name", "email"] },
+          {
+            model: Coach,
+            as: "coach",
+            include: [
+              {
+                model: Users,
+                as: "user",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
           { model: Routines, as: "routines", attributes: ["id", "name"] },
           { model: Diets, as: "diets", attributes: ["id", "name"] },
           { model: Membership, as: "Membership", attributes: ["id", "price"] },
@@ -116,45 +187,94 @@ class ClientService {
       );
     }
   }
+
   // Nuevo método para actualizar parcialmente los datos del cliente
-  async updateClient(id: number, updateData: Partial<ClientInput>): Promise<Client | null> {
+  async updateClient(
+    updateData: UptadeClientRequest
+  ): Promise<{user: UserAtributes, client: ClientAttributes, message: string}> {
     try {
-      const client = await Client.findByPk(id);
+
+      const user = await Users.findByPk(updateData.userId);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      if (user.userType !== UserType.CLIENT) {
+        throw new Error("El usuario no es del tipo cliente");
+      }
+
+      const client = await Client.findOne({ where: { user_id: updateData.userId } });
+
       if (!client) {
         throw new Error("Cliente no encontrado");
       }
-      await client.update(updateData); // Actualización parcial
-      return client;
+      let count = 0;
+      const passExist = !!updateData.passwordCurrent; 
+      if(passExist){ // si existe la contraseña actual
+        if (updateData.password){ // si existe la contraseña nueva
+          isStrongPassword(updateData.password); // validar requisitos de la contraseña nueva
+          const pass = await authServices.comparePasswords(updateData.passwordCurrent!, user.password); //comparar la contraseña actual con la almacenada
+          if (!pass) { // si no pasa. contraseña incorrecta
+            throw new Error("Contraseña actual incorrecta");
+          }
+          let hashedPassword: string;
+          hashedPassword= await authServices.hashPassword(updateData.password);
+          user.password =  hashedPassword;
+          count++;
+        }
+      }
+
+      user.name = updateData.name || user.name;
+      user.email = updateData.email || user.email;
+      user.dni = updateData.dni || user.dni;
+      user.phoneNumber = updateData.phoneNumber || user.phoneNumber;
+      client.birthDate = updateData.birthDate || client.birthDate;
+      client.height = updateData.height || client.height;
+      client.diseases = updateData.diseases || client.diseases;
+      client.dietaryRestrictions = updateData.dietaryRestrictions || client.dietaryRestrictions;
+
+      await user.save();
+      await client.save();
+      const message = count > 0 ? "Todos los datos actualizados" : "Datos actualizados, menos la contraseña";
+
+      return {user, client, message};
+
+       // Actualización parcial
     } catch (error) {
-      throw new Error(`Error al actualizar el cliente: ${(error as Error).message}`);
+      throw new Error(
+        `Error al actualizar el cliente: ${(error as Error).message}`
+      );
     }
   }
 
-  async updateClientMembership(userId: number, idMembership: number) : Promise<ClientAttributes | null>{
+  async updateClientMembership(
+    userId: number,
+    idMembership: number
+  ): Promise<ClientAttributes | null> {
     try {
       // verificar si el usuario es tipo cliente
       const user = await Users.findByPk(userId);
       if (!user) {
         throw new Error("Usuario no encontrado");
       }
-      if(user.userType !== UserType.CLIENT){
+      if (user.userType !== UserType.CLIENT) {
         throw new Error("El usuario no es del tipo cliente");
       }
 
       // busco el cliente
-      const client = await Client.findOne({where: {user_id: userId}});
-      if(!client){
+      const client = await Client.findOne({ where: { user_id: userId } });
+      if (!client) {
         throw new Error("Cliente no encontrado");
       }
 
       //verifico que no sea la misma membresía
-      if(client.membershipId === idMembership){
+      if (client.membershipId === idMembership) {
         return client;
       }
 
       // verifico la membresía
       const membership = await Membership.findByPk(idMembership);
-      if(!membership){
+      if (!membership) {
         throw new Error("Membresía no encontrada");
       }
 
@@ -163,26 +283,101 @@ class ClientService {
       await client.save();
 
       return client;
-
-
-
-    }catch(error){
-      throw new Error(`Error al actualizar membresía: ${(error as Error).message}`);
-    }
-
-  }
-
-  async getClientByUserId(userId: number): Promise<boolean> {
-    try {
-      const client = await Client.findOne({ where: { user_id: userId } });
-      return !!client;  // la doble negación retorna un booleano directamente, true si existe cliente
     } catch (error) {
       throw new Error(
-        `Error al obtener el cliente por id de usuario: ${(error as Error).message}`
+        `Error al actualizar membresía: ${(error as Error).message}`
       );
     }
   }
 
+  async getfilledFilledByUserId(userId: number): Promise<boolean> {
+    try {
+      const client = await Client.findOne({ where: { user_id: userId } });
+      if (
+        client &&
+        (client.birthDate === null || client.birthDate === undefined) &&
+        (client.height === null || client.height === undefined) &&
+        (client.diseases === null || client.diseases.length === 0) &&
+        (client.dietaryRestrictions === null || client.dietaryRestrictions.length === 0) &&
+        (client.membershipId === null || client.membershipId === undefined)
+      ){
+        return false; // los campos están vacíos
+      };
+      return true; // Algún campo fué llenado
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el cliente por id de usuario: ${
+          (error as Error).message
+        }`
+      );
+    }
+  }
+
+  async getClientByUserId(userId: number): Promise<Client | null> {
+    try {
+      const client = await Client.findOne({
+        where: { user_id: userId },
+        include: [
+          {
+            model: Membership,
+            as: "membership",
+            attributes: ["id", "price"],
+          },
+          {
+            model: Users,
+            as: "user",
+            attributes: ["id", "name", "email", "dni", "phoneNumber"],
+          }
+        ],
+      });
+      return client; // Retorna el cliente o null si no existe
+    } catch (error) {
+      throw new Error(
+        `Error al obtener el cliente por id de usuario: ${
+          (error as Error).message
+        }`
+      );
+    }
+  }
+
+  async getClientWithCoachAndUser(clientId: number) {
+    const client = await Client.findOne({
+      where: { id: clientId },
+      include: [
+        {
+          model: Coach,
+          as: "coach", // Esto accede al coach asociado con el cliente
+          include: [
+            {
+              model: Users, // Aquí se accede al 'user' asociado al coach
+              as: "user",
+              attributes: ["id", "name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
+
+    return client;
+  }
 }
 
 export default new ClientService();
+
+interface UptadeClientRequest {
+  userId: number;
+  name?: string;
+  email?: string;
+  passwordCurrent?: string;
+  password?: string;
+  dni?: string;
+  phoneNumber?: string;
+  birthDate?: Date;
+  height?: number;
+  diseases?: string[];
+  dietaryRestrictions?: string[];
+};

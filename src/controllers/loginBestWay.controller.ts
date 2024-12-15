@@ -3,6 +3,9 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import { UserType } from "../db/models/utils/user.types";
+import Coach from "../db/models/coach.models";
+import Client from "../db/models/client.models";
 import clientServices from "../services/client/client.services";
 
 class LoginBestWayController {
@@ -50,10 +53,19 @@ class LoginBestWayController {
           message: "Credenciales incorrectas",
         });
       }
+      let additionalData = null;
 
-      // buscar si ya existe la tabla client, si no existe enviar false
-      const clientexist: boolean = await clientServices.getClientByUserId(user.id);
+      if (user.userType === UserType.COACH) {
+        additionalData = await Coach.findOne({ where: { user_id: user.id } });
+      }
 
+      if (user.userType === UserType.CLIENT) {
+        additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
+
+      // buscar si los campos están llenos, si están vacíos enviar false
+      const clientexist: boolean = await clientServices.getfilledFilledByUserId(user.id);
+      
       // Generar el token
       const token = AuthService.generateToken(user.id);
 
@@ -74,6 +86,7 @@ class LoginBestWayController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          additionalData,
         },
         infoClientRegistered: clientexist,
       });

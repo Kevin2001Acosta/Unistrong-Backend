@@ -9,5 +9,6 @@ coverage
 *.png
 
 .env.local
-Docker-compose.yml
-Dockerfile
+docker-compose.yml
+.dockerignore
+```

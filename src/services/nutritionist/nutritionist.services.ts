@@ -24,18 +24,18 @@ class NutritionistService {
     }
   }
 
-  //Obtener nutriologo con su informacion de usuario
   async getAllNutritionist(): Promise<any[]> {
     try {
       const nutri = await Nutritionist.findAll({
+        attributes: ["id", "user_id"],
         include: [
           {
             model: Users,
             as: "user",
+            attributes: ["username", "email", "name", "dni", "phone_number", "state"],
           },
         ],
       });
-
       return nutri.length > 0 ? nutri : [];
     } catch (error) {
       throw new Error(

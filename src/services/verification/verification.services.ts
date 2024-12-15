@@ -92,6 +92,27 @@ class VerificationService {
 
     return true;
   }
+
+  async isClientVerified(id: number): Promise<boolean> {
+    const user = await userServices.getUserById(id);
+    if (!user) {
+      throw new Error("El usuario no está registrado");
+    }
+
+    const verified = await Verification.findOne({
+      where: {
+        userId: id,
+        active: false,
+        verified: true,
+        type: VerificationType.Email,
+      },
+    });
+
+    if (!verified) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export default new VerificationService();

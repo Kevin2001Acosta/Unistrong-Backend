@@ -3,6 +3,12 @@ import AuthService from "../services/user/auth.services";
 import Users from "../db/models/user.model";
 import createError from "http-errors";
 import UserService from "../services/user/user.services";
+import { UserType } from "../db/models/utils/user.types";
+import Coach from "../db/models/coach.models";
+import Client from "../db/models/client.models";
+import VerificationServices from "../services/verification/verification.services";
+import clientServices from "../services/client/client.services";
+import Nutritionist from "../db/models/nutritionist.model";
 
 class AuthController {
   async login(req: Request, res: Response): Promise<Response> {
@@ -30,13 +36,40 @@ class AuthController {
       // Generar el token JWT
       const token = AuthService.generateToken(user.id);
 
+      const stateUser = user.state;
+      if(!stateUser){
+        throw createError(403, "La cuenta ha sido desactivada");
+      }
+      
+      let additionalData = null;
+
+      // Validar el tipo de usuario y obtener datos adicionales
+      if (user.userType === UserType.COACH) {
+        additionalData = await Coach.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.CLIENT) {
+        additionalData = await Client.findOne({ where: { user_id: user.id } });
+      }
+
+      if (user.userType === UserType.NUTRITIONIST) {
+        additionalData = await Nutritionist.findOne({
+          where: { user_id: user.id },
+        });
+      }
+
       // Configurar la cookie con el token
       res.cookie("token", token, {
         httpOnly: false,
         secure: false,
       });
 
+
+      const clientexist: boolean = await clientServices.getfilledFilledByUserId(
+        user.id
+      );// si hay algúno de los campos llenos, envíe true si ningúno está lleno false
       // Devolver el token y datos del usuario
+      const isverified = await VerificationServices.isClientVerified(user.id);
       return res.status(200).json({
         message: "Usuario logeado exitosamente",
         token,
@@ -46,7 +79,10 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          additionalData,
+          infoClienteVerified: isverified,
         },
+        infoClientRegistered: clientexist,
       });
     } catch (error) {
       console.log("Error en el login:", error);
@@ -85,6 +121,7 @@ class AuthController {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
+      const isverified = await VerificationServices.isClientVerified(user.id);
       // Si el token es válido, devolver la información del usuario
       return res.status(200).json({
         message: "Token válido",
@@ -94,6 +131,7 @@ class AuthController {
           email: user.email,
           state: user.state,
           userType: user.userType,
+          infoClienteVerified: isverified,
         },
       });
     } catch (error) {

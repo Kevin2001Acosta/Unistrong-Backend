@@ -11,7 +11,10 @@ class ClientRoutines
 {
   public clientId!: number;
   public routineId!: number;
-  public scheduledDate!: Date;
+  public scheduledDate?: Date;
+  public recurrenceDay?: number; // Día de la semana (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
+  public time?: string; // Hora en formato HH:mm
+  public recurrentDates?: string[]; // Nuevas fechas recurrentes
 }
 
 ClientRoutines.init(
@@ -36,7 +39,19 @@ ClientRoutines.init(
     },
     scheduledDate: {
       type: DataTypes.DATE,
-      allowNull: false, // Hacemos que este campo sea obligatorio
+      allowNull: true,
+    },
+    recurrenceDay: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    time: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    recurrentDates: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
   },
   { sequelize, modelName: "client_routines", timestamps: false }
