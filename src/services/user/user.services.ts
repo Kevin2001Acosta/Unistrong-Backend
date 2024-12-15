@@ -33,6 +33,7 @@ class UserService {
       const user = await Users.create({
         ...userData,
         password: hashedPassword,
+        state: true,
       });
 
       //Crear tambien en la tabla cliente si es un cliente
