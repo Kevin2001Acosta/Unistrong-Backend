@@ -68,7 +68,7 @@ class MembershipServices {
 
             // Determinar el mensaje personalizado
             const message = remainingDays > 0
-                ? `Tu membresía vence en ${remainingDays} días.`
+                ? `Tu membresía vence el ${endDate}.`
                 : `Tu membresía venció el ${endDate.toLocaleDateString()}.`;
 
             return {
