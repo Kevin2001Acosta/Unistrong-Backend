@@ -3,7 +3,7 @@ import { UserInput } from "../../schemas/user/user.input.schema";
 import Users from "../../db/models/user.model";
 import AuthService from "././auth.services";
 import createError from "http-errors";
-import { UniqueConstraintError } from "sequelize";
+import { UniqueConstraintError, where } from "sequelize";
 import {
   isStrongPassword,
   isValidUsername,
@@ -12,6 +12,7 @@ import Client from "../../db/models/client.models";
 import { UserType } from "../../db/models/utils/user.types";
 import Coach from "../../db/models/coach.models";
 import Nutritionist from "../../db/models/nutritionist.model";
+import ClientCharacteristics from "../../db/models/client.characteristics.models";
 
 class UserService {
   updateUser(user: UserAtributes) {
@@ -32,6 +33,7 @@ class UserService {
       const user = await Users.create({
         ...userData,
         password: hashedPassword,
+        state: true,
       });
 
       //Crear tambien en la tabla cliente si es un cliente
@@ -178,6 +180,72 @@ class UserService {
       );
     }
   }
+
+  async updateUserMeasurements(
+    id: number,
+    updateData: {weight?: number; height?:number; waist?: number; legs?: number, arms?: number,
+      chest?:number, glutes?: number}
+  ): Promise<ClientCharacteristics> {
+    try {
+      // Verificamos si el usuario existe en la base de datos
+      const user = await Users.findByPk(id); // findByPk devuelve una instancia de Sequelize o null
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+            // findByPk devuelve una instancia de Sequelize o null
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+
+      const cliente = await Client.findOne({
+        where: {
+          user_id: id,
+        }
+      });
+
+      if (!cliente) {
+        throw new Error("Cliente no encontrado");
+      }
+
+      const validData: Partial<ClientCharacteristics> = {};
+      if (cliente.id) validData.id = cliente.id;
+      if (updateData.weight) validData.weight = updateData.weight;
+      if (updateData.height) validData.height = updateData.height;
+      if (updateData.waist) validData.waist = updateData.waist;
+      if (updateData.legs) validData.legs = updateData.legs;
+      if (updateData.arms) validData.arms = updateData.arms;
+      if (updateData.chest) validData.chest = updateData.chest;
+      if (updateData.glutes) validData.glutes = updateData.glutes;
+
+      if (Object.keys(validData).length === 0) {
+        throw new Error("No se proporcionaron datos válidos para actualizar");
+      }
+
+      const characteristicsData: any = {
+        clientId: cliente.id,
+        weight: validData.weight,
+        height: validData.height,
+        waist: validData.waist,
+        legs: validData.legs,
+        arms: validData.arms,
+        chest: validData.chest,
+        glutes: validData.glutes,
+      };
+
+      Object.keys(characteristicsData).forEach(
+        (key) => characteristicsData[key] === undefined && delete characteristicsData[key]
+      );
+      const characteristics = await ClientCharacteristics.create(characteristicsData);
+
+      return characteristics;
+  
+    } catch (error) {
+      throw new Error(
+        `Error al actualizar el perfil: ${(error as Error).message}`
+      );
+    }
+  }
 }
+
 
 export default new UserService();

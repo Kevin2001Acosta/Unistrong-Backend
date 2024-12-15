@@ -89,8 +89,8 @@ Users.init(
     },
     state: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      allowNull: true,
+      defaultValue: true,
     },
     userType: {
       type: DataTypes.ENUM(

@@ -10,13 +10,13 @@ class ClientCharacteristics
 {
   public id!: number;
   public clientId!: number;
-  public weight!: number;
-  public height!: number;
-  public waist!: number;
-  public legs!: number;
-  public arms!: number;
-  public chest!: number;
-  public glutes!: number;
+  public weight?: number;
+  public height?: number;
+  public waist?: number;
+  public legs?: number;
+  public arms?: number;
+  public chest?: number;
+  public glutes?: number;
 }
 
 ClientCharacteristics.init(
@@ -37,31 +37,31 @@ ClientCharacteristics.init(
     },
     weight: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     height: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     waist: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     legs: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     arms: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     chest: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     glutes: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
