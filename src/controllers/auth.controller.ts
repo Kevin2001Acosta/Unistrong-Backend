@@ -62,6 +62,8 @@ class AuthController {
       res.cookie("token", token, {
         httpOnly: false,
         secure: false,
+        sameSite: "lax",
+        path: "/"
       });
 
 

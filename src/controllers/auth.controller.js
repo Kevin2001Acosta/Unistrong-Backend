@@ -61,6 +61,8 @@ class AuthController {
                 res.cookie("token", token, {
                     httpOnly: false,
                     secure: false,
+                    sameSite: "lax",
+                    path: "/",
                 });
                 const clientexist = yield client_services_1.default.getfilledFilledByUserId(user.id); // si hay algúno de los campos llenos, envíe true si ningúno está lleno false
                 // Devolver el token y datos del usuario
