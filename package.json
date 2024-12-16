@@ -1,9 +1,9 @@
 {
   "name": "api-rest-ts",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node ./src/app.ts",
+    "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.ts",
     "test": "jest && artillery run src/test/loginLoadTest.yml"
   },

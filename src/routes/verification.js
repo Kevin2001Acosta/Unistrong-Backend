@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express_1 = require("express");
+const verification_controller_1 = require("../controllers/verification.controller");
+const router = (0, express_1.Router)();
+exports.router = router;
+router.post("/send-code", verification_controller_1.sendVerificationCode);
+router.put("/verify-code", verification_controller_1.verifyCode);
+router.put("/change-password", verification_controller_1.changePassword);
+router.post("/send-email", verification_controller_1.sendVerificationEmail);
+router.post("/verify-email", verification_controller_1.verifyEmail);
