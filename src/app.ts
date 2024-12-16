@@ -18,6 +18,8 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
+  sameSite: "lax",
+  path: "/"
 };
 
 app.use(cors(corsOptions));
